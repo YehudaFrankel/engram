@@ -2,6 +2,8 @@
 
 ![Claude Code Memory Starter Kit](memory-starter-kit.png)
 
+> **See it in action →** record your own demo in 2 minutes: `python demo/simulate.py` + any screen capture tool → drop the GIF here.
+
 **Claude forgets everything when you close the session. This kit fixes that permanently.**
 
 ---
