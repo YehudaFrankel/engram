@@ -2,369 +2,284 @@
 
 ![Claude Code Memory Starter Kit](memory-starter-kit.png)
 
-**Give Claude a permanent memory for your project — so it never forgets what you built, why you built it, or where you left off.**
+**Claude forgets everything when you close the session. This kit fixes that permanently.**
 
 ---
 
 ## The Problem
 
-Every time you close Claude Code and open it again, Claude starts completely fresh. It doesn't remember:
+Every time you open Claude Code, you start from zero.
 
-- What your project does
-- Which files you've been working on
-- Why you made certain decisions
-- What bugs you just fixed
-- Where you left off
+No memory of what you built. No record of why you made a decision. No knowledge of which bugs you already fixed. You spend the first 10 minutes re-explaining your project — every single session.
 
-So you spend the first 10 minutes of every session re-explaining your project. This kit fixes that permanently.
+On a long project with a complex codebase, this compounds fast. Claude re-suggests things you already rejected. It breaks patterns you established three weeks ago. It asks questions you already answered.
+
+This kit eliminates all of that.
 
 ---
 
-## The Fix — In Plain English
+## How It Works
 
-This kit gives Claude a "notebook" for your project. Every session, Claude reads its notes before you say a single word. It knows your project, your history, and what comes next.
-
-**You type three words. Claude does the rest.**
+Three plain-English commands run your entire memory system:
 
 ```
-Start Session
+Start Session   →  Claude reads everything and picks up where you left off
+End Session     →  Claude saves everything and confirms memory is clean
+Check Drift     →  Claude compares live code against its memory and fixes gaps
 ```
 
-That's it. Claude reads everything, checks if anything changed while you were away, and tells you exactly where things stand.
+Memory travels with your project as markdown files. No cloud sync, no API keys, no dependencies beyond Python.
 
 ---
 
-## Get Started — 3 Steps
+## Real-World Test
 
-> Everything after Step 1 happens inside Claude Code chat. No terminal commands, no files to copy.
+This kit was stress-tested on a production Java course delivery platform — not a toy project.
+
+**The codebase:**
+- Java backend on Resin 2.1.17 (legacy server with non-standard compiler constraints)
+- 5 JS files, 3 CSS files, 100+ documented functions
+- Multi-page frontend (dashboard, admin panel, activity feed, catalog)
+- Active scheduler, email system, encrypted URL handling
+
+**What actually happened:**
+
+- Sessions crashed mid-task — `Start Session` recovered full context every time, zero re-explanation needed
+- A large new feature (~50 functions, ~100 CSS classes) was added across multiple sessions — drift detection caught everything undocumented automatically
+- A non-obvious Resin 2.1.17 compiler bug (`$1.class` not generated for anonymous generic inner classes) was discovered, fixed, and permanently logged to `tasks/errors.md` — it will never cost a debugging session again
+- A silent SQL apostrophe failure was traced, fixed, and captured — same story
+- When a session ran out of context, `Start Session` loaded all lessons, decisions, and known errors in seconds
+
+**The verdict:** The memory system held up across 88 sessions on a real production codebase. Context was never lost. Known bugs stayed known. The same mistake was never made twice.
 
 ---
 
-### Step 1 — Make sure Python is installed
+## Quick Start
 
-Open a terminal and run:
+**Step 1 — Check Python**
 
 ```bash
 python --version
 ```
 
-**See a version number?** You're good. Skip to Step 2.
+No output? Install from [python.org/downloads](https://python.org/downloads) — check "Add to PATH" during install.
 
-**Nothing happens?** Go to [python.org/downloads](https://python.org/downloads), install Python, and check **"Add Python to PATH"** during install. Then come back.
-
-> Python is only needed once for setup. You'll never need to touch it again after that.
-
----
-
-### Step 2 — Open your project in Claude Code
-
-In your terminal, navigate to your project folder and start Claude Code:
+**Step 2 — Open your project in Claude Code**
 
 ```bash
-cd your-project-folder
+cd your-project
 claude
 ```
 
-> If Claude Code isn't installed yet: `npm install -g @anthropic/claude-code` — then run `claude` to sign in.
-
----
-
-### Step 3 — Type this in the Claude Code chat
+**Step 3 — Type this in chat**
 
 ```
 Setup Memory
 ```
 
-Claude will ask you a few simple questions (project name, tech stack), then set everything up automatically. Takes about 2 minutes.
+Claude asks a few questions (project name, tech stack, which files to track), then builds everything. Takes 2 minutes.
 
-**That's it. You're done.**
+**From that point on:**
+
+```
+Start Session    ←  type this every morning
+End Session      ←  type this when you're done
+```
+
+That's the entire routine.
 
 ---
 
-## Your Daily Routine
+## Commands
 
-```
-Open Claude Code
-      ↓
-Type "Start Session"
-→ Claude reads its memory, checks your files, and tells you where things stand
-      ↓
-Work on your project as normal
-→ Claude updates its notes automatically after every change
-      ↓
-Type "End Session"
-→ Claude saves everything, logs the session, and confirms memory is clean
-```
-
-You don't have to think about memory — it runs in the background automatically.
-
----
-
-## Every Command
-
-Type any of these in Claude Code chat:
-
-### Daily use
+### Daily
 
 | Command | What it does |
 |---------|-------------|
-| `Start Session` | Claude reads its memory and tells you where things stand |
-| `End Session` | Save everything, log the session, confirm memory is clean |
+| `Start Session` | Reads memory, runs drift check, reports where things stand |
+| `End Session` | Saves session log, updates memory files, confirms clean |
 
-### Setup and maintenance
-
-| Command | What it does |
-|---------|-------------|
-| `Setup Memory` | First time only — creates all the memory files for your project |
-| `Install Memory` | New computer — rebuilds Claude's memory from your existing files |
-| `Update Kit` | Pull the latest version of this kit safely (your files are never touched) |
-| `Update Kit from [URL]` | Update from a specific fork or branch |
-
-### Understanding your project
+### Drift & Analysis
 
 | Command | What it does |
 |---------|-------------|
-| `Analyze Codebase` | Claude scans all your files and documents what it finds |
-| `Check Drift` | Did code change that Claude doesn't know about yet? This finds it |
-| `Code Health` | Scan for leftover debug code, hardcoded values, missing error handling, dead code |
+| `Check Drift` | Scans live code vs memory — finds undocumented functions, stale entries, new CSS classes |
+| `Analyze Codebase` | Full scan of all JS, CSS, and backend files — documents everything it finds |
+| `Code Health` | Finds leftover `console.log`, hardcoded values, dead code, missing error handling |
 
-### Planning and fixing
+### Setup & Recovery
 
 | Command | What it does |
 |---------|-------------|
-| `Estimate: [task]` | Before starting anything — get a complexity rating, risk flags, and a plan |
-| `Debug Session` | Structured bug fix: reproduce → isolate → hypothesize → fix → verify → log |
-| `Handoff` | Generate a HANDOFF.md file — everything someone new needs to pick this up |
+| `Setup Memory` | First-time setup — creates all memory files |
+| `Install Memory` | New machine — copies memory files to Claude's system path |
+| `Update Kit` | Pull latest kit updates safely — your memory files are never touched |
 
-### Skills (auto-invoked)
+### Planning & Debugging
+
+| Command | What it does |
+|---------|-------------|
+| `Estimate: [task]` | Complexity rating, file list, risk flags, written plan — before any code changes |
+| `Debug Session` | Structured diagnosis: reproduce → isolate → hypothesize → fix → verify → log |
+| `Handoff` | Generates `HANDOFF.md` — current state, next tasks, key decisions, known bugs |
+
+### Skills (auto-triggered)
+
+Skills fire automatically when you describe a situation. You don't invoke them — Claude recognizes the context.
 
 | What you say | What Claude does |
 |-------------|-----------------|
-| `"review this file"` | Full code review — dead code, missing error handling, convention violations |
-| `"check for security issues"` | SQL injection, missing auth, sensitive data exposure |
-| `"fix the bug where..."` | Structured diagnosis — root cause first, fix second |
-| `"add a feature that..."` | Plan → confirm → implement → update memory |
-| `"is this ready for prod"` | Environment check — finds hardcoded dev values, runs deploy checklist |
+| `"fix the bug where..."` | Root cause first, fix second, log to errors.md |
+| `"review this file"` | Dead code, missing error handling, convention violations |
+| `"check for security issues"` | SQL injection, missing auth, exposed data |
+| `"is this ready for prod"` | Finds hardcoded dev values, runs deploy checklist |
 | `"verify this works"` | Walks through your test checklist layer by layer |
-| `"refactor this"` | Clean up structure without changing behavior — plan first, change second |
+| `"refactor this"` | Plan first, change second — no surprise rewrites |
 
----
-
-## What Gets Created
-
-After running `Setup Memory`, your project will have:
-
-```
-your-project/
-├── CLAUDE.md                        ← Claude reads this before every session
-├── STATUS.md                        ← Session log (date + what changed each session)
-├── update.py                        ← Safe kit updater
-├── tasks/                           ← Commit this folder to your repo
-│   ├── todo.md                      ← Claude writes plans here before touching code
-│   ├── lessons.md                   ← Every correction logged — read every session start
-│   ├── decisions.md                 ← Why things were built the way they were
-│   └── errors.md                    ← Bugs fixed, root causes, fixes applied
-├── tools/
-│   └── check_memory.py              ← Runs automatically after every file edit
-└── .claude/
-    ├── settings.json                ← Auto-runs drift check after every save
-    ├── memory/
-    │   ├── MEMORY.md                ← Index — auto-loaded every session
-    │   ├── project_status.md        ← What's built, what's not, key decisions
-    │   ├── js_functions.md          ← Every JS function documented
-    │   ├── html_css_reference.md    ← Every HTML section and CSS class
-    │   ├── backend_reference.md     ← Every API endpoint and DB pattern
-    │   └── user_preferences.md      ← How you like Claude to work
-    └── skills/
-        ├── code-review/
-        ├── security-check/
-        ├── fix-bug/
-        ├── new-feature/
-        ├── environment-check/
-        │   ├── SKILL.md
-        │   └── ENVIRONMENT-MATRIX.md   ← fill in dev vs prod values
-        ├── run-verification/
-        │   ├── SKILL.md
-        │   └── TEST-STRATEGY.md        ← fill in your test checklists
-        └── refactor/
-            ├── SKILL.md
-            └── ANTI-PATTERNS.md        ← fill in project-specific patterns
-```
-
----
-
-## If Something Goes Wrong
-
-### Claude Code crashed mid-session
-
-No problem. Everything is saved to disk — a crashed session never corrupts your memory files.
-
-1. Open a new session
-2. Type `Start Session`
-3. Claude reads memory and picks up where you left off
-
-### Something feels off — Claude seems confused
-
-Type `Check Drift` — this scans your actual code against Claude's memory and tells you if anything got out of sync. It then fixes it.
-
-### Moved to a new computer
-
-Type `Install Memory` — Claude scans your project, rebuilds its notes, and you're back to normal.
-
----
-
-## Advanced Features
-
-### Skills — Claude acts automatically based on context
-
-Skills are instruction packs that fire automatically when the situation matches. You don't invoke them manually — you just describe what you want in plain English and Claude recognizes the situation.
-
-**Build a starter set automatically:**
+Generate a starter skill set tailored to your stack:
 ```
 Generate Skills
 ```
-Claude scans your tech stack and creates skills tailored to your project — a project with a database gets a `write-query` skill, a project with a deployment step gets `environment-check`, etc.
-
-**Build a custom skill:**
-```
-Create a skill called [name] that [describe what it does]
-```
-
-**Or write one manually** — create `.claude/skills/my-skill/SKILL.md`:
-```
----
-name: my-skill
-description: When to trigger this skill (the situation Claude should recognize)
-allowed-tools: Read, Edit, Grep, Glob, Bash
----
-
-Step-by-step instructions here.
-```
-
-Skills can also include supporting reference docs in the same folder — like `ANTI-PATTERNS.md` or `ENVIRONMENT-MATRIX.md` — that the skill reads when it runs.
 
 ---
 
-### The four task files
+## Drift Detection — The Key Feature
 
-These four files build up over time and make Claude smarter about your specific project:
+Most memory systems are static. You document things once and they slowly go stale. You don't find out until Claude confidently suggests something that no longer exists.
 
-| File | What it stores | Why it matters |
-|------|---------------|---------------|
-| `tasks/todo.md` | Plans written before touching code | You always know what Claude is doing and why |
-| `tasks/lessons.md` | Every correction Claude receives | Same mistake never happens twice |
-| `tasks/decisions.md` | Architectural choices and the reasons behind them | Stops Claude re-debating settled questions |
-| `tasks/errors.md` | Bugs fixed, root causes, fixes applied | Claude knows the history of every bug |
+This kit runs a drift detector (`check_memory.py`) automatically after every file edit. It compares your live code against Claude's memory files and flags:
 
-Claude reads all four at the start of every session. The longer you use the kit, the more context Claude has.
+- **Functions in code but not in memory** — new code Claude doesn't know about yet
+- **Functions in memory but not in code** — deleted code Claude still thinks exists
+- **CSS classes added or removed** — caught before they cause confusion
 
----
-
-### Drift detection — automatic memory sync
-
-After every file edit, a script called `check_memory.py` runs silently in the background. It compares your actual code against Claude's memory files and flags anything that got out of sync — functions added but not documented, classes removed but still in memory.
-
-You don't have to think about this. It just runs. If it finds something, it tells Claude. If everything is clean, it says nothing.
+On the production codebase this was tested on, the first drift check found 21 undocumented functions. After a major feed feature was added across multiple sessions, drift detection caught ~50 new functions and ~100 CSS classes before they could cause any inconsistencies.
 
 Run it manually anytime:
 ```
 Check Drift
 ```
 
----
-
-### Headless mode — run Claude in the background
-
-For large refactors, scaffolding, or multi-file tasks where you don't need to watch every step:
-
-```bash
-claude --headless "your full task description here"
-```
-
-Claude runs the whole task autonomously and returns when done. Best for big, well-defined jobs. For anything that needs back-and-forth, use normal interactive mode.
+Or let it run silently in the background — `.claude/settings.json` is pre-configured to trigger it after every save.
 
 ---
 
-### Updating the kit
+## What Gets Created
 
 ```
-Update Kit
+your-project/
+├── CLAUDE.md                        ← Claude reads this every session (stack, conventions, patterns)
+├── STATUS.md                        ← Full session log — date + what changed each session
+├── update.py                        ← Safe kit updater (shows diff, asks before applying)
+├── tasks/
+│   ├── todo.md                      ← Plans written before touching code
+│   ├── lessons.md                   ← Every correction logged — never repeat a mistake
+│   ├── decisions.md                 ← Why things were built the way they were
+│   └── errors.md                    ← Bugs fixed, root causes, fixes applied
+├── tools/
+│   └── check_memory.py              ← Drift detector — runs after every file edit
+└── .claude/
+    ├── settings.json                ← Hooks config
+    ├── memory/
+    │   ├── MEMORY.md                ← Index — auto-loaded every session
+    │   ├── project_status.md        ← What's built, what's not, key decisions
+    │   ├── js_functions.md          ← Every JS function with description
+    │   ├── html_css_reference.md    ← Every HTML section and CSS class
+    │   ├── backend_reference.md     ← Every API endpoint and DB pattern
+    │   └── user_preferences.md      ← How you like Claude to work
+    └── skills/
+        ├── fix-bug/
+        ├── code-review/
+        ├── security-check/
+        ├── new-feature/
+        ├── environment-check/
+        ├── run-verification/
+        └── refactor/
 ```
 
-The updater shows you exactly what will change and asks for confirmation before touching anything. Your memory files, `STATUS.md`, and all your project-specific content are **never touched**. Only the kit's command definitions get updated.
-
-Want to pull from a fork or specific branch?
-```
-Update Kit from https://github.com/your-fork/repo
-```
+Commit `tasks/` and `.claude/memory/` to your repo. Memory travels with the code — pull on a new machine, type `Install Memory`, done.
 
 ---
 
-### Using with a team
+## The Four Task Files
 
-The memory files are plain markdown — they commit to your repo just like any other doc.
+These build up over time and make Claude genuinely smarter about your project:
 
-**What to commit:**
-```bash
-git add .claude/memory/
-git add tasks/
-git commit -m "Update Claude memory and task files"
-```
+| File | What it stores | Why it matters |
+|------|---------------|----------------|
+| `tasks/lessons.md` | Every correction you give Claude | Same mistake never happens twice |
+| `tasks/errors.md` | Bugs fixed, root causes, fixes applied | Known bugs stay known forever |
+| `tasks/decisions.md` | Architectural choices + reasons | Claude stops re-debating settled questions |
+| `tasks/todo.md` | Plans written before any code changes | You always know what Claude is about to do |
 
-**Merge conflicts are simple:** Memory files are append-only tables. If two people add rows at the same time, keep both rows — no logic to untangle.
-
-**Handoff between team members:**
-```
-Handoff
-```
-Generates `HANDOFF.md` with current state, next 3 tasks, key decisions already made, known bugs and fixes, and gotchas for someone new. Don't commit it — it's a point-in-time snapshot.
+Claude reads all four at the start of every session. The longer you use it, the sharper it gets.
 
 ---
 
-### Two setup modes
+## Session Crashes
 
-When you run `Setup Memory`, you can choose:
+Claude Code sessions die. API timeouts, context overflow, large image pastes — it happens.
 
-| | Full | Lite |
-|---|---|---|
-| Memory files | 5 separate files by topic | 1 simple notes file |
-| Drift detection | Auto-runs after every file edit | Manual or none |
-| Best for | Multi-file projects with backend + frontend | Small scripts, single-file projects |
-| Can upgrade later? | — | Yes, one prompt |
+When it does:
 
-Not sure which to pick? Choose Full. You can always trim it later.
+1. Open a new session
+2. Type `Start Session`
+3. Claude reads memory and continues where you left off
+
+No re-explanation. No context loss. This was tested repeatedly on the production codebase above — it works exactly as described.
+
+---
+
+## Who This Is For
+
+**Good fit:**
+- Projects spanning multiple sessions or weeks
+- Codebases with patterns, conventions, or constraints Claude needs to remember
+- Anyone who has ever typed "as I mentioned before..." to Claude
+- Teams where more than one person works with Claude on the same repo
+
+**Not the right fit:**
+- One-off scripts or throwaway projects
+- If you only use Claude for isolated questions, not sustained development
+
+---
+
+## Known Limitations
+
+- **No automated sync** — memory drift is caught by the script, but only if the script runs. If you skip `End Session` consistently, files go stale.
+- **Combined memory entries break drift detection** — `js_functions.md` requires one function per row. Combined entries like `` `funcA` / `funcB` `` will only match the first one.
+- **JS keyword false positives** — the class-method regex can match keywords like `for`, `if`, `switch` as function names. The included `JS_SKIP_NAMES` filter handles the common ones — extend it if you hit others.
+- **Manual sync between project bundle and system path** — `End Session` handles this, but mid-session edits need a manual copy if you switch machines before ending the session.
+- **Memory is as good as the descriptions** — `Analyze Codebase` documents what it finds, but descriptions are one-liners. For complex logic, write better descriptions manually.
 
 ---
 
 ## Requirements
 
-- [Claude Code](https://claude.ai/claude-code) — installed and authenticated
-- Python 3.7 or newer — free at [python.org/downloads](https://python.org/downloads)
+- [Claude Code](https://claude.ai/claude-code) installed and authenticated
+- Python 3.7+ — [python.org/downloads](https://python.org/downloads)
 - Nothing else
 
 ---
 
-## No Terminal? Paste This Instead
+## No Terminal? Paste Into Chat Instead
 
-If you'd rather skip `setup.py` entirely, paste one of these directly into Claude Code chat:
+Skip `setup.py` entirely — paste one of these directly into Claude Code:
 
-**Option A — Claude asks you questions (recommended):**
-> Set up the Claude memory system for this project. Ask me: project name, tech stack, which JS files to track, which CSS files to track, and CSS class prefix. Then create CLAUDE.md, STATUS.md, and the .claude/memory/ files.
+**Claude asks you questions:**
+> Set up the Claude memory system for this project. Ask me: project name, tech stack, which JS files to track, which CSS files to track, and CSS class prefix. Then create CLAUDE.md, STATUS.md, and all .claude/memory/ files.
 
-**Option B — Tell Claude everything at once:**
-> Bootstrap memory for this project. Project name: [name]. Tech stack: [e.g. Node.js + React]. JS files: [e.g. js/app.js]. Create all memory files now.
+**Tell Claude everything at once:**
+> Bootstrap memory for this project. Name: [name]. Stack: [e.g. Node + React]. JS files: [list]. Create all memory files now.
 
-**Option C — Blank templates:**
-> Create a blank Claude memory system: CLAUDE.md, STATUS.md, .claude/memory/MEMORY.md, project_status.md, js_functions.md, html_css_reference.md, backend_reference.md, user_preferences.md. Leave them as templates I'll fill in.
+**Claude figures it out automatically:**
+> Analyze this codebase and set up the Claude memory system. Scan all JS, CSS, and backend files. Document everything. Create CLAUDE.md, STATUS.md, and .claude/memory/ files pre-filled with what you find.
 
-**Option D — Claude figures it all out:**
-> Analyze this codebase and set up the Claude memory system automatically. Scan all JS, CSS, and backend files. Document all functions, classes, and endpoints. Create CLAUDE.md, STATUS.md, and .claude/memory/ files pre-filled with what you find.
-
-**Option E — Lite setup (small projects):**
-> Set up a simple Claude memory system for this project. Create just: CLAUDE.md (with Start Session, End Session, auto-save rules), STATUS.md (session log), and .claude/memory/notes.md (one file for functions, decisions, gotchas).
+**Minimal setup:**
+> Set up a simple Claude memory system. Create: CLAUDE.md (Start Session, End Session, auto-save rules), STATUS.md (session log), and .claude/memory/notes.md (one file for functions, decisions, gotchas).
 
 ---
 
-> Built over 84 real development sessions. The drift detector found 21 undocumented functions the first time it ran. Skills were added after noticing the same prompts getting copy-pasted every day. Everything here came from actual use.
+> Built across 88 real development sessions on a production codebase. The drift detector found 21 undocumented functions the first run. Skills were added after noticing the same prompts typed every day. Everything here came from actual use — nothing hypothetical.
 
-**GitHub:** [YehudaFrankel/Claude-Code-memory-starter-kit](https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit)
+**[YehudaFrankel/Claude-Code-memory-starter-kit](https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit)**

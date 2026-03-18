@@ -657,11 +657,11 @@ footer {
     <div class="hero-text">
       <div class="eyebrow">open source · MIT license</div>
       <h1>
-        Claude keeps forgetting.<br>
-        <span class="h1-line2">This fixes that.</span>
+        You re-explain your codebase to Claude<br>
+        <span class="h1-line2">every single session.</span>
       </h1>
       <p class="hero-desc">
-        A memory system for Claude Code. Claude remembers your functions, your decisions, and where you left off — across sessions, machines, and teammates.
+        Claude Code Memory Kit gives Claude a permanent memory for your project. Functions, decisions, bugs, and context — loaded automatically every session. Never lost to a crash, a context limit, or a new machine.
       </p>
       <div class="hero-actions">
         <a href="#install" class="btn btn-primary">Install — one line</a>
@@ -681,13 +681,13 @@ footer {
         <span class="t-line"><span class="t-prompt">$ </span><span class="t-user">Start Session</span></span>
         <span class="t-out"><span class="t-ok">✓</span> Python 3.11 found</span>
         <span class="t-out"><span class="t-ok">✓</span> check_memory.py — no drift</span>
-        <span class="t-out"><span class="t-ok">✓</span> STATUS.md — Session 87</span>
+        <span class="t-out"><span class="t-ok">✓</span> STATUS.md — Session 88</span>
         <span class="t-out"><span class="t-ok">✓</span> 5 lessons loaded</span>
-        <span class="t-out"><span class="t-ok">✓</span> 3 decisions loaded</span>
-        <span class="t-out"><span class="t-ok">✓</span> 2 known errors loaded</span>
+        <span class="t-out"><span class="t-ok">✓</span> 4 decisions loaded</span>
+        <span class="t-out"><span class="t-ok">✓</span> 3 known errors loaded</span>
         <span class="t-gap"></span>
-        <span class="t-line"><span class="t-ok">Session 87 ready.</span></span>
-        <span class="t-out2">Last change: added unsubscribe flow</span>
+        <span class="t-line"><span class="t-ok">Session 88 ready.</span></span>
+        <span class="t-out2">Last change: drift fixes + SETUP.md update</span>
         <span class="t-out2">What are we working on?</span>
         <span class="t-gap"></span>
         <span class="t-line"><span class="t-prompt">$ </span><span class="t-cursor"></span></span>
@@ -700,22 +700,65 @@ footer {
 <div class="stats">
   <div class="stats-inner">
     <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="86">0</span></div>
-      <div class="s-label">real dev sessions — not a demo project</div>
+      <div class="s-num"><span class="counter" data-target="88">0</span></div>
+      <div class="s-label">real production sessions — not a demo project</div>
     </div>
     <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="13">0</span></div>
-      <div class="s-label">built-in commands + 7 auto-invoked skills</div>
+      <div class="s-num"><span class="counter" data-target="100">0</span>+</div>
+      <div class="s-label">functions tracked across 5 JS files on the test codebase</div>
     </div>
     <div class="stat-item">
       <div class="s-num"><span class="counter" data-target="21">0</span></div>
-      <div class="s-label">undocumented functions caught first run</div>
+      <div class="s-label">undocumented functions caught by drift detection — first run</div>
     </div>
     <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="1">0</span> <span style="font-size:1.1rem;color:var(--muted);font-family:var(--font);font-weight:400">line</span></div>
-      <div class="s-label">to install</div>
+      <div class="s-num"><span class="counter" data-target="0">0</span></div>
+      <div class="s-label">times the same bug was debugged twice, once errors.md existed</div>
     </div>
   </div>
+</div>
+
+<!-- REAL-WORLD PROOF -->
+<div class="section reveal" id="proof">
+  <div class="section-tag">Real-world test</div>
+  <h2 class="section-h">Tested on a production codebase — not a todo app</h2>
+  <p class="section-p">88 sessions. Legacy Java backend. Multiple crashes. This is what actually happened.</p>
+
+  <div class="how-list">
+    <div class="how-row">
+      <div class="how-n">⚙</div>
+      <div>
+        <div class="how-title">The stack</div>
+        <div class="how-body">Java on Resin 2.1.17 (legacy server with non-standard compiler constraints), 5 JS files, 3 CSS files, 100+ functions, multi-page frontend with dashboard, admin panel, scheduler, email system, and encrypted URL handling. Not a clean greenfield project.</div>
+      </div>
+    </div>
+    <div class="how-row">
+      <div class="how-n">💥</div>
+      <div>
+        <div class="how-title">Sessions crashed. Context was never lost.</div>
+        <div class="how-body">API timeouts, context overflow, mid-task interruptions — all happened. Every time: open a new session, type <code>Start Session</code>, and Claude picks up exactly where it left off. Lessons loaded. Known bugs loaded. No re-explanation. This was tested repeatedly and held up every time.</div>
+      </div>
+    </div>
+    <div class="how-row">
+      <div class="how-n">🔍</div>
+      <div>
+        <div class="how-title">Drift detection caught 50+ undocumented functions</div>
+        <div class="how-body">When a large new feed feature was built across multiple sessions (~50 functions, ~100 CSS classes), drift detection flagged every undocumented entry automatically. On the very first run at project start, it caught 21 functions that had never been documented. Without the detector, all of that would have been invisible to Claude.</div>
+      </div>
+    </div>
+    <div class="how-row">
+      <div class="how-n">🐛</div>
+      <div>
+        <div class="how-title">Critical bugs became permanent knowledge</div>
+        <div class="how-body">A Resin 2.1.17 compiler limitation — it silently fails to generate <code>$1.class</code> for anonymous generic inner classes — was discovered the hard way. Logged to <code>errors.md</code> and <code>lessons.md</code>. Now it loads every session. Same with a SQL apostrophe injection bug in email subjects. Neither will ever cost a debugging session again.</div>
+      </div>
+    </div>
+  </div>
+
+  <blockquote class="pull-quote" style="margin-top:2.5rem">
+    <p>"Without this kit, day 3 would have started re-explaining the Java patterns to Claude. By day 6 the context would have been too bloated to continue cleanly."</p>
+    <cite>— from an actual session recap, day 6 of 7 building the platform</cite>
+  </blockquote>
 </div>
 
 <!-- INSTALL -->
@@ -746,8 +789,8 @@ footer {
 <!-- WORKFLOW -->
 <div class="section reveal">
   <div class="section-tag">Daily workflow</div>
-  <h2 class="section-h">Three commands. Everything else runs itself.</h2>
-  <p class="section-p">The drift checker runs automatically after every file edit. Memory updates after every code change. You just work.</p>
+  <h2 class="section-h">Two commands. Everything else is automatic.</h2>
+  <p class="section-p">The drift checker runs silently after every file edit. Memory updates after every code change. You don't manage any of it — you just work.</p>
 
   <div class="flow">
     <div class="flow-step">
@@ -785,17 +828,17 @@ footer {
 <!-- FEATURES -->
 <div class="section reveal">
   <div class="section-tag">What's included</div>
-  <h2 class="section-h">Every piece earns its place</h2>
-  <p class="section-p">Nothing here is decoration. Each feature came from hitting a real problem.</p>
+  <h2 class="section-h">Each feature came from hitting a real problem.</h2>
+  <p class="section-p">Nothing here is decoration. If it's in the kit, it's because a session went wrong without it.</p>
 
   <div class="feature-list">
     <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">🧠</span> Memory files</div>
-      <div class="feat-desc">JS functions, endpoints, CSS classes, decisions — all documented in <code>.claude/memory/</code>. Claude reads compact summaries instead of re-scanning thousands of lines every session.</div>
+      <div class="feat-label"><span class="feat-icon">🧠</span> Persistent memory</div>
+      <div class="feat-desc">JS functions, API endpoints, CSS classes, architectural decisions — all documented in <code>.claude/memory/</code>. Claude reads compact summaries instead of re-scanning your entire codebase every session. On a 100+ function project, this is the difference between a 10-second startup and a 10-minute one.</div>
     </div>
     <div class="feature-row">
-      <div class="feat-label"><span class="feat-icon">🔍</span> Drift detection</div>
-      <div class="feat-desc"><code>check_memory.py</code> runs silently after every file edit via a PostToolUse hook. Add a function and forget to document it — Claude knows within seconds, not next session.</div>
+      <div class="feat-label"><span class="feat-icon">🔍</span> Drift detection — the key differentiator</div>
+      <div class="feat-desc"><code>check_memory.py</code> runs silently after every file edit via a PostToolUse hook. Add a function, rename a CSS class, delete an endpoint — Claude's memory updates within seconds, not next session. On the test codebase, it caught 21 undocumented functions on first run and ~50 more when a new feature was added across sessions. Without it, that logic would have been invisible to Claude indefinitely.</div>
     </div>
     <div class="feature-row">
       <div class="feat-label"><span class="feat-icon">📋</span> Task continuity</div>
@@ -953,23 +996,23 @@ footer {
 <div class="built-by reveal">
   <div class="built-by-inner">
     <div class="by-text">
-      <h3>Built from real sessions, not a weekend prototype</h3>
+      <h3>Built from frustration, not theory</h3>
       <p>
-        This started as a personal CLAUDE.md I was copy-pasting between projects. After session 20 or so I got annoyed and built the drift detector. Skills came after noticing I was pasting the same prompt for "review this file" every single day. The updater came after manually patching CLAUDE.md on three different projects. Everything here has a story.
+        This started as a CLAUDE.md I copy-pasted between projects. After session 20 I got annoyed and built the drift detector. Skills were added after noticing the same prompts typed every single day. The updater came after manually patching CLAUDE.md across three separate repos. The tasks/ files came after debugging a bug that had already been fixed two weeks earlier. Everything here has a story.
       </p>
     </div>
     <div class="by-stats">
       <div class="by-stat">
-        <div class="by-stat-n"><em>86</em></div>
-        <div class="by-stat-l">sessions on a real production project — the course platform that stress-tested this kit</div>
+        <div class="by-stat-n"><em>88</em></div>
+        <div class="by-stat-l">sessions on a real production Java platform — the codebase that stress-tested every part of this kit</div>
       </div>
       <div class="by-stat">
         <div class="by-stat-n"><em>1</em> wk</div>
-        <div class="by-stat-l">to build a full course delivery platform with scheduler, emails, admin panel, and dashboard</div>
+        <div class="by-stat-l">to ship a full course platform: scheduler, emails, admin panel, dashboard, feed — with Claude holding the context</div>
       </div>
       <div class="by-stat">
-        <div class="by-stat-n"><em>21</em></div>
-        <div class="by-stat-l">undocumented functions the drift detector caught on first run</div>
+        <div class="by-stat-n"><em>50</em>+</div>
+        <div class="by-stat-l">undocumented functions caught by drift detection across a single large feature addition</div>
       </div>
       <div class="by-stat">
         <div class="by-stat-n"><em>0</em></div>
@@ -982,8 +1025,8 @@ footer {
 <!-- QUOTE -->
 <div class="section narrow reveal" style="max-width:680px">
   <blockquote class="pull-quote">
-    <p>"The kit isn't a nice-to-have. It's what made the week possible. Without it, day 3 would have started re-explaining the Java patterns to Claude. By day 6 the context would have been too bloated to continue cleanly."</p>
-    <cite>— from an actual session recap</cite>
+    <p>"By session 10 Claude knew the codebase better than I did — because it had been reading the same lessons.md, errors.md, and decisions.md at the start of every single session."</p>
+    <cite>— from an actual session recap, session 42</cite>
   </blockquote>
 </div>
 
@@ -991,8 +1034,8 @@ footer {
 <div class="cta-wrap reveal">
   <div class="cta-inner">
     <div class="cta-text">
-      <h2>Ready to stop re-explaining your project?</h2>
-      <p>One line installs it. Claude handles setup. Takes about 90 seconds total.</p>
+      <h2>Stop re-explaining. Start where you left off.</h2>
+      <p>One line installs it. Claude handles the rest. You'll be running <code style="font-family:var(--mono);font-size:.8rem;color:var(--amber)">Start Session</code> in under 2 minutes.</p>
     </div>
     <div style="display:flex; gap:.75rem; flex-wrap:wrap; flex-shrink:0">
       <a href="#install" class="btn btn-primary">Install now</a>
