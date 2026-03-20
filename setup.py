@@ -6,7 +6,11 @@ Run from your project root: python setup.py
 Creates:
   CLAUDE.md, STATUS.md
   .claude/memory/  (MEMORY.md + 5 memory files)
-  tools/check_memory.py  (optional — only if automated drift is chosen)
+  tools/check_memory.py   (drift detection — PostToolUse hook)
+  tools/session_start.py  (memory injection — SessionStart hook)
+  tools/precompact.py     (memory preservation — PreCompact hook)
+  tools/stop_check.py     (unsaved changes check — Stop hook)
+  All 4 scripts are optional — only created when automated drift is chosen.
 """
 
 import re
@@ -1176,10 +1180,25 @@ type: reference
     "deny": []
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [{ "type": "command", "command": "python tools/session_start.py", "timeout": 10, "statusMessage": "Loading memory..." }]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
         "hooks": [{ "type": "command", "command": "python tools/check_memory.py --silent" }]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [{ "type": "command", "command": "python tools/precompact.py", "timeout": 10, "statusMessage": "Preserving memory..." }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": "python tools/stop_check.py", "timeout": 5 }]
       }
     ]
   }
@@ -1350,9 +1369,27 @@ if __name__ == "__main__":
     main()
 ''')
 
+    # ── Copy lifecycle hook scripts (only if automated) ──
+    if automated:
+        for script_name in ("session_start.py", "precompact.py", "stop_check.py"):
+            src = HERE / "tools" / script_name
+            dst = ROOT / "tools" / script_name
+            if src.exists():
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                if dst.exists():
+                    overwrite = input(f"  tools/{script_name} already exists. Overwrite? [y/N] ").strip().lower()
+                    if overwrite != 'y':
+                        print(f"  Skipped tools/{script_name}")
+                        continue
+                shutil.copy2(src, dst)
+                print(f"  Created tools/{script_name}")
+            else:
+                print(f"  WARN: tools/{script_name} not found in kit — skipping")
+
     # ── Done ──
     drift_note = (
-        "  Run: python tools/check_memory.py"
+        "  4 hooks installed: SessionStart, PostToolUse, PreCompact, Stop\n"
+        "  Run manually: python tools/check_memory.py"
         if automated else
         "  Claude will manually diff JS functions on Start Session — no script needed"
     )

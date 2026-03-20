@@ -631,6 +631,224 @@ footer {
 
 /* Live typing animation for hero terminal */
 .typing-line .t-cursor { display: inline-block; }
+
+/* ─────────────────────────────────────────
+   Hero terminal — staggered line reveals
+───────────────────────────────────────── */
+@keyframes lineIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+.term-body .t-line,
+.term-body .t-out,
+.term-body .t-out2,
+.term-body .t-gap {
+  opacity: 0;
+  animation: lineIn .28s ease forwards;
+}
+.term-body > *:nth-child(1)  { animation-delay: .65s; }
+.term-body > *:nth-child(2)  { animation-delay: .88s; }
+.term-body > *:nth-child(3)  { animation-delay: 1.08s; }
+.term-body > *:nth-child(4)  { animation-delay: 1.26s; }
+.term-body > *:nth-child(5)  { animation-delay: 1.42s; }
+.term-body > *:nth-child(6)  { animation-delay: 1.56s; }
+.term-body > *:nth-child(7)  { animation-delay: 1.70s; }
+.term-body > *:nth-child(8)  { animation-delay: 1.84s; }
+.term-body > *:nth-child(9)  { animation-delay: 1.97s; }
+.term-body > *:nth-child(10) { animation-delay: 2.10s; }
+.term-body > *:nth-child(11) { animation-delay: 2.22s; }
+.term-body > *:nth-child(12) { animation-delay: 2.34s; }
+
+/* ─────────────────────────────────────────
+   Lifecycle hooks animation section
+───────────────────────────────────────── */
+.lc-section {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 5rem 2rem;
+}
+.lc-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.lc-timeline {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  margin: 2.5rem 0 0;
+  padding-bottom: 2.5rem;
+}
+.lc-timeline::before {
+  content: '';
+  position: absolute;
+  left: 7%; right: 7%;
+  top: 18px;
+  height: 1px;
+  background: var(--border2);
+}
+.lc-node {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .55rem;
+  position: relative;
+}
+.lc-dot-wrap {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  position: relative;
+  z-index: 1;
+  transition: all .4s;
+}
+.lc-dot-inner {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--border2);
+  transition: all .4s;
+}
+.lc-node.lc-active .lc-dot-wrap {
+  border-color: var(--accent);
+  background: rgba(139,92,246,.1);
+  box-shadow: 0 0 0 5px rgba(139,92,246,.1), 0 0 14px rgba(139,92,246,.35);
+}
+.lc-node.lc-active .lc-dot-inner {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+.lc-node.lc-done .lc-dot-wrap {
+  border-color: var(--green);
+  background: rgba(63,185,80,.06);
+}
+.lc-node.lc-done .lc-dot-inner { background: var(--green); }
+.lc-node-label { text-align: center; }
+.lc-node-event {
+  font-family: var(--mono);
+  font-size: .63rem; color: var(--dim);
+  letter-spacing: .04em;
+  margin-bottom: .18rem;
+}
+.lc-node-name {
+  font-size: .8rem; font-weight: 600;
+  color: var(--muted);
+  transition: color .3s;
+}
+.lc-node.lc-active .lc-node-name { color: var(--accent); }
+.lc-node.lc-done .lc-node-name   { color: var(--green);  }
+.lc-progress {
+  height: 2px; background: var(--border);
+  border-radius: 2px; overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.lc-progress-fill {
+  height: 100%; background: var(--accent);
+  border-radius: 2px; width: 0;
+}
+.lc-panel {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 10px; overflow: hidden;
+  font-family: var(--mono); font-size: .8rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,.35);
+}
+.lc-panel-bar {
+  padding: .65rem 1rem;
+  background: rgba(255,255,255,.02);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .5rem;
+}
+.lc-panel-file {
+  font-size: .72rem; color: var(--dim);
+  margin-left: .4rem; flex: 1;
+}
+.lc-hook-badge {
+  font-size: .66rem; color: var(--accent);
+  background: rgba(139,92,246,.12);
+  border: 1px solid rgba(139,92,246,.25);
+  border-radius: 4px; padding: .12rem .55rem;
+  font-family: var(--mono);
+}
+.lc-panel-body {
+  padding: 1.3rem 1.1rem;
+  min-height: 175px;
+}
+.lc-slide { display: none; }
+.lc-slide.lc-slide-active { display: block; }
+.lp {
+  display: block; line-height: 1.9;
+  opacity: 0; transform: translateX(-6px);
+  transition: opacity .22s ease, transform .22s ease;
+}
+.lp.in { opacity: 1; transform: none; }
+.lp-cmd  { color: #c9a0ff; }
+.lp-ok   { color: var(--green); }
+.lp-dim  { color: var(--dim); display: block; padding-left: 1.3rem; }
+.lp-warn { color: var(--amber); }
+
+/* ─────────────────────────────────────────
+   Drift detection live demo
+───────────────────────────────────────── */
+.dd-wrap {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.dd-panel {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px; overflow: hidden;
+  font-family: var(--mono); font-size: .79rem;
+  position: relative;
+}
+.dd-bar {
+  padding: .65rem 1rem;
+  background: rgba(255,255,255,.02);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .5rem;
+}
+.dd-bar-name { font-size: .72rem; color: var(--dim); margin-left: .4rem; }
+.dd-bar-badge {
+  margin-left: auto; font-size: .65rem;
+  color: var(--amber); font-family: var(--mono);
+  opacity: 0; transition: opacity .25s;
+}
+.dd-bar-badge.dd-on { opacity: 1; }
+.dd-flash {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), #79c0ff);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .5s ease;
+}
+.dd-flash.dd-go { transform: scaleX(1); }
+.dd-body {
+  padding: 1.2rem 1rem;
+  min-height: 235px;
+  line-height: 1.85;
+}
+.dc { display: block; }
+.dc-kw   { color: #c9a0ff; }
+.dc-fn   { color: #79c0ff; }
+.dc-dim  { color: var(--dim); }
+.dc-ok   { color: var(--green); }
+.dc-miss { color: #ff7b72; }
+.dc-warn { color: var(--amber); }
+.dd-cursor {
+  display: inline-block; width: 7px; height: .85em;
+  background: var(--text); vertical-align: text-bottom;
+  animation: cur .8s step-end infinite; border-radius: 1px;
+}
+
+@media (max-width: 780px) {
+  .dd-wrap { grid-template-columns: 1fr; }
+  .lc-timeline { gap: 1rem; }
+  .lc-timeline::before { display: none; }
+  .lc-node-name { font-size: .72rem; }
+}
 </style>
 </head>
 <body>
@@ -828,6 +1046,88 @@ footer {
   </div>
 </div>
 
+<!-- LIFECYCLE HOOKS -->
+<div class="lc-section reveal" id="hooks-demo">
+  <div class="lc-inner">
+    <div class="section-tag">Automation layer</div>
+    <h2 class="section-h">Four hooks. Every moment covered.</h2>
+    <p class="section-p" style="max-width:520px">Watch each hook fire at the right point in a real session — none of these need manual triggers.</p>
+
+    <div class="lc-timeline">
+      <div class="lc-node" id="lc-n0">
+        <div class="lc-dot-wrap"><div class="lc-dot-inner"></div></div>
+        <div class="lc-node-label">
+          <div class="lc-node-event">session opens</div>
+          <div class="lc-node-name">SessionStart</div>
+        </div>
+      </div>
+      <div class="lc-node" id="lc-n1">
+        <div class="lc-dot-wrap"><div class="lc-dot-inner"></div></div>
+        <div class="lc-node-label">
+          <div class="lc-node-event">file edited</div>
+          <div class="lc-node-name">PostToolUse</div>
+        </div>
+      </div>
+      <div class="lc-node" id="lc-n2">
+        <div class="lc-dot-wrap"><div class="lc-dot-inner"></div></div>
+        <div class="lc-node-label">
+          <div class="lc-node-event">/compact runs</div>
+          <div class="lc-node-name">PreCompact</div>
+        </div>
+      </div>
+      <div class="lc-node" id="lc-n3">
+        <div class="lc-dot-wrap"><div class="lc-dot-inner"></div></div>
+        <div class="lc-node-label">
+          <div class="lc-node-event">session ends</div>
+          <div class="lc-node-name">Stop</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lc-progress"><div class="lc-progress-fill" id="lcFill"></div></div>
+
+    <div class="lc-panel">
+      <div class="lc-panel-bar">
+        <div class="term-dot term-dot-r"></div>
+        <div class="term-dot term-dot-y"></div>
+        <div class="term-dot term-dot-g"></div>
+        <span class="lc-panel-file" id="lcFile">tools/session_start.py</span>
+        <span class="lc-hook-badge" id="lcBadge">SessionStart</span>
+      </div>
+      <div class="lc-panel-body">
+        <div class="lc-slide" id="lc-s0">
+          <span class="lp"><span class="lp-cmd">$ session_start.py</span></span>
+          <span class="lp lp-ok">✓  Reading MEMORY.md</span>
+          <span class="lp lp-ok">✓  Reading STATUS.md — Session 91</span>
+          <span class="lp lp-ok">✓  Context injected as additionalContext</span>
+          <span class="lp lp-dim">Claude starts warm. No "Start Session" command needed.</span>
+        </div>
+        <div class="lc-slide" id="lc-s1">
+          <span class="lp"><span class="lp-cmd">$ check_memory.py --silent</span></span>
+          <span class="lp lp-ok">✓  loadDashboard — found in js_functions.md</span>
+          <span class="lp lp-ok">✓  formatDate — found in js_functions.md</span>
+          <span class="lp lp-warn">✗  trackEvent — MISSING from js_functions.md</span>
+          <span class="lp lp-dim">→  flagged. Update memory before next response.</span>
+        </div>
+        <div class="lc-slide" id="lc-s2">
+          <span class="lp"><span class="lp-cmd">$ precompact.py</span></span>
+          <span class="lp lp-ok">✓  MEMORY.md → additionalContext</span>
+          <span class="lp lp-ok">✓  STATUS.md (first 60 lines) → additionalContext</span>
+          <span class="lp lp-dim">Memory injected into compacted context.</span>
+          <span class="lp lp-dim">Safe to /compact on any long session.</span>
+        </div>
+        <div class="lc-slide" id="lc-s3">
+          <span class="lp"><span class="lp-cmd">$ stop_check.py</span></span>
+          <span class="lp lp-ok">✓  Checking memory repo git status</span>
+          <span class="lp lp-warn">  M  STATUS.md</span>
+          <span class="lp lp-warn">  M  js_functions.md</span>
+          <span class="lp lp-dim">→  "Memory has unsaved changes. Run End Session."</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- FEATURES -->
 <div class="section reveal" id="features">
   <div class="section-tag">What's included</div>
@@ -866,6 +1166,36 @@ footer {
     <div class="feature-row">
       <div class="feat-label"><span class="feat-icon">🤝</span> Team-ready</div>
       <div class="feat-desc">Memory files commit to git. Merge strategy: they're append-only tables, conflicts are rare and obvious. <code>Handoff</code> generates a snapshot for whoever picks up the project next — no Slack thread required.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DRIFT DEMO -->
+<div class="section reveal" id="drift-section">
+  <div class="section-tag">Drift detection live</div>
+  <h2 class="section-h">Add a function. Memory stays current.</h2>
+  <p class="section-p">The PostToolUse hook runs check_memory.py silently after every file edit. New functions are caught before Claude even responds.</p>
+
+  <div class="dd-wrap">
+    <div class="dd-panel" id="ddCodePanel">
+      <div class="dd-flash" id="ddFlash"></div>
+      <div class="dd-bar">
+        <div class="term-dot term-dot-r"></div>
+        <div class="term-dot term-dot-y"></div>
+        <div class="term-dot term-dot-g"></div>
+        <span class="dd-bar-name">js/dashboard.js</span>
+      </div>
+      <div class="dd-body" id="ddCode"></div>
+    </div>
+    <div class="dd-panel" id="ddOutputPanel">
+      <div class="dd-bar">
+        <div class="term-dot term-dot-r"></div>
+        <div class="term-dot term-dot-y"></div>
+        <div class="term-dot term-dot-g"></div>
+        <span class="dd-bar-name">check_memory.py</span>
+        <span class="dd-bar-badge" id="ddBadge">⚡ hook fired</span>
+      </div>
+      <div class="dd-body" id="ddOutput"></div>
     </div>
   </div>
 </div>
@@ -1162,6 +1492,201 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     t.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+
+/* ── Lifecycle hooks animation ── */
+(function() {
+  var hookMeta = [
+    { file: 'tools/session_start.py', badge: 'SessionStart' },
+    { file: 'tools/check_memory.py',  badge: 'PostToolUse'  },
+    { file: 'tools/precompact.py',    badge: 'PreCompact'   },
+    { file: 'tools/stop_check.py',    badge: 'Stop'         }
+  ];
+  var PHASE = 3600, LINE_GAP = 220;
+  var current = -1, started = false, timer = null;
+  var fill = document.getElementById('lcFill');
+  var fileLbl = document.getElementById('lcFile');
+  var badgeLbl = document.getElementById('lcBadge');
+
+  function node(i)  { return document.getElementById('lc-n' + i); }
+  function slide(i) { return document.getElementById('lc-s' + i); }
+
+  function resetAll() {
+    for (var i = 0; i < 4; i++) {
+      node(i).classList.remove('lc-active', 'lc-done');
+      var s = slide(i);
+      s.classList.remove('lc-slide-active');
+      s.querySelectorAll('.lp').forEach(function(l) { l.classList.remove('in'); });
+    }
+    if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; }
+  }
+
+  function activate(phase) {
+    current = phase;
+    for (var i = 0; i < phase; i++) {
+      node(i).classList.remove('lc-active');
+      node(i).classList.add('lc-done');
+    }
+    node(phase).classList.add('lc-active');
+    if (fileLbl) fileLbl.textContent = hookMeta[phase].file;
+    if (badgeLbl) badgeLbl.textContent = hookMeta[phase].badge;
+
+    for (var j = 0; j < 4; j++) {
+      slide(j).classList.remove('lc-slide-active');
+      slide(j).querySelectorAll('.lp').forEach(function(l) { l.classList.remove('in'); });
+    }
+    var s = slide(phase);
+    s.classList.add('lc-slide-active');
+    s.querySelectorAll('.lp').forEach(function(line, idx) {
+      setTimeout(function() { line.classList.add('in'); }, idx * LINE_GAP);
+    });
+
+    if (fill) {
+      fill.style.transition = 'none';
+      fill.style.width = '0%';
+      setTimeout(function() {
+        fill.style.transition = 'width ' + PHASE + 'ms linear';
+        fill.style.width = '100%';
+      }, 60);
+    }
+
+    clearTimeout(timer);
+    timer = setTimeout(function() {
+      var next = (phase + 1) % 4;
+      if (next === 0) { resetAll(); setTimeout(function() { activate(0); }, 350); }
+      else { activate(next); }
+    }, PHASE);
+  }
+
+  var sec = document.getElementById('hooks-demo');
+  if (sec) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting && !started) {
+          started = true;
+          setTimeout(function() { activate(0); }, 500);
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+    obs.observe(sec);
+  }
+})();
+
+/* ── Drift detection animation ── */
+(function() {
+  var codeEl   = document.getElementById('ddCode');
+  var outputEl = document.getElementById('ddOutput');
+  var badge    = document.getElementById('ddBadge');
+  var flash    = document.getElementById('ddFlash');
+  if (!codeEl || !outputEl) return;
+  var started = false;
+
+  var existingLines = [
+    '<span class="dc"><span class="dc-kw">function</span> <span class="dc-fn">loadDashboard</span><span class="dc-dim">() {</span></span>',
+    '<span class="dc dc-dim">&nbsp;&nbsp;// fetch and render dashboard</span>',
+    '<span class="dc dc-dim">}</span>',
+    '<span class="dc">&nbsp;</span>',
+    '<span class="dc"><span class="dc-kw">function</span> <span class="dc-fn">formatDate</span><span class="dc-dim">(d) {</span></span>',
+    '<span class="dc dc-dim">&nbsp;&nbsp;// format date string for display</span>',
+    '<span class="dc dc-dim">}</span>',
+    '<span class="dc">&nbsp;</span>'
+  ];
+
+  var newFnStr  = 'function trackEvent(name) {';
+  var newFnRest = [
+    '<span class="dc dc-dim">&nbsp;&nbsp;// log user interaction</span>',
+    '<span class="dc dc-dim">}</span>'
+  ];
+
+  function renderCode(lines, cursor) {
+    codeEl.innerHTML = lines.join('') + (cursor ? '<span class="dd-cursor"></span>' : '');
+  }
+  function renderOut(lines) { outputEl.innerHTML = lines.join(''); }
+
+  function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+  async function run() {
+    renderCode(existingLines);
+    renderOut(['<span class="dc dc-dim">Watching for file changes...</span>',
+               '<span class="dc dc-dim">PostToolUse hook ready.</span>']);
+    if (badge)  badge.classList.remove('dd-on');
+    if (flash)  { flash.style.transition='none'; flash.classList.remove('dd-go'); }
+    await sleep(1800);
+
+    // Type new function
+    var typed = '';
+    for (var ci = 0; ci < newFnStr.length; ci++) {
+      typed += newFnStr[ci];
+      var hi = typed
+        .replace('function', '<span class="dc-kw">function</span>')
+        .replace('trackEvent', '<span class="dc-fn">trackEvent</span>');
+      renderCode(existingLines.concat(['<span class="dc">' + hi + '</span>']), true);
+      await sleep(52 + Math.random() * 38);
+    }
+    renderCode(existingLines.concat([
+      '<span class="dc"><span class="dc-kw">function</span> <span class="dc-fn">trackEvent</span><span class="dc-dim">(name) {</span></span>'
+    ].concat(newFnRest)));
+    await sleep(280);
+
+    // Hook fires
+    if (badge) badge.classList.add('dd-on');
+    if (flash) { flash.style.transition = ''; setTimeout(function() { flash.classList.add('dd-go'); }, 20); }
+    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
+               '<span class="dc dc-dim">$ check_memory.py --silent</span>']);
+    await sleep(480);
+
+    // Scanner
+    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
+               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
+               '<span class="dc dc-dim">&nbsp;&nbsp;scanning js/dashboard.js...</span>']);
+    await sleep(420);
+    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
+               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
+               '<span class="dc dc-dim">&nbsp;&nbsp;scanning js/dashboard.js...</span>',
+               '<span class="dc dc-ok">&nbsp;&nbsp;✓ loadDashboard — found</span>']);
+    await sleep(340);
+    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
+               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
+               '<span class="dc dc-dim">&nbsp;&nbsp;scanning js/dashboard.js...</span>',
+               '<span class="dc dc-ok">&nbsp;&nbsp;✓ loadDashboard — found</span>',
+               '<span class="dc dc-ok">&nbsp;&nbsp;✓ formatDate — found</span>']);
+    await sleep(340);
+    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
+               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
+               '<span class="dc dc-dim">&nbsp;&nbsp;scanning js/dashboard.js...</span>',
+               '<span class="dc dc-ok">&nbsp;&nbsp;✓ loadDashboard — found</span>',
+               '<span class="dc dc-ok">&nbsp;&nbsp;✓ formatDate — found</span>',
+               '<span class="dc dc-miss">&nbsp;&nbsp;✗ trackEvent — MISSING</span>']);
+    await sleep(580);
+    renderOut(['<span class="dc dc-warn">⚡ PostToolUse — hook fired</span>',
+               '<span class="dc dc-dim">$ check_memory.py --silent</span>',
+               '<span class="dc dc-ok">&nbsp;&nbsp;✓ loadDashboard — found</span>',
+               '<span class="dc dc-ok">&nbsp;&nbsp;✓ formatDate — found</span>',
+               '<span class="dc dc-miss">&nbsp;&nbsp;✗ trackEvent — MISSING</span>',
+               '<span class="dc dc-warn">&nbsp;&nbsp;→ flagged for js_functions.md</span>',
+               '<span class="dc dc-ok">✓ Drift logged. Update memory.</span>']);
+    await sleep(2600);
+
+    // Reset
+    if (flash) { flash.style.transition='none'; flash.classList.remove('dd-go'); }
+    if (badge) badge.classList.remove('dd-on');
+    renderCode([]); renderOut([]);
+    await sleep(400);
+    run();
+  }
+
+  var sec = document.getElementById('drift-section');
+  if (sec) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting && !started) {
+          started = true; run(); obs.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+    obs.observe(sec);
+  }
+})();
 </script>
 </body>
 </html>
