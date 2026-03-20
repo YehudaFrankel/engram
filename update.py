@@ -170,6 +170,14 @@ def apply_to_project(project_text, kit_block):
     return updated, None
 
 
+def _read_local_version():
+    """Read VERSION from the current project directory, if it exists."""
+    p = ROOT / "VERSION"
+    if p.exists():
+        return p.read_text(encoding="utf-8").strip()
+    return None
+
+
 def main():
     arg = sys.argv[1] if len(sys.argv) > 1 else None
 
@@ -195,15 +203,31 @@ def main():
 
     # ── Fetch kit files ──
     print("\nFetching kit files...")
-    kit_claude = get_content(source, "CLAUDE.md",             github_base)
-    kit_setup  = get_content(source, "setup.py",              github_base)
-    kit_check  = get_content(source, "tools/check_memory.py", github_base)
+    kit_claude   = get_content(source, "CLAUDE.md",             github_base)
+    kit_setup    = get_content(source, "setup.py",              github_base)
+    kit_check    = get_content(source, "tools/check_memory.py", github_base)
+    kit_version  = get_content(source, "VERSION",               github_base)
 
     if not all([kit_claude, kit_setup, kit_check]):
         print("\nAborted — could not load all kit files.")
         sys.exit(1)
 
     print("  OK")
+
+    # ── Version check ──
+    local_version  = _read_local_version()
+    remote_version = kit_version.strip() if kit_version else None
+
+    if local_version and remote_version:
+        if local_version == remote_version:
+            print(f"\nAlready on v{local_version} — no update needed.")
+            sys.exit(0)
+        else:
+            print(f"\nUpdating from v{local_version} → v{remote_version}")
+    elif remote_version:
+        print(f"\nInstalling v{remote_version}")
+    else:
+        print("\nVersion info unavailable — proceeding with update")
 
     # ── Extract kit block ──
     kit_block, err = extract_kit_block(kit_claude)
@@ -261,12 +285,17 @@ def main():
     tools_dir.mkdir(exist_ok=True)
     (tools_dir / "check_memory.py").write_text(kit_check, encoding="utf-8")
 
+    # Write VERSION file so future runs can detect "already up to date"
+    if remote_version:
+        (ROOT / "VERSION").write_text(remote_version + "\n", encoding="utf-8")
+
     # Save update.py itself so future runs use `python update.py` directly
     kit_updater = get_content(source, "update.py", github_base)
     if kit_updater:
         (ROOT / "update.py").write_text(kit_updater, encoding="utf-8")
 
-    print("\nDone. Kit updated successfully.")
+    version_note = f" (v{remote_version})" if remote_version else ""
+    print(f"\nDone. Kit updated successfully{version_note}.")
     print("  Your memory files, STATUS.md, and project config were not changed.")
     print("  update.py saved — next time just run: python update.py")
 

@@ -22,11 +22,33 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = Path.cwd()
 
+
+# ─── Version ──────────────────────────────────────────────────────────────────
+
+def _get_version():
+    """Read version from VERSION file in the kit directory."""
+    version_file = HERE / "VERSION"
+    if version_file.exists():
+        return version_file.read_text(encoding="utf-8").strip()
+    return "unknown"
+
+
+# ─── File Detection ────────────────────────────────────────────────────────────
+
 # Directories and file patterns to skip when scanning
 SKIP_DIRS = {'node_modules', 'vendor', 'dist', 'build', '.git', '__pycache__',
              'venv', '.venv', 'bower_components', '.claude', 'tools'}
 SKIP_JS  = {'.min.js', '-min.js', '.bundle.js', '.pack.js'}
 SKIP_CSS = {'.min.css', '-min.css'}
+
+# CSS utility/framework prefixes to ignore — these are not project-specific
+FRAMEWORK_PREFIXES = {
+    'flex', 'grid', 'text', 'bg', 'border', 'rounded', 'shadow',
+    'p', 'm', 'px', 'py', 'mx', 'my', 'w', 'h', 'min', 'max',
+    'font', 'leading', 'tracking', 'opacity', 'z', 'top', 'left',
+    'right', 'bottom', 'overflow', 'cursor', 'pointer', 'block',
+    'inline', 'hidden', 'relative', 'absolute', 'fixed', 'sticky',
+}
 
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -158,14 +180,17 @@ def detect_css_prefix(css_files):
             continue
         text = path.read_text(encoding="utf-8", errors="ignore")
         for m in pattern.finditer(text):
-            counts[m.group(1)] += 1
+            prefix = m.group(1)
+            if prefix not in FRAMEWORK_PREFIXES:
+                counts[prefix] += 1
     if not counts:
         return ""
     top_prefix, top_count = counts.most_common(1)[0]
-    return top_prefix if top_count >= 3 else ""
+    # Require 3+ matches AND not a framework prefix
+    return top_prefix if top_count >= 3 and top_prefix not in FRAMEWORK_PREFIXES else ""
 
 
-# ─── Helpers ─────────────────────────────────────────────────────────────────
+# ─── Helpers ──────────────────────────────────────────────────────────────────
 
 def ask(prompt, default=""):
     suffix = f" [{default}]" if default else ""
@@ -201,7 +226,7 @@ def write(path, content):
     print(f"  Created {path.relative_to(ROOT)}")
 
 
-# ─── CLAUDE.md session-start block ───────────────────────────────────────────
+# ─── CLAUDE.md Generation ─────────────────────────────────────────────────────
 
 def session_start_block(js_files, automated):
     if automated:
@@ -436,7 +461,7 @@ After **any code change** this session, immediately update the relevant memory f
 """
 
 
-# ─── Lite mode ───────────────────────────────────────────────────────────────
+# ─── Lite Mode ────────────────────────────────────────────────────────────────
 
 def _generate_lite(name, tech):
     """Generate minimal memory system for small projects."""
@@ -578,7 +603,7 @@ Next steps:
 """)
 
 
-# ─── Skills ──────────────────────────────────────────────────────────────────
+# ─── Skills Generation ────────────────────────────────────────────────────────
 
 def generate_skills(name, tech):
     """Generate .claude/skills/ files — auto-invoked prompt packs."""
@@ -869,10 +894,11 @@ Things to flag when found in this codebase.
     print("  Created .claude/skills/ (code-review, security-check, fix-bug, new-feature, environment-check, run-verification, refactor)")
 
 
-# ─── Main ────────────────────────────────────────────────────────────────────
+# ─── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
-    print("\n=== Claude Code Memory System Setup ===\n")
+    version = _get_version()
+    print(f"\n=== Claude Code Memory Starter Kit v{version} ===\n")
 
     name = ask("Project name", ROOT.name)
     tech = ask("Tech stack (e.g. Java + Vanilla JS + SQL Server)", "")
@@ -1041,7 +1067,7 @@ Best used for: generating scaffolding, large refactors where the goal is clear, 
 - Session 1: Initial project setup
 """)
 
-    # ── tasks/ ──
+    # ─── Task Files ───────────────────────────────────────────────────────────
     create_task_files()
 
     # ── .gitignore ──
@@ -1369,7 +1395,8 @@ if __name__ == "__main__":
     main()
 ''')
 
-    # ── Copy lifecycle hook scripts (only if automated) ──
+    # ─── Lifecycle Hooks ──────────────────────────────────────────────────────
+    # Copy lifecycle hook scripts (only if automated) ──
     if automated:
         for script_name in ("session_start.py", "precompact.py", "stop_check.py"):
             src = HERE / "tools" / script_name

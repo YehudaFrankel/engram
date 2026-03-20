@@ -2,6 +2,8 @@
 
 ![Claude Code Memory Starter Kit](memory-starter-kit.png)
 
+[![v1.0.0](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)](https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit/releases) [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue?style=flat-square)](https://python.org/downloads) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+
 **Claude forgets everything when you close the session. This kit fixes that permanently.**
 
 ---
@@ -56,30 +58,30 @@ This kit was stress-tested on a production Java course delivery platform — not
 
 ## Quick Start
 
-**Step 1 — Check Python**
+**Requires:** Python 3.7+ · [Claude Code](https://claude.ai/claude-code)
+
+**Step 1 — Clone the kit**
 
 ```bash
-python --version
+git clone https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit.git
 ```
 
-No output? Install from [python.org/downloads](https://python.org/downloads) — check "Add to PATH" during install.
-
-**Step 2 — Open your project in Claude Code**
+**Step 2 — Run setup in your project**
 
 ```bash
 cd your-project
-claude
-```
-
-**Step 3 — Type this in chat**
-
-```
-Setup Memory
+python /path/to/Claude-Code-memory-starter-kit/setup.py
 ```
 
 Claude asks a few questions (project name, tech stack, which files to track), then builds everything. Takes 2 minutes.
 
-**From that point on:**
+**Step 3 — Open Claude Code and start working**
+
+```bash
+claude
+```
+
+Then type:
 
 ```
 Start Session    ←  type this every morning
@@ -87,6 +89,18 @@ End Session      ←  type this when you're done
 ```
 
 That's the entire routine.
+
+---
+
+**Quick Try (advanced)**
+
+Runs `install.py` directly from GitHub without cloning. Review the source before running if you prefer: [install.py on GitHub](https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit/blob/main/install.py)
+
+> ⚠️ This executes remote code directly — use the `git clone` method above if you want to inspect first.
+
+```bash
+python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/Claude-Code-memory-starter-kit/main/install.py').read().decode())"
+```
 
 ---
 

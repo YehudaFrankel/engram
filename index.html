@@ -876,7 +876,7 @@ footer {
 <section class="hero">
   <div class="hero-inner">
     <div class="hero-text">
-      <div class="eyebrow">open source · MIT license</div>
+      <div class="eyebrow">v1.0.0 · open source · MIT license</div>
       <h1>
         You re-explain your codebase to Claude<br>
         <span class="h1-line2">every single session.</span>
@@ -885,7 +885,7 @@ footer {
         Claude Code Memory Kit gives Claude a permanent memory for your project. Functions, decisions, bugs, and context — loaded automatically every session. Never lost to a crash, a context limit, or a new machine.
       </p>
       <div class="hero-actions">
-        <a href="#install" class="btn btn-primary">Install — one line</a>
+        <a href="#install" class="btn btn-primary">Get started</a>
         <a href="https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit" target="_blank" class="btn btn-ghost">View source</a>
       </div>
     </div>
@@ -985,8 +985,8 @@ footer {
 <!-- INSTALL -->
 <div class="section narrow reveal" id="install">
   <div class="section-tag">Get started</div>
-  <h2 class="section-h">One line, then you're in Claude Code</h2>
-  <p class="section-p">Run this in your project root. It downloads setup.py and runs it. Claude handles the rest from inside the chat.</p>
+  <h2 class="section-h">Two minutes to install. Forever of memory.</h2>
+  <p class="section-p">Clone the kit once, then run <code style="font-family:var(--mono);font-size:.82rem;color:var(--amber);background:rgba(210,153,34,.08);border-radius:4px;padding:.1rem .4rem">setup.py</code> from your project root. Claude handles the rest from inside the chat.</p>
 
   <div class="install-wrap">
     <div class="install-head">
@@ -997,14 +997,28 @@ footer {
       <button class="copy-btn" id="copyBtn" onclick="copyInstall()">copy</button>
     </div>
     <div class="install-body">
-      <span class="i-prompt">$ </span><span class="i-cmd">python -c "import urllib.request; exec(urllib.request.urlopen('<span style="color:#8b5cf6">https://raw.githubusercontent.com/YehudaFrankel/Claude-Code-memory-starter-kit/main/install.py</span>').read().decode())"</span>
+      <span class="i-prompt">$ </span><span class="i-cmd">git clone <span style="color:#8b5cf6">https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit.git</span></span><br>
+      <span class="i-prompt">$ </span><span class="i-cmd">cd your-project</span><br>
+      <span class="i-prompt">$ </span><span class="i-cmd">python /path/to/Claude-Code-memory-starter-kit/setup.py</span>
     </div>
     <div class="install-footer">
       <div class="i-step"><span class="step-n">2</span> open Claude Code: <code>claude</code></div>
-      <div class="i-step"><span class="step-n">3</span> type <code>Setup Memory</code> in chat</div>
-      <div class="i-step"><span class="step-n">4</span> type <code>Start Session</code> — done</div>
+      <div class="i-step"><span class="step-n">3</span> type <code>Start Session</code> — done</div>
     </div>
   </div>
+
+  <details style="margin-top:1.5rem;">
+    <summary style="cursor:pointer; color:var(--dim); font-family:var(--mono); font-size:.75rem; letter-spacing:.04em; list-style:none; display:flex; align-items:center; gap:.4rem;">
+      <span style="color:var(--accent);">▸</span> Quick Try (advanced) — run without cloning
+    </summary>
+    <div style="margin-top:.9rem; padding:.9rem 1rem; background:var(--surface); border:1px solid var(--border2); border-radius:8px;">
+      <p style="margin:0 0 .6rem; color:var(--muted); font-size:.8rem;">⚠️ This executes remote code directly — <a href="https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit/blob/main/install.py" target="_blank" style="color:var(--accent);">review the source first</a> if you prefer.</p>
+      <div class="install-body" style="padding:.7rem .9rem; border-radius:6px; margin:0; font-size:.75rem;">
+        <span class="i-prompt">$ </span><span class="i-cmd">python -c "import urllib.request; exec(urllib.request.urlopen('<span style="color:#8b5cf6">https://raw.githubusercontent.com/YehudaFrankel/Claude-Code-memory-starter-kit/main/install.py</span>').read().decode())"</span>
+      </div>
+      <button class="copy-btn" onclick="copyOneLiner()" id="oneLinerBtn" style="margin-top:.6rem;">copy one-liner</button>
+    </div>
+  </details>
 </div>
 
 <!-- WORKFLOW -->
@@ -1375,7 +1389,7 @@ footer {
   <div class="cta-inner">
     <div class="cta-text">
       <h2>Stop re-explaining. Start where you left off.</h2>
-      <p>One line installs it. Claude handles the rest. You'll be running <code style="font-family:var(--mono);font-size:.8rem;color:var(--amber)">Start Session</code> in under 2 minutes.</p>
+      <p>Clone once, run setup.py, done. Claude handles the rest. You'll be running <code style="font-family:var(--mono);font-size:.8rem;color:var(--amber)">Start Session</code> in under 2 minutes.</p>
     </div>
     <div style="display:flex; gap:.75rem; flex-wrap:wrap; flex-shrink:0">
       <a href="#install" class="btn btn-primary">Install now</a>
@@ -1467,7 +1481,16 @@ const howObs = new IntersectionObserver(entries => {
 document.querySelectorAll('.how-list').forEach(hl => howObs.observe(hl));
 
 /* ── Copy install ── */
-const INSTALL = `python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/Claude-Code-memory-starter-kit/main/install.py').read().decode())"`;
+const INSTALL = `git clone https://github.com/YehudaFrankel/Claude-Code-memory-starter-kit.git\ncd your-project\npython /path/to/Claude-Code-memory-starter-kit/setup.py`;
+const ONE_LINER = `python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/Claude-Code-memory-starter-kit/main/install.py').read().decode())"`;
+function copyOneLiner() {
+  navigator.clipboard.writeText(ONE_LINER).then(() => {
+    const b = document.getElementById('oneLinerBtn');
+    b.textContent = '✓ copied';
+    b.classList.add('ok');
+    setTimeout(() => { b.textContent = 'copy one-liner'; b.classList.remove('ok'); }, 2000);
+  }).catch(() => {});
+}
 function copyInstall() {
   navigator.clipboard.writeText(INSTALL).then(() => {
     const b = document.getElementById('copyBtn');
