@@ -1,7 +1,5 @@
 # Claude Recall — Persistent Context for Claude Code
 
-![Claude Recall](memory-starter-kit.png)
-
 [![v1.0.0](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)](https://github.com/YehudaFrankel/claude-recall/releases) [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue?style=flat-square)](https://python.org/downloads) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code)
 
 **Claude starts from zero every session. This kit gives it a memory that compounds over time.**
