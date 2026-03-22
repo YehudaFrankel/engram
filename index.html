@@ -1028,6 +1028,45 @@ footer {
   .lc-timeline::before { display: none; }
   .lc-node-name { font-size: .72rem; }
 }
+
+/* ─────────────────────────────────────────
+   Session journal demo
+───────────────────────────────────────── */
+.jd-wrap {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.jd-panel {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px; overflow: hidden;
+  font-family: var(--mono); font-size: .79rem;
+}
+.jd-bar {
+  padding: .65rem 1rem;
+  background: rgba(255,255,255,.02);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .5rem;
+}
+.jd-bar-name { font-size: .72rem; color: var(--dim); margin-left: .4rem; flex: 1; }
+.jd-bar-badge {
+  font-size: .65rem; color: var(--accent); font-family: var(--mono);
+  background: rgba(139,92,246,.12);
+  border: 1px solid rgba(139,92,246,.25);
+  border-radius: 4px; padding: .1rem .45rem;
+  opacity: 0; transition: opacity .3s;
+}
+.jd-bar-badge.jd-on { opacity: 1; }
+.jd-body {
+  padding: 1.2rem 1rem;
+  min-height: 185px;
+  line-height: 1.9;
+}
+@media (max-width: 780px) {
+  .jd-wrap { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -1085,13 +1124,13 @@ footer {
         <span class="t-line"><span class="t-prompt">$ </span><span class="t-user">Start Session</span></span>
         <span class="t-out"><span class="t-ok">✓</span> Python 3.11 found</span>
         <span class="t-out"><span class="t-ok">✓</span> check_memory.py — no drift</span>
-        <span class="t-out"><span class="t-ok">✓</span> STATUS.md — Session 97</span>
+        <span class="t-out"><span class="t-ok">✓</span> STATUS.md — Session 100</span>
         <span class="t-out"><span class="t-ok">✓</span> 5 lessons loaded</span>
         <span class="t-out"><span class="t-ok">✓</span> 4 decisions loaded</span>
-        <span class="t-out"><span class="t-ok">✓</span> 13 skills ready</span>
+        <span class="t-out"><span class="t-ok">✓</span> 23 skills ready</span>
         <span class="t-gap"></span>
-        <span class="t-line"><span class="t-ok">Session 97 ready.</span></span>
-        <span class="t-out2">Last change: backup finalized + quality hardening</span>
+        <span class="t-line"><span class="t-ok">Session 100 ready.</span></span>
+        <span class="t-out2">Last change: session journal + bootstrap indexer + 23 skills</span>
         <span class="t-out2">What are we working on?</span>
         <span class="t-gap"></span>
         <span class="t-line"><span class="t-prompt">$ </span><span class="t-cursor"></span></span>
@@ -1104,7 +1143,7 @@ footer {
 <div class="stats">
   <div class="stats-inner">
     <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="94">94</span></div>
+      <div class="s-num"><span class="counter" data-target="100">100</span></div>
       <div class="s-label">real production sessions — not a demo project</div>
     </div>
     <div class="stat-item">
@@ -1116,8 +1155,8 @@ footer {
       <div class="s-label">undocumented functions caught by drift detection — first run</div>
     </div>
     <div class="stat-item">
-      <div class="s-num"><span class="counter" data-target="13">13</span></div>
-      <div class="s-label">skills — 7 starter + 6 new from the everything-claude-code project</div>
+      <div class="s-num"><span class="counter" data-target="23">23</span></div>
+      <div class="s-label">skills — auto-triggered, built and tuned across 100 real sessions</div>
     </div>
   </div>
 </div>
@@ -1166,7 +1205,7 @@ footer {
 <div class="section reveal" id="proof">
   <div class="section-tag">Real-world test</div>
   <h2 class="section-h">Tested on a production codebase — not a todo app</h2>
-  <p class="section-p">94 sessions. Legacy Java backend. Multiple crashes. This is what actually happened.</p>
+  <p class="section-p">100 sessions. Legacy Java backend. Multiple crashes. This is what actually happened.</p>
 
   <div class="how-list">
     <div class="how-row">
@@ -1335,7 +1374,7 @@ footer {
         <div class="lc-slide" id="lc-s0">
           <span class="lp"><span class="lp-cmd">$ session_start.py</span></span>
           <span class="lp lp-ok">✓  Reading MEMORY.md</span>
-          <span class="lp lp-ok">✓  Reading STATUS.md — Session 97</span>
+          <span class="lp lp-ok">✓  Reading STATUS.md — Session 100</span>
           <span class="lp lp-ok">✓  Context injected as additionalContext</span>
           <span class="lp lp-dim">Claude starts warm. No "Start Session" command needed.</span>
         </div>
@@ -1354,13 +1393,43 @@ footer {
           <span class="lp lp-dim">Safe to /compact on any long session.</span>
         </div>
         <div class="lc-slide" id="lc-s3">
-          <span class="lp"><span class="lp-cmd">$ stop_check.py</span></span>
-          <span class="lp lp-ok">✓  Checking memory repo git status</span>
-          <span class="lp lp-warn">  M  STATUS.md</span>
-          <span class="lp lp-warn">  M  js_functions.md</span>
+          <span class="lp"><span class="lp-cmd">$ session_journal.py</span></span>
+          <span class="lp lp-ok">✓  3 files edited — dashboard.js, api.java, styles.css</span>
+          <span class="lp lp-ok">✓  Session entry written to session_journal.md</span>
+          <span class="lp lp-dim">$ stop_check.py</span>
+          <span class="lp lp-warn">  M  STATUS.md — unsaved changes detected</span>
           <span class="lp lp-dim">→  "Memory has unsaved changes. Run End Session."</span>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- SESSION JOURNAL DEMO -->
+<div class="section reveal" id="journal-demo">
+  <div class="section-tag">Zero-effort session capture</div>
+  <h2 class="section-h">Session ends. Journal writes itself.</h2>
+  <p class="section-p">When Claude stops, <code style="font-family:var(--mono);font-size:.82rem;color:var(--amber);background:rgba(210,153,34,.08);border-radius:4px;padding:.1rem .4rem">session_journal.py</code> reads what changed and writes a searchable entry automatically. No <code style="font-family:var(--mono);font-size:.82rem;color:var(--amber);background:rgba(210,153,34,.08);border-radius:4px;padding:.1rem .4rem">/learn</code> needed.</p>
+
+  <div class="jd-wrap">
+    <div class="jd-panel">
+      <div class="jd-bar">
+        <div class="term-dot term-dot-r"></div>
+        <div class="term-dot term-dot-y"></div>
+        <div class="term-dot term-dot-g"></div>
+        <span class="jd-bar-name">tools/session_journal.py</span>
+        <span class="jd-bar-badge" id="jdBadge">&#x26A1; Stop</span>
+      </div>
+      <div class="jd-body" id="jdOutput"></div>
+    </div>
+    <div class="jd-panel">
+      <div class="jd-bar">
+        <div class="term-dot term-dot-r"></div>
+        <div class="term-dot term-dot-y"></div>
+        <div class="term-dot term-dot-g"></div>
+        <span class="jd-bar-name">memory/session_journal.md</span>
+      </div>
+      <div class="jd-body" id="jdResult"></div>
     </div>
   </div>
 </div>
@@ -1382,7 +1451,7 @@ footer {
     </div>
     <div class="feature-row">
       <div class="feat-label"><span class="feat-icon">🔗</span> Lifecycle hooks</div>
-      <div class="feat-desc">Three hooks beyond drift detection: <code>SessionStart</code> injects memory before your first message — Claude starts warm without a manual command. <code>PreCompact</code> preserves memory through <code>/compact</code> — run <code>/learn</code> first to capture session patterns, then compact freely. <code>Stop</code> silently checks for unsaved memory changes and surfaces a reminder only when needed. All three ship as Python scripts — cross-platform, no dependencies.</div>
+      <div class="feat-desc">Four hooks beyond drift detection: <code>SessionStart</code> injects memory before your first message — Claude starts warm without a manual command. <code>PreCompact</code> preserves memory through <code>/compact</code> — run <code>/learn</code> first to capture session patterns, then compact freely. <code>Stop</code> runs <code>session_journal.py</code> to auto-capture what you edited and the current phase to a searchable journal, then checks for unsaved changes and surfaces a reminder if needed — no <code>/learn</code> required. All four ship as Python scripts — cross-platform, no dependencies.</div>
     </div>
     <div class="feature-row">
       <div class="feat-label"><span class="feat-icon">📋</span> Task continuity</div>
@@ -1391,6 +1460,14 @@ footer {
     <div class="feature-row">
       <div class="feat-label"><span class="feat-icon">⚡</span> Auto-invoked skills</div>
       <div class="feat-desc">Say "review this file" and Claude runs the full code-review skill automatically. <code>Generate Skills</code> builds a starter set of 7 skills tailored to your stack. Six additional skills ship with the kit: <code>/learn</code> auto-runs at every End Session — extracting patterns, lessons, and decisions from the session into <code>tasks/lessons.md</code> before memory is pushed; <code>/evolve</code> clusters repeated lessons into new reusable skills; <code>strategic-compact</code> guides safe context compaction mid-session without losing memory; <code>search-first</code> enforces finding existing code before writing new; <code>verification-loop</code> runs compile + smoke test + self-evaluation after every change; <code>java-reviewer</code> deep-checks Java files against your stack's patterns. Add custom skills with a single chat message.</div>
+    </div>
+    <div class="feature-row">
+      <div class="feat-label"><span class="feat-icon">📓</span> Auto-capture session journal</div>
+      <div class="feat-desc">When Claude stops, <code>session_journal.py</code> reads every file you edited and the current STATUS.md phase, then appends a timestamped entry to <code>memory/session_journal.md</code> — automatically. No <code>/learn</code> needed, no manual action. Search it any time: <code>Grep(pattern='feature', path=session_journal.md)</code>. The edit log clears between sessions so every capture is clean.</div>
+    </div>
+    <div class="feature-row">
+      <div class="feat-label"><span class="feat-icon">🗂️</span> Zero-setup codebase index</div>
+      <div class="feat-desc">Run <code>bootstrap.py</code> on any new project — it scans every source file, groups them by type (Java, JS, TypeScript, Python, HTML, CSS, SQL, and more), and writes <code>quick_index.md</code>. Claude gets instant codebase awareness without reading a single source file. Skips build artifacts, node_modules, and generated output automatically. Works on any language, any size.</div>
     </div>
     <div class="feature-row">
       <div class="feat-label"><span class="feat-icon">🚀</span> Headless mode</div>
@@ -1547,9 +1624,11 @@ footer {
       <span class="tl">│   ├── <span class="tl-file">check_memory.py</span>     <span class="tl-comment">← drift detector, runs on Edit/Write</span></span>
       <span class="tl">│   ├── <span class="tl-new">session_start.py</span>    <span class="tl-comment">← injects memory on session open</span></span>
       <span class="tl">│   ├── <span class="tl-new">precompact.py</span>       <span class="tl-comment">← preserves memory through /compact</span></span>
+      <span class="tl">│   ├── <span class="tl-new">session_journal.py</span>  <span class="tl-comment">← auto-captures session to journal on Stop</span></span>
+      <span class="tl">│   ├── <span class="tl-new">bootstrap.py</span>        <span class="tl-comment">← zero-setup codebase indexer, any project</span></span>
       <span class="tl">│   └── <span class="tl-new">stop_check.py</span>       <span class="tl-comment">← reminds to End Session if unsaved</span></span>
       <span class="tl">└── <span class="tl-dir">.claude/</span></span>
-      <span class="tl">    ├── <span class="tl-file">settings.json</span>       <span class="tl-comment">← 4 hooks: drift · session · compact · stop</span></span>
+      <span class="tl">    ├── <span class="tl-file">settings.json</span>       <span class="tl-comment">← 4 hooks: drift · session · compact · stop+journal</span></span>
       <span class="tl">    ├── <span class="tl-dir">memory/</span></span>
       <span class="tl">    │   ├── <span class="tl-file">MEMORY.md</span></span>
       <span class="tl">    │   ├── <span class="tl-file">js_functions.md</span></span>
@@ -1575,12 +1654,12 @@ footer {
     <div class="by-text">
       <h3>Built from frustration, not theory</h3>
       <p>
-        This started as a CLAUDE.md I copy-pasted between projects. After session 20 I got annoyed and built the drift detector. Skills were added after noticing the same prompts typed every single day. The updater came after manually patching CLAUDE.md across three separate repos. The lifecycle hooks — session start, precompact, stop — came after session 90 when the setup finally felt complete. Everything here has a story.
+        This started as a CLAUDE.md I copy-pasted between projects. After session 20 I got annoyed and built the drift detector. Skills were added after noticing the same prompts typed every single day. The updater came after manually patching CLAUDE.md across three separate repos. The lifecycle hooks came after session 90 when the setup finally felt complete. <code>session_journal.py</code> and <code>bootstrap.py</code> came from comparing workflows at session 100 and finding what was still missing. Everything here has a story.
       </p>
     </div>
     <div class="by-stats">
       <div class="by-stat">
-        <div class="by-stat-n"><em>96</em></div>
+        <div class="by-stat-n"><em>100</em></div>
         <div class="by-stat-l">sessions on a real production Java platform — the codebase that stress-tested every part of this kit</div>
       </div>
       <div class="by-stat">
@@ -1668,6 +1747,11 @@ document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 setTimeout(() => {
   document.querySelectorAll('.reveal:not(.in)').forEach(el => el.classList.add('in'));
   document.querySelectorAll('.feature-row:not(.in)').forEach(el => el.classList.add('in'));
+  // Ensure journal demo panels show if observer didn't fire
+  var jdOut = document.getElementById('jdOutput');
+  var jdRes = document.getElementById('jdResult');
+  if (jdOut && !jdOut.innerHTML) jdOut.innerHTML = '<span class="dc dc-dim">session_journal.py — auto-captures every Stop</span>';
+  if (jdRes && !jdRes.innerHTML) jdRes.innerHTML = '<span class="dc dc-dim">session_journal.md — searchable by Grep</span>';
   document.querySelectorAll('.cmd-row:not(.in)').forEach(el => el.classList.add('in'));
   document.querySelectorAll('.how-row:not(.in)').forEach(el => el.classList.add('in'));
 }, 2500);
@@ -1752,7 +1836,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     { file: 'tools/session_start.py', badge: 'SessionStart' },
     { file: 'tools/check_memory.py',  badge: 'PostToolUse'  },
     { file: 'tools/precompact.py',    badge: 'PreCompact'   },
-    { file: 'tools/stop_check.py',    badge: 'Stop'         }
+    { file: 'tools/session_journal.py', badge: 'Stop'        }
   ];
   var PHASE = 3600, LINE_GAP = 220;
   var current = -1, started = false, timer = null;
@@ -1941,6 +2025,84 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   }
 })();
 
+/* ── Session journal demo ── */
+(function() {
+  var outEl  = document.getElementById('jdOutput');
+  var resEl  = document.getElementById('jdResult');
+  var badge  = document.getElementById('jdBadge');
+  if (!outEl || !resEl) return;
+  var started = false;
+
+  function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+  function ro(lines) { outEl.innerHTML = lines.join(''); }
+  function rr(lines) { resEl.innerHTML = lines.join(''); }
+  function ln(cls, txt) { return '<span class="dc ' + cls + '">' + txt + '</span>'; }
+
+  async function run() {
+    ro([ln('dc-dim', 'waiting for session to end...')]);
+    rr([ln('dc-dim', '_no entry yet_')]);
+    if (badge) badge.classList.remove('jd-on');
+    await sleep(1800);
+
+    if (badge) badge.classList.add('jd-on');
+    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py')]);
+    await sleep(480);
+
+    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py'),
+        ln('dc-dim',  '&nbsp;&nbsp;reading draft-lessons.md...')]);
+    await sleep(380);
+
+    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py'),
+        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; 3 files edited this session'),
+        ln('dc-dim',  '&nbsp;&nbsp;reading STATUS.md...')]);
+    await sleep(350);
+
+    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py'),
+        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; 3 files edited this session'),
+        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; current phase captured'),
+        ln('dc-dim',  '&nbsp;&nbsp;writing to session_journal.md...')]);
+    await sleep(400);
+
+    ro([ln('dc-warn', '&#x26A1; Stop hook &mdash; session_journal.py'),
+        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; 3 files edited this session'),
+        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; current phase captured'),
+        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; entry written to session_journal.md'),
+        ln('dc-ok',   '&nbsp;&nbsp;&#x2714; draft-lessons cleared for next session')]);
+    await sleep(420);
+
+    rr([ln('dc-dim',  '## [2026-03-22 16:42]')]);
+    await sleep(230);
+    rr([ln('dc-dim',  '## [2026-03-22 16:42]'),
+        ln('dc-ok',   '**Files:** dashboard.js, api.java, styles.css')]);
+    await sleep(220);
+    rr([ln('dc-dim',  '## [2026-03-22 16:42]'),
+        ln('dc-ok',   '**Files:** dashboard.js, api.java, styles.css'),
+        ln('dc-warn', '**What:** feed feature &mdash; card render + sort')]);
+    await sleep(230);
+    rr([ln('dc-dim',  '## [2026-03-22 16:42]'),
+        ln('dc-ok',   '**Files:** dashboard.js, api.java, styles.css'),
+        ln('dc-warn', '**What:** feed feature &mdash; card render + sort'),
+        ln('dc-dim',  '&nbsp;'),
+        ln('dc-dim',  '&lt;!-- searchable: Grep(pattern=\'feed\') --&gt;')]);
+    await sleep(3200);
+    run();
+  }
+
+  var sec = document.getElementById('journal-demo');
+  if (sec) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting && !started) {
+          started = true;
+          setTimeout(function() { run(); }, 400);
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+    obs.observe(sec);
+  }
+})();
+
 /* ── Terminal typewriter ── */
 (function() {
   var userEl = document.querySelector('.t-user');
@@ -1976,13 +2138,13 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     { t:'cmd',    text:'Start Session',                                       delay:500  },
     { t:'ok',     text:'✓ memory.ps1 pull — OK',                             delay:700  },
     { t:'ok',     text:'✓ no drift detected',                                delay:300  },
-    { t:'ok',     text:'✓ STATUS.md — Session 97',                           delay:280  },
+    { t:'ok',     text:'✓ STATUS.md — Session 100',                          delay:280  },
     { t:'ok',     text:'✓ 5 lessons loaded',                                 delay:260  },
     { t:'ok',     text:'✓ 4 decisions loaded',                               delay:260  },
-    { t:'ok',     text:'✓ 13 skills ready',                                  delay:300  },
+    { t:'ok',     text:'✓ 23 skills ready',                                  delay:300  },
     { t:'gap',                                                                delay:200  },
-    { t:'green',  text:'Session 97 ready.',                                  delay:400  },
-    { t:'dim',    text:'Last change: backup finalized + quality hardening',  delay:200  },
+    { t:'green',  text:'Session 100 ready.',                                 delay:400  },
+    { t:'dim',    text:'Last change: session journal + bootstrap + 23 skills', delay:200 },
     { t:'dim',    text:'What are we working on?',                            delay:300  },
     { t:'gap',                                                                delay:1600 },
 
@@ -2010,7 +2172,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     { t:'ok',     text:'✓ 2 new lessons extracted',                         delay:500  },
     { t:'ok',     text:'✓ decisions.md updated',                            delay:350  },
     { t:'dim',    text:'Updating memory files…',                            delay:500  },
-    { t:'ok',     text:'✓ STATUS.md — Session 97 → 98',                    delay:350  },
+    { t:'ok',     text:'✓ STATUS.md — Session 100 → 101',                   delay:350  },
     { t:'ok',     text:'✓ memory.ps1 push — pushed to GitHub',              delay:400  },
     { t:'gap',                                                                delay:300  },
     { t:'green',  text:'Session complete. Memory pushed to GitHub.',        delay:500  },

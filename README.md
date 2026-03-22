@@ -50,7 +50,7 @@ Memory travels with your project as markdown files. No cloud sync, no API keys, 
 
 ## Real-World Test
 
-Stress-tested across 96 sessions on a production Java platform — legacy backend, 5 JS files, 100+ functions, multi-page frontend with scheduler, email system, and encrypted URL handling.
+Stress-tested across 100 sessions on a production Java platform — legacy backend, 5 JS files, 100+ functions, multi-page frontend with scheduler, email system, and encrypted URL handling.
 
 **What actually happened:**
 
@@ -203,8 +203,8 @@ Runs when you open Claude Code. Injects `STATUS.md` and `MEMORY.md` into context
 ### PreCompact — survives `/compact`
 Runs before Claude compacts the conversation. Reinjects your memory files into the compacted context. **Best practice:** run `/learn` first to capture session patterns, then `/compact` freely.
 
-### Stop — catches forgotten End Session
-Runs when Claude finishes responding. Checks whether memory files have unsaved changes. If they do, you see: *"Memory has unsaved changes. Run End Session to push."* Silent otherwise.
+### Stop — auto-captures session journal + catches forgotten End Session
+Runs when Claude finishes responding. First, `session_journal.py` reads every file you edited this session and the current STATUS.md phase, then writes a timestamped entry to `memory/session_journal.md` — searchable forever, no `/learn` needed. Second, checks whether memory files have unsaved changes. If they do, you see: *"Memory has unsaved changes. Run End Session to push."* Silent otherwise.
 
 All three hooks ship as Python scripts in `tools/` so they work on any OS.
 
@@ -226,9 +226,11 @@ your-project/
 │   ├── check_memory.py              ← Drift detector — runs after every Edit/Write
 │   ├── session_start.py             ← Injects memory on SessionStart
 │   ├── precompact.py                ← Preserves memory through /compact
+│   ├── session_journal.py           ← Auto-captures session summary on every Stop
+│   ├── bootstrap.py                 ← Zero-setup codebase indexer — run on any new project
 │   └── stop_check.py               ← Reminds you to End Session if unsaved changes
 └── .claude/
-    ├── settings.json                ← 4 hooks: drift + session start + compaction + stop
+    ├── settings.json                ← 4 hooks: drift · session start · compact · stop+journal
     ├── memory/
     │   ├── MEMORY.md                ← Index — auto-loaded every session
     │   ├── project_status.md        ← What's built, what's not, key decisions
@@ -270,7 +272,7 @@ Commit `tasks/` and `.claude/memory/` to your repo. Memory travels with the code
 
 ---
 
-> Built across 96 real development sessions on a production codebase. The drift detector found 21 undocumented functions the first run. Skills were added after noticing the same prompts typed every day. Everything here came from actual use — nothing hypothetical.
+> Built across 100 real development sessions on a production codebase. The drift detector found 21 undocumented functions the first run. Skills were added after noticing the same prompts typed every day. session_journal.py and bootstrap.py came from comparing workflows and finding what was still missing. Everything here came from actual use — nothing hypothetical.
 
 ---
 
