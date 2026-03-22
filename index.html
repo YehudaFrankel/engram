@@ -87,6 +87,58 @@ nav {
 .gh-btn:hover { color: var(--text); border-color: var(--dim); background: var(--surface); }
 
 /* ─────────────────────────────────────────
+   Neon Banner
+───────────────────────────────────────── */
+.neon-banner {
+  position: relative;
+  text-align: center;
+  padding: 6rem 2rem 5rem;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+.neon-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 70%, rgba(139,92,246,0.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+.neon-bg-line {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: rgba(139,92,246,0.13);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+.neon-title {
+  font-family: var(--mono);
+  font-size: clamp(3rem, 9vw, 7rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: #c4b5fd;
+  text-shadow:
+    0 0 10px rgba(139,92,246,1),
+    0 0 30px rgba(139,92,246,0.8),
+    0 0 70px rgba(139,92,246,0.5),
+    0 0 140px rgba(139,92,246,0.25);
+  animation: neonPulse 4s ease-in-out infinite;
+  position: relative;
+}
+@keyframes neonPulse {
+  0%,100% { text-shadow: 0 0 10px rgba(139,92,246,1), 0 0 30px rgba(139,92,246,.8), 0 0 70px rgba(139,92,246,.5), 0 0 140px rgba(139,92,246,.25); }
+  50%     { text-shadow: 0 0 20px rgba(167,139,250,1), 0 0 50px rgba(139,92,246,1), 0 0 110px rgba(139,92,246,.7), 0 0 220px rgba(139,92,246,.4); }
+}
+.neon-sub {
+  font-family: var(--mono);
+  font-size: .95rem;
+  color: var(--muted);
+  letter-spacing: .1em;
+  margin-top: 1.25rem;
+  position: relative;
+}
+
+/* ─────────────────────────────────────────
    Hero  —  intentionally NOT centered
 ───────────────────────────────────────── */
 .hero {
@@ -874,6 +926,20 @@ footer {
   </div>
 </nav>
 
+<!-- NEON BANNER -->
+<div class="neon-banner">
+  <span class="neon-bg-line" style="top:18%;left:4%">$ Start Session</span>
+  <span class="neon-bg-line" style="top:33%;left:9%">✓ no drift detected</span>
+  <span class="neon-bg-line" style="top:60%;left:6%">✓ 5 lessons loaded</span>
+  <span class="neon-bg-line" style="top:76%;left:3%">Session 94 ready.</span>
+  <span class="neon-bg-line" style="top:22%;right:4%">$ End Session</span>
+  <span class="neon-bg-line" style="top:42%;right:7%">✓ memory saved</span>
+  <span class="neon-bg-line" style="top:63%;right:3%">Check Drift</span>
+  <span class="neon-bg-line" style="top:79%;right:9%">✓ all clean</span>
+  <div class="neon-title">Claude Recall</div>
+  <div class="neon-sub">Persistent memory for Claude Code</div>
+</div>
+
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
@@ -1436,7 +1502,7 @@ const statsObs = new IntersectionObserver(entries => {
     });
     statsObs.disconnect();
   });
-}, { threshold: .3 });
+}, { threshold: .1, rootMargin: '0px 0px -30px 0px' });
 statsObs.observe(document.querySelector('.stats'));
 
 /* ── Scroll reveal (generic) ── */
@@ -1444,8 +1510,15 @@ const revealObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
   });
-}, { threshold: .08 });
+}, { threshold: .05, rootMargin: '0px 0px -20px 0px' });
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+/* Fallback: show all hidden sections after 2.5s in case observer doesn't fire */
+setTimeout(() => {
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => el.classList.add('in'));
+  document.querySelectorAll('.feature-row:not(.in)').forEach(el => el.classList.add('in'));
+  document.querySelectorAll('.cmd-row:not(.in)').forEach(el => el.classList.add('in'));
+  document.querySelectorAll('.how-row:not(.in)').forEach(el => el.classList.add('in'));
+}, 2500);
 
 /* ── Feature rows staggered ── */
 const featObs = new IntersectionObserver(entries => {
