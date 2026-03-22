@@ -162,6 +162,40 @@ nav {
   97% { opacity: .7; transform: translateX(-2px); }
   98% { opacity: 0; }
 }
+/* Scan line sweeping across banner */
+.neon-banner::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, transparent 0%, rgba(139,92,246,.6) 20%, rgba(167,139,250,1) 50%, rgba(139,92,246,.6) 80%, transparent 100%);
+  animation: scanH 5s ease-in-out infinite;
+  pointer-events: none;
+  opacity: 0;
+  left: -5%;
+}
+@keyframes scanH {
+  0%   { left: -5%;  opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { left: 105%; opacity: 0; }
+}
+/* Floating particles */
+.banner-particle {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: rgba(139,92,246,0.22);
+  pointer-events: none;
+  user-select: none;
+  animation: floatUp linear infinite;
+}
+@keyframes floatUp {
+  0%   { transform: translateY(0);      opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: .25; }
+  100% { transform: translateY(-80px);  opacity: 0; }
+}
 .neon-sub {
   font-family: var(--mono);
   font-size: .85rem;
@@ -1819,6 +1853,37 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
       });
     }, { threshold: 0.15 });
     obs.observe(sec);
+  }
+})();
+
+/* ── Terminal typewriter ── */
+(function() {
+  var userEl = document.querySelector('.t-user');
+  if (!userEl) return;
+  var text = userEl.textContent;
+  userEl.textContent = '';
+  userEl.style.opacity = '1';
+  var i = 0;
+  function type() {
+    if (i < text.length) { userEl.textContent += text[i++]; setTimeout(type, 75); }
+  }
+  setTimeout(type, 900);
+})();
+
+/* ── Banner floating particles ── */
+(function() {
+  var banner = document.querySelector('.neon-banner');
+  if (!banner) return;
+  var chars = ['+', '·', '○', '×', '▸', '✓', '◦', '»'];
+  for (var i = 0; i < 14; i++) {
+    var p = document.createElement('span');
+    p.className = 'banner-particle';
+    p.textContent = chars[Math.floor(Math.random() * chars.length)];
+    p.style.left   = (5 + Math.random() * 90) + '%';
+    p.style.bottom = (Math.random() * 30) + '%';
+    p.style.animationDuration = (5 + Math.random() * 7) + 's';
+    p.style.animationDelay    = (Math.random() * 8) + 's';
+    banner.appendChild(p);
   }
 })();
 </script>
