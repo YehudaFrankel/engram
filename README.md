@@ -123,7 +123,7 @@ Type `Generate Skills` and Claude creates additional skills tailored to your exa
 |------|-------------|-------------|
 | `check_memory.py` | After every file edit | Drift detector — catches undocumented functions and CSS changes immediately |
 | `session_journal.py` | After every response | Auto-captures what you worked on — searchable forever, no /learn needed |
-| `stop_check.py` | After every response | Warns about unsaved memory; auto-pushes to git after 9pm |
+| `stop_check.py` | After every response | Reminds you to save memory when unsaved changes are detected |
 | `bootstrap.py` | On first setup | Scans your entire codebase and generates a quick index — immediate codebase awareness |
 | `session_start.py` | When Claude Code opens | Injects memory into context before your first message — Claude starts warm |
 | `precompact.py` | Before `/compact` | Reinjects memory into the compacted context — nothing lost through compaction |
@@ -201,7 +201,7 @@ No human steps between. Claude reads the chain and runs it. Build your own chain
 
 **Self-healing** — when a verify step fails, Claude attempts the minimal fix and retries once before escalating. Add a `## Recovery` section to define what "minimal fix" means for that skill.
 
-**Auto end session** — the stop hook monitors every response. After 9pm with unsaved memory changes, it auto-commits and pushes to git. Memory is never lost even if you forget `End Session`.
+**Unsaved memory reminder** — the stop hook monitors every response. When memory has unsaved changes, it surfaces a reminder to run `End Session`. Works with or without git.
 
 ---
 
@@ -276,7 +276,7 @@ Four hooks run automatically — no commands needed, no configuration required.
 | `SessionStart` | Every time Claude Code opens | Runs `session_start.py` — injects STATUS.md and MEMORY.md into context before your first message. Claude starts warm without typing `Start Session`. |
 | `PostToolUse` | After every Edit or Write | Runs `check_memory.py --silent` — catches drift immediately after every file change, not just at End Session. |
 | `PreCompact` | Before Claude compacts the conversation | Runs `precompact.py` — reinjects memory files into the compacted context. Run `/learn` first to capture session patterns, then `/compact` freely. |
-| `Stop` | After every response | Runs `session_journal.py` (auto-captures session summary) then `stop_check.py` (warns about unsaved memory; auto-pushes after 9pm). |
+| `Stop` | After every response | Runs `session_journal.py` (auto-captures session summary) then `stop_check.py` (reminds you to save memory when unsaved changes are detected). |
 
 All hooks are Python scripts in `tools/` — cross-platform, no dependencies beyond Python.
 
@@ -381,6 +381,9 @@ Tested across **112 real development sessions** on a production codebase — leg
 ---
 
 ## FAQ
+
+**What Claude plan do I need?**
+Any paid plan that includes Claude Code. The kit itself has no plan requirements — it's plain markdown files and Python scripts. Longer sessions may benefit from Max due to context limits, but the PreCompact hook and `Start Session` recovery are specifically designed to handle those limits gracefully on any plan.
 
 **Do I need to understand how it all works to use it?**
 No. `Start Session` and `End Session` are the whole daily interface. Everything else runs automatically or responds to plain English descriptions.

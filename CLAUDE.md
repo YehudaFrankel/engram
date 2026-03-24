@@ -205,8 +205,8 @@ When a skill's smoke/verify step fails:
 
 Add a `## Recovery` section to any skill to define what "minimal fix" means for that skill.
 
-### Auto End Session
-The stop hook monitors every response. After 9pm with unsaved memory changes, it auto-pushes memory to git — so nothing is lost even if you forget `End Session`. `/learn` still runs manually (it needs Claude's analysis), but the raw memory is always safe.
+### Unsaved Memory Reminder
+The stop hook monitors every response. When memory files have unsaved changes, it surfaces a reminder to run `End Session` — so you never accidentally close a session without saving. Works with or without git.
 
 ### Compound Learning Loop
 ```

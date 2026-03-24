@@ -681,7 +681,7 @@ footer {
       <div class="istep">
         <div class="istep-n">// 04</div>
         <div class="istep-title">Type: End Session</div>
-        <div class="istep-desc">/learn extracts lessons. Memory pushes to GitHub. Next session starts smarter.</div>
+        <div class="istep-desc">/learn extracts lessons. Memory saved. Next session starts smarter.</div>
       </div>
     </div>
 
@@ -772,7 +772,7 @@ footer {
       </div>
       <div class="loop-node">
         <div class="ln-cmd">End Session</div>
-        <div class="ln-desc">push memory to GitHub</div>
+        <div class="ln-desc">save memory</div>
         <div class="ln-sub">→ STATUS.md<br>→ memory/</div>
       </div>
       <div class="loop-node">
@@ -807,7 +807,7 @@ footer {
       <div style="background:var(--s1); padding:1.4rem 1.6rem; border-left:1px solid var(--border);">
         <div style="font-size:.68rem; color:var(--green); margin-bottom:.6rem; letter-spacing:.06em;">AUTONOMOUS</div>
         <div style="font-size:.82rem; color:var(--text); line-height:1.8;">Self-healing: retry before escalating</div>
-        <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">Stop hook: <span style="color:var(--green)">push memory after 9pm</span><br>
+        <div style="font-size:.78rem; color:var(--muted); line-height:1.8;">Stop hook: <span style="color:var(--green)">reminds you to save memory</span><br>
         PreCompact hook: <span style="color:var(--green)">saves in-flight work</span><br>
         PostToolUse hook: <span style="color:var(--green)">drift check after every edit</span></div>
       </div>
@@ -853,7 +853,7 @@ footer {
           <span style="color:var(--amber)">session_start.py</span> <span style="color:var(--muted)">— runs on SessionStart hook, loads context and applies lessons</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">stop_check.py</span> <span style="color:var(--muted)">— Stop hook: after 9pm with unsaved changes → auto-push memory</span>
+          <span style="color:var(--amber)">stop_check.py</span> <span style="color:var(--muted)">— Stop hook: reminds you to save when memory has unsaved changes</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
           <span style="color:var(--amber)">precompact.py</span> <span style="color:var(--muted)">— PreCompact hook: saves all in-flight work before context compaction</span>
@@ -973,7 +973,7 @@ footer {
       <div class="hook-row">
         <div class="hk-event">Stop</div>
         <div class="hk-file">tools/stop_check.py</div>
-        <div class="hk-does">After 9pm with unsaved changes → auto push memory to GitHub</div>
+        <div class="hk-does">Reminds you to save memory when unsaved changes are detected</div>
       </div>
       <div class="hook-row">
         <div class="hk-event">PreCompact</div>
@@ -1035,7 +1035,7 @@ footer {
       </div>
       <div class="cmd-row"><div class="cr-cmd">Setup Memory</div><div class="cr-desc"><em>First time only</em> — runs Python setup, creates all memory files, configures hooks</div></div>
       <div class="cmd-row"><div class="cr-cmd">Start Session</div><div class="cr-desc">Pull memory from GitHub, check drift, apply lessons, report last session status</div></div>
-      <div class="cmd-row"><div class="cr-cmd">End Session</div><div class="cr-desc">Run /learn, update memory, push to GitHub — <em>session complete, no work lost</em></div></div>
+      <div class="cmd-row"><div class="cr-cmd">End Session</div><div class="cr-desc">Run /learn, update memory, save everything — <em>session complete, no work lost</em></div></div>
       <div class="cmd-row"><div class="cr-cmd">/learn</div><div class="cr-desc">Extract lessons + decisions from this session, score skills Y/N, log velocity</div></div>
       <div class="cmd-row"><div class="cr-cmd">/evolve</div><div class="cr-desc">Every 3-5 sessions — patch weak skills, propose new ones from detected patterns</div></div>
       <div class="cmd-row"><div class="cr-cmd">Check Drift</div><div class="cr-desc">Find code Claude doesn't know about yet — run anytime, runs automatically on file edits</div></div>
@@ -1060,6 +1060,13 @@ footer {
     <h2>FAQ</h2>
 
     <div class="faq-list reveal">
+      <details>
+        <summary>What Claude plan do I need?</summary>
+        <div class="faq-body">
+          Any paid plan that includes Claude Code. The kit itself has no plan requirements — it's plain markdown files and Python scripts that run locally.
+          Longer sessions may benefit from Max due to context limits, but the <em>PreCompact hook</em> and <em>Start Session</em> recovery are specifically designed to handle those limits gracefully on any plan.
+        </div>
+      </details>
       <details>
         <summary>What happens if Claude Code crashes mid-session?</summary>
         <div class="faq-body">

@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 """
-Claude Code Stop hook — warns if memory files have unsaved git changes.
+Claude Code Stop hook — warns if memory files have unsaved changes.
 
 Shows a reminder ONLY when changes are detected — silent otherwise.
 Output: JSON with systemMessage (shown in Claude UI) or nothing at all.
 Hook event: Stop (fires when Claude finishes responding)
 
 No configuration needed — auto-detects memory directory.
+No git required — works with any sync method or no sync at all.
 """
 
 import json
-import subprocess
-import datetime
+import os
 from pathlib import Path
+import datetime
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT = SCRIPT_DIR.parent
@@ -26,30 +27,38 @@ def find_memory_dir():
     return ROOT / '.claude/memory'
 
 
-def get_unsaved_changes(memory_dir):
+def has_unsaved_changes(memory_dir):
+    """
+    Check for unsaved memory changes.
+
+    Strategy 1: git status (if git is available and memory is in a repo)
+    Strategy 2: compare file mtimes against STATUS.md (fallback for non-git users)
+    """
+    # Try git first
     try:
+        import subprocess
         result = subprocess.run(
             ['git', '-C', str(memory_dir), 'status', '--porcelain'],
             capture_output=True, text=True, timeout=5
         )
         if result.returncode == 0:
-            return result.stdout.strip()
+            return bool(result.stdout.strip())
     except Exception:
         pass
-    return ""
 
-
-def auto_push(memory_dir):
-    try:
-        subprocess.run(['git', '-C', str(memory_dir), 'add', '-A'], timeout=10)
-        subprocess.run(['git', '-C', str(memory_dir), 'commit',
-                        '-m', f'Auto end session {datetime.datetime.now().strftime("%Y-%m-%d %H:%M")}'],
-                       timeout=10)
-        result = subprocess.run(['git', '-C', str(memory_dir), 'push'],
-                                capture_output=True, text=True, timeout=30)
-        return result.returncode == 0
-    except Exception:
+    # Fallback: check if any memory file is newer than STATUS.md
+    status_file = ROOT / 'STATUS.md'
+    if not status_file.exists():
         return False
+    try:
+        status_mtime = status_file.stat().st_mtime
+        for md_file in memory_dir.rglob('*.md'):
+            if md_file.stat().st_mtime > status_mtime:
+                return True
+    except Exception:
+        pass
+
+    return False
 
 
 def main():
@@ -57,22 +66,10 @@ def main():
     if not memory_dir.exists():
         return
 
-    changes = get_unsaved_changes(memory_dir)
-    messages = []
-
-    # Auto end session: past 9pm + unsaved changes → auto-push memory
-    current_hour = datetime.datetime.now().hour
-    if current_hour >= 21 and changes:
-        success = auto_push(memory_dir)
-        if success:
-            messages.append("Auto end session: memory pushed. Run /learn to extract lessons.")
-        else:
-            messages.append("Auto end session: push failed. Run End Session manually.")
-    elif changes:
-        messages.append("Memory has unsaved changes. Type \"End Session\" to update and save.")
-
-    if messages:
-        print(json.dumps({'systemMessage': ' | '.join(messages)}))
+    if has_unsaved_changes(memory_dir):
+        print(json.dumps({
+            'systemMessage': 'Memory has unsaved changes. Type "End Session" to save.'
+        }))
 
 
 if __name__ == '__main__':
