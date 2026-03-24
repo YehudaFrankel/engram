@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "claude-recall-site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "D:/claude-memory-starter"],
+      "port": 5500
+    }
+  ]
+}

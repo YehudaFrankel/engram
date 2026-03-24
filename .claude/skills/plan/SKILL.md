@@ -85,7 +85,7 @@ Never show a diff or summary. Always the full plan. This is not optional.
 ## Closing message
 | Status | Message |
 |--------|---------|
-| Ready to Code | "Plan complete. N open questions resolved. Say 'Start coding [feature]' when ready." |
+| Ready to Code | "Plan complete. N open questions resolved. Say 'Start coding [feature]' when ready. When coding is done, move this file to `plans/archive/` to keep plans/ clean." |
 | Draft | "Plan saved. N open questions remain — resolve before coding." |
 | On Hold | "Plan saved as On Hold. Revisit when ready." |
 
