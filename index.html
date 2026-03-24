@@ -623,10 +623,9 @@ footer {
       environment shouldn't.
     </h1>
     <p class="hero-sub">
-      Every session restart costs you — decisions re-debated, patterns forgotten,
-      codebase knowledge lost. Engineers call this <em>cognitive debt</em>, and in 2026
-      it compounds fast. claude-recall is the living environment that prevents it.
-      Not a config file. A system that builds on itself.
+      No API keys. No background service. No database. Just markdown files
+      that git already knows how to handle — and <em>persistent memory that survives
+      every session close, crash, and machine switch.</em>
     </p>
     <div class="hero-btns">
       <a class="btn btn-primary" href="#install">Get started →</a>
@@ -688,6 +687,21 @@ footer {
 
     <div style="margin-top:2rem; font-size:.78rem; color:var(--muted); line-height:1.8; padding: 1rem 1.25rem; border-left: 2px solid var(--amber);" class="reveal">
       <span style="color:var(--text)">New machine?</span> Clone your memory repo, run <span style="color:var(--amber)">Install Memory</span> — Claude scans the codebase and rebuilds all knowledge files from scratch.
+    </div>
+
+    <div style="margin-top:2.5rem; display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border2); font-size:.76rem;" class="reveal">
+      <div style="padding:1rem 1.4rem; background:var(--s2); border-bottom:1px solid var(--border); grid-column:1; color:var(--muted); letter-spacing:.08em;">HEAVY TOOLS</div>
+      <div style="padding:1rem 1.4rem; background:var(--s1); border-bottom:1px solid var(--border); border-left:1px solid var(--border2); grid-column:2; color:var(--amber); letter-spacing:.08em;">CLAUDE-RECALL</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); color:var(--muted);">API key required</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); color:var(--green);">zero dependencies</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">background service running</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">no service — plain files</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">database setup</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">markdown + git</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">framework lock-in</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">any project, any stack</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">30–60 min setup</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">~5 minutes</div>
     </div>
   </div>
 </section>
@@ -995,6 +1009,8 @@ footer {
         <span class="st-key">context reset cost      </span><span class="st-val">zero — memory persists</span><br>
         <span class="st-key">memory survives crash   </span><span class="st-val">yes — disk + git</span><br>
         <span class="st-key">drift caught auto       </span><span class="st-val">yes — PostToolUse hook</span><br>
+        <span class="st-key">dependencies            </span><span class="st-val">zero</span><br>
+        <span class="st-key">background service      </span><span class="st-val">none — plain files</span><br>
         <span class="st-key">cross-machine transfer  </span><span class="st-val">yes — clone + Start Session</span><br>
         <span class="st-key">setup time              </span><span class="st-val">~5 minutes</span><br>
         <span class="tdim">────────────────────────────────────────</span><br>
@@ -1123,6 +1139,15 @@ footer {
           Python 3.7 or newer. That's it — no external packages, no pip install.
           All tools use only the standard library.
           Free at <a href="https://python.org/downloads" style="color:var(--amber)">python.org/downloads</a>.
+        </div>
+      </details>
+      <details>
+        <summary>Why markdown files instead of a database?</summary>
+        <div class="faq-body">
+          Files you can read, diff, commit, and recover without any tooling.
+          Memory stored in a database is opaque — you can't grep it, review it in a PR, or restore a version from last Tuesday.
+          Markdown files travel with your repo, work on any machine with zero setup, and never require an API key or running service.
+          <em>The constraint is the feature.</em>
         </div>
       </details>
       <details>
