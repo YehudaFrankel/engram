@@ -836,6 +836,7 @@ footer {
       </thead>
       <tbody>
         <tr><td class="td-cmd">/learn</td><td class="td-trig">/learn, extract patterns</td><td class="td-desc">Extract lessons from this session, score skills Y/N, update decisions.md and lessons.md</td></tr>
+        <tr><td class="td-cmd">plan</td><td class="td-trig">plan [feature], I want to build X, design X</td><td class="td-desc">Structured planning — options with build cost/friction/payoff ratings, decision logged live, full plan auto-displayed after every update</td></tr>
         <tr><td class="td-cmd">/evolve</td><td class="td-trig">/evolve, evolve lessons into skills</td><td class="td-desc">Read skill_scores.md, patch weak steps, propose new skills from detected patterns</td></tr>
         <tr><td class="td-cmd">verification-loop</td><td class="td-trig">verify, run verification loop, did that work</td><td class="td-desc">After a code change — confirm it compiled, smoke test, self-check quality</td></tr>
         <tr><td class="td-cmd">search-first</td><td class="td-trig">search first, check if this exists</td><td class="td-desc">Enforce research-before-coding: search codebase before implementing anything new</td></tr>
@@ -853,7 +854,7 @@ footer {
           <span style="color:var(--amber)">session_start.py</span> <span style="color:var(--muted)">— runs on SessionStart hook, loads context and applies lessons</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
-          <span style="color:var(--amber)">stop_check.py</span> <span style="color:var(--muted)">— Stop hook: reminds you to save when memory has unsaved changes</span>
+          <span style="color:var(--amber)">stop_check.py</span> <span style="color:var(--muted)">— Stop hook: reminds you to save memory; surfaces open plans with unresolved questions</span>
         </div>
         <div style="font-size:.8rem; line-height:1.8;">
           <span style="color:var(--amber)">precompact.py</span> <span style="color:var(--muted)">— PreCompact hook: saves all in-flight work before context compaction</span>
@@ -973,7 +974,7 @@ footer {
       <div class="hook-row">
         <div class="hk-event">Stop</div>
         <div class="hk-file">tools/stop_check.py</div>
-        <div class="hk-does">Reminds you to save memory when unsaved changes are detected</div>
+        <div class="hk-does">Reminds you to save memory; surfaces open plans with unresolved questions</div>
       </div>
       <div class="hook-row">
         <div class="hk-event">PreCompact</div>
@@ -1034,8 +1035,10 @@ footer {
         <div class="cr-desc" style="font-size:.65rem; color:var(--dim);">WHAT IT DOES</div>
       </div>
       <div class="cmd-row"><div class="cr-cmd">Setup Memory</div><div class="cr-desc"><em>First time only</em> — runs Python setup, creates all memory files, configures hooks</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Start Session</div><div class="cr-desc">Pull memory from GitHub, check drift, apply lessons, report last session status</div></div>
-      <div class="cmd-row"><div class="cr-cmd">End Session</div><div class="cr-desc">Run /learn, update memory, save everything — <em>session complete, no work lost</em></div></div>
+      <div class="cmd-row"><div class="cr-cmd">Start Session</div><div class="cr-desc">Pull memory, apply lessons, surface open plans, report last session status</div></div>
+      <div class="cmd-row"><div class="cr-cmd">End Session</div><div class="cr-desc">Run /learn, update memory, scan plans, save everything — <em>session complete, no work lost</em></div></div>
+      <div class="cmd-row"><div class="cr-cmd">Plan [feature]</div><div class="cr-desc">Structured planning — options with ratings, decision logged live, <em>full plan auto-displayed after every update</em></div></div>
+      <div class="cmd-row"><div class="cr-cmd">Show Plan</div><div class="cr-desc">Display full current plan — no summary, always the complete document</div></div>
       <div class="cmd-row"><div class="cr-cmd">/learn</div><div class="cr-desc">Extract lessons + decisions from this session, score skills Y/N, log velocity</div></div>
       <div class="cmd-row"><div class="cr-cmd">/evolve</div><div class="cr-desc">Every 3-5 sessions — patch weak skills, propose new ones from detected patterns</div></div>
       <div class="cmd-row"><div class="cr-cmd">Check Drift</div><div class="cr-desc">Find code Claude doesn't know about yet — run anytime, runs automatically on file edits</div></div>

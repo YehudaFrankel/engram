@@ -104,6 +104,7 @@ Two commands. Everything else is automatic.
 
 | Skill | What triggers it | What it does |
 |-------|-----------------|-------------|
+| `plan` | "plan [feature]", "I want to build X" | Structured planning — options with ratings, decision logged live, full plan auto-displayed after every update |
 | `fix-bug` | "fix the bug where..." | Root cause first, fix second, logs so it never happens again |
 | `code-review` | "review this file" | Dead code, missing error handling, convention violations |
 | `security-check` | "check for security issues" | SQL injection, missing auth, exposed sensitive data |
@@ -123,7 +124,7 @@ Type `Generate Skills` and Claude creates additional skills tailored to your exa
 |------|-------------|-------------|
 | `check_memory.py` | After every file edit | Drift detector — catches undocumented functions and CSS changes immediately |
 | `session_journal.py` | After every response | Auto-captures what you worked on — searchable forever, no /learn needed |
-| `stop_check.py` | After every response | Reminds you to save memory when unsaved changes are detected |
+| `stop_check.py` | After every response | Reminds you to save memory when unsaved changes detected; surfaces open plans with unresolved questions |
 | `bootstrap.py` | On first setup | Scans your entire codebase and generates a quick index — immediate codebase awareness |
 | `session_start.py` | When Claude Code opens | Injects memory into context before your first message — Claude starts warm |
 | `precompact.py` | Before `/compact` | Reinjects memory into the compacted context — nothing lost through compaction |
@@ -201,7 +202,7 @@ No human steps between. Claude reads the chain and runs it. Build your own chain
 
 **Self-healing** — when a verify step fails, Claude attempts the minimal fix and retries once before escalating. Add a `## Recovery` section to define what "minimal fix" means for that skill.
 
-**Unsaved memory reminder** — the stop hook monitors every response. When memory has unsaved changes, it surfaces a reminder to run `End Session`. Works with or without git.
+**Unsaved memory reminder** — the stop hook monitors every response. When memory has unsaved changes, it surfaces a reminder to run `End Session`. Also surfaces any open plans with unresolved questions. Works with or without git.
 
 ---
 
@@ -222,8 +223,10 @@ Start Session     ←  Claude knows everything: all lessons, decisions, skills
 ### Daily
 | Command | What it does |
 |---------|-------------|
-| `Start Session` | Reads memory, applies lessons, runs drift check, picks up where you left off |
-| `End Session` | Runs /learn, updates STATUS.md, syncs all memory files |
+| `Start Session` | Reads memory, applies lessons, surfaces open plans, picks up where you left off |
+| `End Session` | Runs /learn, updates STATUS.md, scans plans, syncs all memory files |
+| `Plan [feature]` | Structured planning — options with ratings, decision logged live, full plan auto-displayed |
+| `Show Plan` | Display full current plan file — no summary, always the complete document |
 | `/learn` | Extracts lessons, scores skills (Y/N), logs velocity — auto-runs at End Session |
 | `/evolve` | Patches failing skills, clusters repeated patterns into new reusable skills |
 | `Should I compact?` | Guides safe context compaction without losing memory |
@@ -276,7 +279,7 @@ Four hooks run automatically — no commands needed, no configuration required.
 | `SessionStart` | Every time Claude Code opens | Runs `session_start.py` — injects STATUS.md and MEMORY.md into context before your first message. Claude starts warm without typing `Start Session`. |
 | `PostToolUse` | After every Edit or Write | Runs `check_memory.py --silent` — catches drift immediately after every file change, not just at End Session. |
 | `PreCompact` | Before Claude compacts the conversation | Runs `precompact.py` — reinjects memory files into the compacted context. Run `/learn` first to capture session patterns, then `/compact` freely. |
-| `Stop` | After every response | Runs `session_journal.py` (auto-captures session summary) then `stop_check.py` (reminds you to save memory when unsaved changes are detected). |
+| `Stop` | After every response | Runs `session_journal.py` (auto-captures session summary) then `stop_check.py` (reminds you to save memory; surfaces open plans with unresolved questions). |
 
 All hooks are Python scripts in `tools/` — cross-platform, no dependencies beyond Python.
 
@@ -333,7 +336,7 @@ your-project/
 │   ├── session_start.py             ← Memory injector — SessionStart hook
 │   ├── precompact.py                ← Memory preserver — PreCompact hook
 │   ├── session_journal.py           ← Session auto-capture — Stop hook
-│   ├── stop_check.py               ← Unsaved changes + auto-push — Stop hook
+│   ├── stop_check.py               ← Unsaved changes + open plan reminders — Stop hook
 │   └── bootstrap.py                ← Codebase indexer — run once on new projects
 └── .claude/
     ├── settings.json                ← 4 hooks configured
@@ -351,7 +354,11 @@ your-project/
     │       ├── skill_improvements.md← What /evolve patched and why
     │       ├── regret.md            ← Rejected approaches — never re-proposed
     │       └── velocity.md          ← Estimated vs actual — self-calibrating
+    ├── memory/
+    │   └── plans/
+    │       └── _template.md         ← Plan template — one file per feature
     └── skills/
+        ├── plan/                    ← Structured planning mode
         ├── learn/
         ├── evolve/
         ├── fix-bug/
