@@ -389,6 +389,11 @@ def cmd_stop_check():
     for name, status, count in _stop_open_plans(memory_dir):
         q = 'question' if count == 1 else 'questions'
         messages.append(f'Open plan: {name} ({status}) \u2014 {count} {q} unresolved.')
+    _, pct, _ = _journal_estimate_tokens()
+    if pct >= 80:
+        messages.append(f'Context at {pct}% — type /compact NOW before it fills up.')
+    elif pct >= 60:
+        messages.append(f'Context at {pct}% — consider /compact soon.')
     if messages:
         print(json.dumps({'systemMessage': ' | '.join(messages)}))
 
