@@ -293,12 +293,29 @@ Setup offers two modes based on your project size:
 | | Full | Lite |
 |---|---|---|
 | Memory files | 5 separate files (js_functions, html_css, backend, project_status, user_preferences) | 1 notes file |
-| Drift detection | Automated — runs after every edit | Manual — run `Check Drift` yourself |
+| Static conventions | Inline in CLAUDE.md | `@rules/` files (stack.md, conventions.md, decisions.md) |
+| Drift detection | Automated — runs after every edit via `memory.py` | None — no Python required |
 | Session journal | Auto-captured on every Stop | Not included |
+| Python required | Yes (3.7+) | No — zero Python |
 | Best for | Multi-file projects, teams, long-running codebases | Quick experiments, small solo projects |
-| Upgrade later? | — | Yes — one command |
+| Upgrade later? | — | Yes — `python upgrade.py` |
 
-You can always upgrade from Lite to Full later by running `Setup Memory` again.
+You can upgrade from Lite to Full at any time: `python upgrade.py` adds `tools/memory.py` and lifecycle hooks while keeping your `@rules/` files in parallel.
+
+## Upgrade to Full
+
+When you outgrow Lite mode, one command adds automated drift detection, session journaling, and stop-check reminders:
+
+```bash
+python upgrade.py
+```
+
+What it does:
+1. Downloads `tools/memory.py` (or uses the local copy if present)
+2. Adds 3 lifecycle hooks to `.claude/settings.json` — PostToolUse drift check, Stop journal, Stop reminders
+3. Keeps your `@rules/` files running in parallel — static conventions stay in `rules/`, dynamic session data handled by `memory.py`
+
+Requires Python 3.7+. Restart Claude Code after running.
 
 ---
 
@@ -329,18 +346,19 @@ python update.py                              ←  same thing, from terminal
 
 ```
 your-project/
-├── CLAUDE.md                        ← Claude's instructions for this project
+├── CLAUDE.md                        ← Claude's instructions (loads @rules/ on every session)
 ├── STATUS.md                        ← Full session log — date + what changed
 ├── update.py                        ← Safe kit updater
+├── upgrade.py                       ← Upgrade Lite → Full (adds memory.py + hooks)
 ├── tools/
-│   ├── check_memory.py              ← Drift detector — PostToolUse hook
-│   ├── session_start.py             ← Memory injector — SessionStart hook
-│   ├── precompact.py                ← Memory preserver — PreCompact hook
-│   ├── session_journal.py           ← Session auto-capture — Stop hook
-│   ├── stop_check.py               ← Unsaved changes + open plan reminders — Stop hook
-│   └── bootstrap.py                ← Codebase indexer — run once on new projects
+│   └── memory.py                    ← All lifecycle hooks in one script
+│       ├── --check-drift            ← PostToolUse hook: finds undocumented functions
+│       ├── --journal                ← Stop hook: auto-captures session journal
+│       ├── --stop-check             ← Stop hook: open plan + unsaved change reminders
+│       ├── --session-start          ← Run manually: memory health on session start
+│       └── --bootstrap              ← Run once: full codebase index on new projects
 └── .claude/
-    ├── settings.json                ← 4 hooks configured
+    ├── settings.json                ← 3 hooks configured
     ├── memory/
     │   ├── MEMORY.md                ← Index — auto-loaded every session
     │   ├── lessons.md               ← Lessons from /learn — applied each session
@@ -433,7 +451,7 @@ Never. It only updates the kit commands block in CLAUDE.md and the tools/ script
 Yes — every skill is a plain markdown file in `.claude/skills/`. Edit directly, or type `Generate Skills` and Claude creates new ones for your stack. Add `## Auto-Chain` to any skill to connect it into a workflow.
 
 **What's the difference between Full and Lite mode?**
-Full mode has 5 separate memory files and automated drift detection — best for multi-file projects. Lite mode has one notes file and manual drift checks — best for quick experiments. You can upgrade from Lite to Full at any time.
+Lite mode is zero-Python: `CLAUDE.md` + `@rules/` files (static conventions) + one notes file. No scripts, no hooks, no Python required. Full mode adds `tools/memory.py` and 3 lifecycle hooks — automated drift detection, session journaling, and stop reminders. Upgrade from Lite to Full at any time: `python upgrade.py`.
 
 ---
 

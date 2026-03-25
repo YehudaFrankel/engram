@@ -69,6 +69,39 @@ def _copy_update_script():
         print("  WARN: update.py not found in kit — skipping")
 
 
+def _copy_memory_py():
+    """Copy memory.py from the kit into the project's tools/ directory."""
+    src = HERE / "tools" / "memory.py"
+    dst = ROOT / "tools" / "memory.py"
+    if src.exists():
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        if dst.exists():
+            overwrite = input("  tools/memory.py already exists. Overwrite? [y/N] ").strip().lower()
+            if overwrite != 'y':
+                print("  Skipped tools/memory.py")
+                return
+        shutil.copy2(src, dst)
+        print("  Created tools/memory.py")
+    else:
+        print("  WARN: tools/memory.py not found in kit — skipping")
+
+
+def _copy_upgrade_script():
+    """Copy upgrade.py from the kit into the project root."""
+    src = HERE / "upgrade.py"
+    dst = ROOT / "upgrade.py"
+    if src.exists():
+        if dst.exists():
+            overwrite = input("  upgrade.py already exists. Overwrite? [y/N] ").strip().lower()
+            if overwrite != 'y':
+                print("  Skipped upgrade.py")
+                return
+        shutil.copy2(src, dst)
+        print("  Created upgrade.py")
+    else:
+        print("  WARN: upgrade.py not found in kit — skipping")
+
+
 def _write_gitignore():
     """Add HANDOFF.md to .gitignore — it's a point-in-time snapshot, not a long-lived doc."""
     gitignore = ROOT / ".gitignore"
@@ -230,7 +263,7 @@ def write(path, content):
 
 def session_start_block(js_files, automated):
     if automated:
-        drift_step = "2. Run `python tools/check_memory.py` — fix any drift found (update memory files + sync to bundle)"
+        drift_step = "2. Run `python tools/memory.py --check-drift` — fix any drift found (update memory files + sync to bundle)"
     else:
         js_list = "\n".join(f"   - `{f}`" for f in js_files) if js_files else "   - *(add JS files here)*"
         drift_step = f"""\
@@ -261,7 +294,7 @@ When the user types **"Start Session"**, do the following:
 
 ### `Check Drift`
 When the user types **"Check Drift"**, do the following:
-1. Run `python tools/check_memory.py` (or `python3`) — if the script doesn't exist, manually scan JS files and compare against `js_functions.md`
+1. Run `python tools/memory.py --check-drift` (or `python3`) — if the script doesn't exist, manually scan JS files and compare against `js_functions.md`
 2. Report what's MISSING (in code, not in memory), what's STALE (in memory, not in code), or "OK — no drift detected"
 3. Fix any drift found — update memory files, sync to bundle
 
@@ -275,8 +308,7 @@ When the user types **"Analyze Codebase"**, do the following:
    - `js_functions.md` — new functions found
    - `html_css_reference.md` — new CSS classes found
    - `backend_reference.md` — new endpoints found
-5. **Update `tools/check_memory.py`** — if it exists, make sure JS_FILES and CSS_FILES include all discovered files
-6. **Report** — "Analyzed: [N] JS functions, [N] CSS classes, [N] endpoints. Memory updated."
+5. **Report** — "Analyzed: [N] JS functions, [N] CSS classes, [N] endpoints. Memory updated."
 
 ### `Generate Skills`
 When the user types **"Generate Skills"**, do the following:
@@ -464,17 +496,17 @@ After **any code change** this session, immediately update the relevant memory f
 # ─── Lite Mode ────────────────────────────────────────────────────────────────
 
 def _generate_lite(name, tech):
-    """Generate minimal memory system for small projects."""
+    """Generate zero-Python Lite memory system — @rules/ files, no hooks."""
 
     write("CLAUDE.md", f"""# {name} — Claude Code Project Context
 
-## Session Commands
+@rules/stack.md
+@rules/conventions.md
+@rules/decisions.md
 
-### `Setup Memory`
-When the user types **"Setup Memory"**, do the following:
-1. Check if `setup.py` exists in the current directory
-2. If yes — run it: `python setup.py` (or `python3 setup.py`)
-3. If no — tell the user: "Copy setup.py from the starter kit into this folder first, then type Setup Memory again."
+---
+
+## Session Commands
 
 ### `Start Session`
 When the user types **"Start Session"**, do the following:
@@ -488,6 +520,12 @@ When the user types **"End Session"**, do the following:
 1. Update `STATUS.md` — increment session number, add one-line entry: date + what changed
 2. Update `.claude/memory/notes.md` — add anything new: functions, decisions, gotchas
 3. Report: "Session N complete. Notes updated."
+
+### `Upgrade to Full`
+When the user types **"Upgrade to Full"**, do the following:
+1. Run `python upgrade.py` (or `python3 upgrade.py`) from this project directory
+2. This adds automated drift detection and lifecycle hooks — requires Python 3.7+
+3. After it finishes, restart Claude Code for the hooks to take effect
 
 ### `Generate Skills`
 When the user types **"Generate Skills"**, do the following:
@@ -504,21 +542,6 @@ After **any code change**, immediately add a note to `.claude/memory/notes.md` �
 
 ---
 
-## What This Project Is
-<!-- One paragraph: what it does, who uses it, what problem it solves -->
-
----
-
-## Tech Stack
-{tech if tech else "<!-- Fill in -->"}
-
----
-
-## Notes / Gotchas
-<!-- Non-obvious decisions, things that would trip up a new dev -->
-
----
-
 ## Session Starter Prompt
 > "Read CLAUDE.md and STATUS.md. We're continuing {name}. Check what was last changed and let's pick up where we left off."
 """)
@@ -530,6 +553,63 @@ After **any code change**, immediately add a note to `.claude/memory/notes.md` �
 ## Session Log
 
 - Session 1: Initial project setup
+""")
+
+    # ── @rules/ files (static conventions — load via @rules/ imports) ──
+    write("rules/stack.md", f"""# {name} — Stack
+
+## What This Project Is
+<!-- One paragraph: what it does, who uses it, what problem it solves -->
+
+---
+
+## Tech Stack
+{tech if tech else "<!-- Fill in: languages, frameworks, databases, key libraries -->"}
+
+---
+
+## File Paths
+
+| File | Purpose |
+|------|---------|
+| *(add key files here)* | |
+
+---
+
+## Notes / Gotchas
+<!-- Non-obvious decisions, things that would trip up a new dev -->
+""")
+
+    write("rules/conventions.md", f"""# {name} — Coding Conventions
+
+## Adding an Endpoint / Route
+<!-- Step-by-step: where to register, where to implement, how to read params -->
+
+---
+
+## DB Patterns
+<!-- How to query, insert, update — framework-specific helpers, what to avoid -->
+
+---
+
+## Frontend API Calls
+<!-- How JS calls the backend — fetch wrapper, promise pattern, etc. -->
+
+---
+
+## Files Claude Should Never Touch
+
+| File | Why |
+|------|-----|
+| *(e.g. routing/dispatch file)* | Order-sensitive |
+| *(e.g. shared library)* | Not owned by this project |
+""")
+
+    write("rules/decisions.md", f"""# {name} — Decisions
+
+<!-- Log architectural choices here — don't re-debate these next session. -->
+<!-- Format: ## [date] [short title] / **Decision:** ... / **Why:** ... / **Rejected:** ... -->
+
 """)
 
     write(".claude/memory/MEMORY.md", f"""# Memory Index
@@ -581,6 +661,9 @@ type: project
     # Copy update.py from kit into project
     _copy_update_script()
 
+    # Copy upgrade.py from kit into project
+    _copy_upgrade_script()
+
     # .gitignore — HANDOFF.md is point-in-time, never commit it
     _write_gitignore()
 
@@ -588,18 +671,27 @@ type: project
 Done. Lite memory system created in: {ROOT}
 
 Files created:
-  CLAUDE.md              ← Claude's instructions
+  CLAUDE.md              ← Claude's instructions (loads @rules/ on every session)
   STATUS.md              ← Session log
+  rules/
+    stack.md             ← Tech stack, file paths, gotchas (fill in)
+    conventions.md       ← Coding conventions (fill in)
+    decisions.md         ← Architectural decisions log
   .claude/memory/
     MEMORY.md            ← Auto-loaded index
     notes.md             ← Your one-stop notes file
   tasks/                 ← Task files (commit these)
+  upgrade.py             ← Upgrade to Full when ready
   .claude/skills/        ← Auto-invoked prompt packs (if generated)
 
 Next steps:
-  1. Open Claude Code and type: Start Session
-  2. Work on your project — Claude updates notes.md after each change
-  3. Type: End Session when done
+  1. Fill in rules/stack.md — tech stack, file paths, gotchas
+  2. Open Claude Code and type: Start Session
+  3. Work on your project — Claude updates notes.md after each change
+  4. Type: End Session when done
+
+Want automated drift detection and session journals?
+  python upgrade.py      ← Upgrade to Full (requires Python 3.7+)
 """)
 
 
@@ -958,12 +1050,8 @@ def main():
         css_files  = ask_list("CSS files to track (e.g. css/MyStyle.css)")
         css_prefix = ask("CSS class prefix (e.g. ttw, app, my) — leave blank to skip CSS drift", "")
 
-    print()
-    print("Drift detection mode:")
-    print("  1. Script  — check_memory.py runs automatically after every file edit (recommended)")
-    print("  2. Manual  — Claude reads your JS files directly on session start (no dependencies)")
-    drift_choice = ask("Choose [1/2]", "1")
-    automated = drift_choice.strip() != "2"
+    # Full mode always uses memory.py for drift detection + lifecycle hooks
+    automated = True
 
     print()
 
@@ -1198,238 +1286,46 @@ type: reference
     # ── update.py ──
     _copy_update_script()
 
-    # ── .claude/settings.json (always) ──
-    if automated:
-        settings_content = '''{
+    # ── .claude/settings.json ──
+    settings_content = '''{
   "permissions": {
     "allow": ["Read", "Glob", "Grep"],
     "deny": []
   },
   "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [{ "type": "command", "command": "python tools/session_start.py", "timeout": 10, "statusMessage": "Loading memory..." }]
-      }
-    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
-        "hooks": [{ "type": "command", "command": "python tools/check_memory.py --silent" }]
-      }
-    ],
-    "PreCompact": [
-      {
-        "hooks": [{ "type": "command", "command": "python tools/precompact.py", "timeout": 10, "statusMessage": "Preserving memory..." }]
+        "hooks": [{ "type": "command", "command": "python tools/memory.py --check-drift --silent" }]
       }
     ],
     "Stop": [
       {
-        "hooks": [{ "type": "command", "command": "python tools/stop_check.py", "timeout": 5 }]
+        "hooks": [
+          { "type": "command", "command": "python tools/memory.py --journal", "timeout": 10, "statusMessage": "Capturing session journal..." },
+          { "type": "command", "command": "python tools/memory.py --stop-check", "timeout": 5 }
+        ]
       }
     ]
   }
 }'''
-    else:
-        settings_content = '''{
-  "permissions": {
-    "allow": ["Read", "Glob", "Grep"],
-    "deny": []
-  }
-}'''
     write(".claude/settings.json", settings_content)
 
-    # ── tools/check_memory.py (only if automated) ──
-    if automated:
-        js_file_lines  = "\n".join(f'    ROOT / "{f}",' for f in js_files) or '    # ROOT / "js/YourFunctions.js",'
-        css_file_lines = "\n".join(f'    ROOT / "{f}",' for f in css_files) or '    # ROOT / "css/YourStyle.css",'
-        css_pattern    = rf'r"\.({css_prefix}-[\w-]+)"' if css_prefix else r'r"\.(your-prefix-[\w-]+)"'
-
-        write("tools/check_memory.py", f'''#!/usr/bin/env python3
-"""
-Claude Code memory drift checker for {name}.
-Usage: python tools/check_memory.py
-Run from the project root (or any subdirectory).
-"""
-
-import re
-import sys
-from pathlib import Path
-
-SILENT = "--silent" in sys.argv
-
-SCRIPT_DIR = Path(__file__).resolve().parent
-ROOT = SCRIPT_DIR.parent
-
-JS_FILES = [
-{js_file_lines}
-]
-
-CSS_FILES = [
-{css_file_lines}
-]
-
-CSS_CLASS_PATTERN = {css_pattern}
-
-MODIFIER_SUFFIXES = (
-    \'-active\', \'-open\', \'-disabled\', \'-locked\', \'-empty\', \'-success\',
-    \'-error\', \'-loading\', \'-collapsed\', \'-dirty\', \'-sm\', \'-lg\', \'-xs\',
-    \'-full\', \'-inline\', \'-new\', \'-replied\', \'-flush\',
-)
-
-MEMORY_DIR = ROOT / ".claude/memory"
-JS_MEMORY  = MEMORY_DIR / "js_functions.md"
-CSS_MEMORY = MEMORY_DIR / "html_css_reference.md"
-
-
-FUNC_PATTERNS = [
-    re.compile(r\'^function\\s+(\\w+)\\s*\\(\', re.MULTILINE),
-    re.compile(r\'^async\\s+function\\s+(\\w+)\\s*\\(\', re.MULTILINE),
-    re.compile(r\'^(?:const|let|var)\\s+(\\w+)\\s*=\\s*(?:async\\s+)?function\\s*\\(\', re.MULTILINE),
-    re.compile(r\'^(?:const|let|var)\\s+(\\w+)\\s*=\\s*(?:async\\s*)?\\([^)]*\\)\\s*=>\', re.MULTILINE),
-    re.compile(r\'^(?:const|let|var)\\s+(\\w+)\\s*=\\s*(?:async\\s+)?\\w+\\s*=>\', re.MULTILINE),
-    re.compile(r\'^\\s{{2,}}(\\w+)\\s*\\([^)]*\\)\\s*\\{{\', re.MULTILINE),
-    re.compile(r\'^\\s+(\\w+)\\s*:\\s*(?:async\\s+)?function\', re.MULTILINE),
-]
-
-
-def extract_js_functions(paths):
-    found = {{}}
-    for path in paths:
-        if not path.exists():
-            if not SILENT:
-                print(f"  WARN: JS file not found: {{path}}")
-            continue
-        if path.stat().st_size > 500_000:
-            if not SILENT:
-                print(f"  WARN: Skipping {{path.name}} — file exceeds 500KB (likely bundled/minified)")
-            continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        for pattern in FUNC_PATTERNS:
-            for m in pattern.finditer(text):
-                name = m.group(1)
-                if name not in found:
-                    found[name] = path.name
-    return found
-
-
-def extract_memory_functions(md_path):
-    if not md_path.exists():
-        if not SILENT:
-            print(f"  WARN: memory file not found: {{md_path}}")
-        return set()
-    text = md_path.read_text(encoding="utf-8", errors="ignore")
-    pattern = re.compile(r\'\\|\\s*`(\\w+)(?:\\([^)]*\\))?`\\s*\\|\')
-    return set(m.group(1) for m in pattern.finditer(text))
-
-
-def extract_css_classes(paths):
-    found = set()
-    pattern = re.compile(CSS_CLASS_PATTERN)
-    for path in paths:
-        if not path.exists():
-            if not SILENT:
-                print(f"  WARN: CSS file not found: {{path}}")
-            continue
-        if path.stat().st_size > 500_000:
-            if not SILENT:
-                print(f"  WARN: Skipping {{path.name}} — file exceeds 500KB (likely bundled/minified)")
-            continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        for m in pattern.finditer(text):
-            found.add(m.group(1))
-    return found
-
-
-def extract_memory_css_classes(md_path):
-    if not md_path.exists():
-        return set()
-    text = md_path.read_text(encoding="utf-8", errors="ignore")
-    pattern = re.compile(CSS_CLASS_PATTERN)
-    return set(m.group(1) for m in pattern.finditer(text))
-
-
-def main():
-    drift = False
-
-    if JS_FILES:
-        code_fns = extract_js_functions(JS_FILES)
-        mem_fns  = extract_memory_functions(JS_MEMORY)
-        missing  = set(code_fns) - mem_fns
-        stale    = mem_fns - set(code_fns)
-        if missing:
-            drift = True
-            print("MISSING from js_functions.md (exist in code):")
-            for fn in sorted(missing):
-                print(f"  + {{fn}}  [{{code_fns[fn]}}]")
-        if stale:
-            drift = True
-            print("STALE in js_functions.md (no longer in code):")
-            for fn in sorted(stale):
-                print(f"  - {{fn}}")
-
-    if CSS_FILES and "your-prefix" not in CSS_CLASS_PATTERN:
-        code_cls  = extract_css_classes(CSS_FILES)
-        mem_cls   = extract_memory_css_classes(CSS_MEMORY)
-        stale_css = mem_cls - code_cls
-        if stale_css:
-            drift = True
-            print("STALE in html_css_reference.md (no longer in CSS):")
-            for cls in sorted(stale_css):
-                print(f"  - .{{cls}}")
-        significant = {{c for c in code_cls - mem_cls if not any(c.endswith(s) for s in MODIFIER_SUFFIXES)}}
-        if significant:
-            drift = True
-            print("NEW CSS classes not in html_css_reference.md:")
-            for cls in sorted(significant):
-                print(f"  + .{{cls}}")
-
-    if not drift:
-        if not SILENT:
-            print("OK — no drift detected")
-        sys.exit(0)
-    else:
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
-''')
-
-    # ─── Lifecycle Hooks ──────────────────────────────────────────────────────
-    # Copy lifecycle hook scripts (only if automated) ──
-    if automated:
-        for script_name in ("session_start.py", "precompact.py", "stop_check.py"):
-            src = HERE / "tools" / script_name
-            dst = ROOT / "tools" / script_name
-            if src.exists():
-                dst.parent.mkdir(parents=True, exist_ok=True)
-                if dst.exists():
-                    overwrite = input(f"  tools/{script_name} already exists. Overwrite? [y/N] ").strip().lower()
-                    if overwrite != 'y':
-                        print(f"  Skipped tools/{script_name}")
-                        continue
-                shutil.copy2(src, dst)
-                print(f"  Created tools/{script_name}")
-            else:
-                print(f"  WARN: tools/{script_name} not found in kit — skipping")
+    # ── tools/memory.py ──
+    _copy_memory_py()
 
     # ── Done ──
-    drift_note = (
-        "  4 hooks installed: SessionStart, PostToolUse, PreCompact, Stop\n"
-        "  Run manually: python tools/check_memory.py"
-        if automated else
-        "  Claude will manually diff JS functions on Start Session — no script needed"
-    )
     print(f"""
-Done. Memory system created in: {ROOT}
+Done. Full memory system created in: {ROOT}
 
 Next steps:
   1. Fill in CLAUDE.md — tech stack, file paths, coding conventions
   2. Open Claude Code and type: Start Session
   3. Claude will check memory, run drift detection, and report status
 
-Drift detection:
-{drift_note}
+Drift detection (memory.py auto-detects all JS/CSS files):
+  3 hooks installed: PostToolUse (drift), Stop (journal + stop-check)
+  Run manually: python tools/memory.py --check-drift
 
 Task files (commit these to your repo):
   tasks/todo.md       — Claude writes plans here before touching code
