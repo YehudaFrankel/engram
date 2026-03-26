@@ -517,6 +517,69 @@ h2 {
   .plan-demo-wrap { grid-template-columns: 1fr; }
 }
 
+/* ─── MAP DEMO ─── */
+.map-demo-wrap {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 3.5rem; align-items: center; margin-top: 3rem;
+}
+.map-card {
+  background: var(--s1); border: 1px solid var(--border2);
+  border-left: 2px solid var(--amber); min-height: 330px;
+  font-size: .74rem; overflow: hidden;
+}
+.mc-prompt {
+  padding: .7rem 1rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: .4rem;
+}
+.mc-gt { color: var(--amber); }
+.mc-cmd { color: var(--text); }
+.mc-caret {
+  display: inline-block; width: 6px; height: 12px;
+  background: var(--amber); vertical-align: text-bottom;
+  animation: blink .9s step-end infinite;
+}
+.mc-scan {
+  padding: .55rem 1rem; border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,.18); min-height: 1px;
+}
+.mc-scan-line {
+  font-size: .68rem; line-height: 1.95; color: var(--muted);
+  opacity: 0; transform: translateY(2px);
+  transition: opacity .28s, transform .28s;
+}
+.mc-scan-line.vis  { opacity: 1; transform: translateY(0); }
+.mc-scan-line.ok   { color: var(--green); }
+.mc-scan-line.note { color: var(--amber); }
+.mc-body { padding: .7rem 1rem 1rem; }
+.mc-flow { margin-bottom: .8rem; }
+.mc-flow-hdr {
+  color: var(--amber); font-size: .65rem; letter-spacing: .05em;
+  margin-bottom: .2rem;
+  opacity: 0; transform: translateY(3px);
+  transition: opacity .3s, transform .3s;
+}
+.mc-flow-hdr.vis { opacity: 1; transform: translateY(0); }
+.mc-row {
+  display: flex; gap: .5rem; padding: .05rem 0;
+  opacity: 0; transform: translateX(-5px);
+  transition: opacity .25s, transform .25s;
+}
+.mc-row.vis { opacity: 1; transform: translateX(0); }
+.mc-lbl { color: var(--dim); width: 54px; flex-shrink: 0; font-size: .67rem; }
+.mc-val { color: var(--text); font-size: .69rem; }
+.mc-lno { color: var(--amber); opacity: .65; }
+.mc-done {
+  margin-top: .7rem; padding: .42rem .7rem;
+  border-left: 2px solid var(--green);
+  background: rgba(109,186,120,.04);
+  color: var(--green); font-size: .69rem;
+  opacity: 0; transition: opacity .4s;
+}
+.mc-done.vis { opacity: 1; }
+@media (max-width: 900px) {
+  .map-demo-wrap { grid-template-columns: 1fr; }
+}
+
 /* ─── SKILLS TABLE ─── */
 .skills-tbl {
   width: 100%; border-collapse: collapse;
@@ -758,6 +821,8 @@ footer {
     <a class="nav-a" href="#loop">loop</a>
     <span class="nav-div">·</span>
     <a class="nav-a" href="#skills">skills</a>
+    <span class="nav-div">·</span>
+    <a class="nav-a" href="#map">map</a>
     <span class="nav-div">·</span>
     <a class="nav-a" href="#commands">commands</a>
     <span class="nav-div">·</span>
@@ -1071,6 +1136,38 @@ footer {
           </div>
           <div class="pc-body" id="pc-body"></div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAP CODEBASE -->
+<section id="map" style="background:#0d0e12;">
+  <div class="wrap-lg">
+    <div class="sec-label">optional skill</div>
+    <h2>Navigate any codebase<br><span class="h2-amber">without grepping.</span></h2>
+
+    <div class="map-demo-wrap reveal">
+      <div class="plan-demo-desc">
+        <p class="sec-desc" style="margin-top:0;">
+          Say <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">map the codebase</code> and Claude scans every file, detects the stack, traces each feature from entry point to DB, and writes a <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">code-map.md</code> that makes any project instantly navigable.
+        </p>
+        <div class="plan-demo-bullets">
+          <span><em>›</em> Entry → handler → service → DB for every feature</span>
+          <span><em>›</em> Line reference table for your largest logic files</span>
+          <span><em>›</em> Works with Node, Java, Python, Rails, Django, .NET</span>
+          <span><em>›</em> Never grep for a function name again — just read the map</span>
+          <span><em>›</em> Re-run after major refactors to keep it current</span>
+        </div>
+      </div>
+
+      <div class="map-card" id="map-anim">
+        <div class="mc-prompt">
+          <span class="mc-gt">›</span>
+          <span class="mc-cmd" id="mc-cmd"></span><span class="mc-caret" id="mc-caret"></span>
+        </div>
+        <div class="mc-scan" id="mc-scan"></div>
+        <div class="mc-body" id="mc-body"></div>
       </div>
     </div>
   </div>
@@ -1538,6 +1635,113 @@ function initPlanAnim() {
   planObs.observe(card);
 }
 
+// ─── MAP ANIMATION ───
+function initMapAnim() {
+  var card    = document.getElementById('map-anim');
+  var cmdEl   = document.getElementById('mc-cmd');
+  var caretEl = document.getElementById('mc-caret');
+  var scanEl  = document.getElementById('mc-scan');
+  var bodyEl  = document.getElementById('mc-body');
+  if (!card) return;
+
+  var tids = [];
+  function at(fn, ms) { tids.push(setTimeout(fn, ms)); }
+
+  function vis(el) { requestAnimationFrame(function() { requestAnimationFrame(function() { el.classList.add('vis'); }); }); }
+
+  function addScan(cls, text) {
+    var el = document.createElement('div');
+    el.className = 'mc-scan-line' + (cls ? ' ' + cls : '');
+    el.textContent = text;
+    scanEl.appendChild(el);
+    vis(el);
+  }
+
+  function addFlow(hdr) {
+    var flow = document.createElement('div');
+    flow.className = 'mc-flow';
+    var h = document.createElement('div');
+    h.className = 'mc-flow-hdr';
+    h.textContent = '## ' + hdr;
+    flow.appendChild(h);
+    bodyEl.appendChild(flow);
+    vis(h);
+    return flow;
+  }
+
+  function addRow(flow, lbl, val) {
+    var row = document.createElement('div');
+    row.className = 'mc-row';
+    row.innerHTML = '<span class="mc-lbl">' + lbl + '</span><span class="mc-val">' + val + '</span>';
+    flow.appendChild(row);
+    vis(row);
+  }
+
+  function typeCmd(text, cb) {
+    var i = 0;
+    cmdEl.textContent = '';
+    caretEl.style.display = 'inline-block';
+    (function next() {
+      if (i < text.length) {
+        cmdEl.textContent += text[i++];
+        tids.push(setTimeout(next, 52 + Math.random() * 38));
+      } else {
+        caretEl.style.display = 'none';
+        cb && cb();
+      }
+    })();
+  }
+
+  function reset() {
+    tids.forEach(clearTimeout); tids = [];
+    cmdEl.textContent = '';
+    caretEl.style.display = 'inline-block';
+    scanEl.innerHTML = '';
+    bodyEl.innerHTML = '';
+  }
+
+  var f1, f2;
+
+  function run() {
+    reset();
+    at(function() {
+      typeCmd('map the codebase', function() {
+        at(function() { addScan('',     '// scanning project files...'); },            400);
+        at(function() { addScan('ok',   '\u2713 stack: Node.js \u00b7 Express \u00b7 PostgreSQL'); }, 1050);
+        at(function() { addScan('ok',   '\u2713 14 routes \u00b7 6 controllers \u00b7 4 services'); }, 1650);
+        at(function() { addScan('note', '// tracing feature flows...'); },             2300);
+
+        at(function() { f1 = addFlow('User Registration'); },                          3050);
+        at(function() { addRow(f1, 'Entry',   'POST /api/auth/signup'); },             3300);
+        at(function() { addRow(f1, 'Handler', 'AuthController.register()'); },         3550);
+        at(function() { addRow(f1, 'Logic',   'UserService.createUser() <span class="mc-lno">[L142]</span>'); }, 3800);
+        at(function() { addRow(f1, 'DB',      'users, email_queue'); },                4050);
+
+        at(function() { f2 = addFlow('Checkout'); },                                   4800);
+        at(function() { addRow(f2, 'Entry',   'POST /api/order/place'); },             5050);
+        at(function() { addRow(f2, 'Handler', 'OrderController.place()'); },           5300);
+        at(function() { addRow(f2, 'Logic',   'CartService.checkout() <span class="mc-lno">[L891]</span>'); }, 5550);
+        at(function() { addRow(f2, 'DB',      'orders, inventory, payments'); },       5800);
+
+        at(function() {
+          var done = document.createElement('div');
+          done.className = 'mc-done';
+          done.textContent = '\u2713 code-map.md written \u2192 .claude/rules/';
+          bodyEl.appendChild(done);
+          requestAnimationFrame(function() { requestAnimationFrame(function() { done.classList.add('vis'); }); });
+        }, 6700);
+
+        at(run, 10800);
+      });
+    }, 500);
+  }
+
+  var mapObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) { run(); mapObs.unobserve(e.target); } });
+  }, { threshold: 0.25 });
+  mapObs.observe(card);
+}
+
 // ─── SCROLL REVEAL ───
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
@@ -1561,6 +1765,7 @@ function copyCmd(btn, text) {
 // ─── RUN ───
 runTerminal();
 initPlanAnim();
+initMapAnim();
 </script>
 </body>
 </html>
