@@ -279,6 +279,7 @@ Start Session     ←  Claude knows everything: all lessons, decisions, skills
 | `Check Drift` | Manually run the drift detector — find undocumented functions and stale entries |
 | `Analyze Codebase` | Full scan of all JS, CSS, and backend — documents every function, class, and endpoint |
 | `Code Health` | Finds leftover `console.log`, hardcoded values, dead code, missing error handling — reports file + line |
+| `/check-anthropic` | Fetch Claude Code releases + docs, cross-reference hooks/features in use, report gaps rated High/Medium/Low — run every few weeks |
 
 ### Setup and recovery
 | Command | What it does |
