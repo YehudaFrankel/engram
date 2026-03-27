@@ -208,7 +208,7 @@ h1 {
 }
 .btn-primary {
   background: var(--amber); color: #1c1508; font-weight: 600;
-  animation: btn-breathe 3s ease-in-out infinite;
+  animation: btn-breathe 1.4s ease-in-out infinite;
 }
 .btn-primary:hover {
   background: var(--amber2); transform: translateY(-1px);
@@ -217,7 +217,7 @@ h1 {
 }
 @keyframes btn-breathe {
   0%,100% { box-shadow: 0 0 8px rgba(212,137,10,.3); }
-  50%      { box-shadow: 0 0 22px rgba(212,137,10,.7), 0 0 40px rgba(212,137,10,.2); }
+  50%      { box-shadow: 0 0 28px rgba(212,137,10,.9), 0 0 50px rgba(212,137,10,.35); }
 }
 .btn-ghost {
   color: var(--muted); border: 1px solid var(--border2);
@@ -277,10 +277,10 @@ section { border-top: 1px solid var(--border); position: relative; overflow: hid
   background: #0d0e12;
 }
 
-/* Skills — dark radial vignette so hex shows at edges but text stays readable */
+/* Skills — dark center so text is readable, hex visible at edges only */
 #skills {
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(13,14,18,.85) 25%, transparent 72%),
+    radial-gradient(ellipse at 50% 50%, rgba(13,14,18,.96) 40%, rgba(13,14,18,.7) 65%, transparent 85%),
     #0d0e12;
 }
 
@@ -411,7 +411,7 @@ h2 {
 }
 .h2-amber {
   color: var(--amber);
-  animation: h2-pulse 3.5s ease-in-out infinite;
+  animation: h2-pulse 1.6s ease-in-out infinite;
 }
 @keyframes h2-pulse {
   0%,100% { text-shadow: 0 0 8px rgba(212,137,10,.15); }
@@ -1996,7 +1996,7 @@ function copyCmd(btn, text) {
     W = canvas.width  = canvas.parentElement.offsetWidth;
     H = canvas.height = canvas.parentElement.offsetHeight;
     hexes = [];
-    var R = 28, dx = R * 1.75, dy = R * 1.52;
+    var R = 16, dx = R * 1.75, dy = R * 1.52;
     for (var row = -1; row < H / dy + 2; row++) {
       for (var col = -1; col < W / dx + 2; col++) {
         var x = col * dx + (row % 2 ? dx / 2 : 0);
