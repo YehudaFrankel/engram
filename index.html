@@ -899,7 +899,7 @@ footer {
 
 <!-- HERO -->
 <div class="hero-section">
-<canvas id="particleBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.55;"></canvas>
+<canvas id="particleBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.85;"></canvas>
 <div class="hero">
   <div>
     <div class="hero-eyebrow"><span class="dot"></span>persistent memory for Claude Code · open source · MIT · built on official Claude Code APIs</div>
@@ -996,7 +996,7 @@ footer {
 
 <!-- LIVING SYSTEM -->
 <section id="living">
-<canvas id="neuralBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.35;"></canvas>
+<canvas id="neuralBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.7;"></canvas>
   <div class="wrap">
     <div class="sec-label">why it's different</div>
     <h2>Not a config file.<br><span style="color:var(--green)">A living environment.</span></h2>
@@ -1108,7 +1108,7 @@ footer {
 
 <!-- SKILLS -->
 <section id="skills">
-<canvas id="hexBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.22;"></canvas>
+<canvas id="hexBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.55;"></canvas>
   <div class="wrap-lg">
     <div class="sec-label">agentic toolkit</div>
     <h2>7 skills ship ready.<br><span class="h2-amber">Generate Skills builds the rest.</span></h2>
@@ -1242,7 +1242,7 @@ footer {
 
 <!-- AGENTIC TIER -->
 <section id="tiers">
-<canvas id="matrixBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.13;"></canvas>
+<canvas id="matrixBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.4;"></canvas>
   <div class="wrap">
     <div class="sec-label">architecture</div>
     <h2>Three tiers.<br><span class="h2-amber">Most tools ship one.</span></h2>
@@ -1445,7 +1445,7 @@ footer {
 
 <!-- COMMANDS -->
 <section id="commands">
-<canvas id="scanBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.18;"></canvas>
+<canvas id="scanBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.5;"></canvas>
   <div class="wrap">
     <div class="sec-label">every command</div>
     <h2>Type these in <span class="h2-amber">Claude Code</span></h2>
@@ -1918,13 +1918,13 @@ function copyCmd(btn, text) {
   }
 
   function draw() {
-    ctx.fillStyle = 'rgba(13,14,18,.18)';
+    ctx.fillStyle = 'rgba(13,14,18,.08)';
     ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = AMBER;
     ctx.font = FONT + 'px monospace';
     for (var i = 0; i < drops.length; i++) {
       var ch = CHARS[Math.random() * CHARS.length | 0];
-      ctx.globalAlpha = 0.12 + Math.random() * 0.25;
+      ctx.globalAlpha = 0.35 + Math.random() * 0.4;
       ctx.fillText(ch, i * FONT, drops[i] * FONT);
       ctx.globalAlpha = 1;
       if (drops[i] * FONT > H && Math.random() > 0.975) drops[i] = 0;
@@ -1981,8 +1981,8 @@ function copyCmd(btn, text) {
       var h = hexes[i];
       var pulse = (Math.sin(t * h.speed * 300 + h.phase) + 1) / 2;
       hex(h.x, h.y, h.r - 1);
-      ctx.strokeStyle = 'rgba(212,137,10,' + (0.04 + pulse * 0.18) + ')';
-      ctx.lineWidth = 0.6;
+      ctx.strokeStyle = 'rgba(212,137,10,' + (0.14 + pulse * 0.5) + ')';
+      ctx.lineWidth = 0.8;
       ctx.stroke();
     }
   }
@@ -2037,8 +2037,8 @@ function copyCmd(btn, text) {
           ctx.beginPath();
           ctx.moveTo(nodes[i].x, nodes[i].y);
           ctx.lineTo(nodes[j].x, nodes[j].y);
-          ctx.strokeStyle = 'rgba(109,186,120,' + ((1 - d/180) * 0.2) + ')';
-          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = 'rgba(109,186,120,' + ((1 - d/180) * 0.45) + ')';
+          ctx.lineWidth = 0.8;
           ctx.stroke();
         }
       }
@@ -2049,7 +2049,7 @@ function copyCmd(btn, text) {
       var pulse = (Math.sin(t + i * 0.7) + 1) / 2;
       ctx.beginPath();
       ctx.arc(nodes[i].x, nodes[i].y, 1.5 + pulse * 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(109,186,120,' + (0.3 + pulse * 0.5) + ')';
+      ctx.fillStyle = 'rgba(109,186,120,' + (0.6 + pulse * 0.4) + ')';
       ctx.fill();
     }
   }
@@ -2087,19 +2087,19 @@ function copyCmd(btn, text) {
     ctx.lineWidth = 0.5;
     for (var x = 0; x < W; x += GRID) {
       ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H);
-      ctx.strokeStyle = 'rgba(212,137,10,.04)'; ctx.stroke();
+      ctx.strokeStyle = 'rgba(212,137,10,.10)'; ctx.stroke();
     }
     for (var y = 0; y < H; y += GRID) {
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y);
-      ctx.strokeStyle = 'rgba(212,137,10,.04)'; ctx.stroke();
+      ctx.strokeStyle = 'rgba(212,137,10,.10)'; ctx.stroke();
     }
 
     // glowing intersections near scan
     for (var x = 0; x < W; x += GRID) {
       for (var y = 0; y < H; y += GRID) {
         var dy = Math.abs(y - scanY);
-        if (dy < 60) {
-          var a = (1 - dy / 60) * 0.55;
+        if (dy < 100) {
+          var a = (1 - dy / 100) * 0.85;
           ctx.beginPath();
           ctx.arc(x, y, 1.5, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(212,137,10,' + a + ')';
@@ -2109,12 +2109,12 @@ function copyCmd(btn, text) {
     }
 
     // scan beam
-    var grad = ctx.createLinearGradient(0, scanY - 30, 0, scanY + 30);
+    var grad = ctx.createLinearGradient(0, scanY - 50, 0, scanY + 50);
     grad.addColorStop(0, 'rgba(212,137,10,0)');
-    grad.addColorStop(0.5, 'rgba(212,137,10,.12)');
+    grad.addColorStop(0.5, 'rgba(212,137,10,.28)');
     grad.addColorStop(1, 'rgba(212,137,10,0)');
     ctx.fillStyle = grad;
-    ctx.fillRect(0, scanY - 30, W, 60);
+    ctx.fillRect(0, scanY - 50, W, 100);
   }
 
   var raf;
@@ -2181,7 +2181,7 @@ initMapAnim();
         var dx = p.x - q.x, dy = p.y - q.y;
         var dist = Math.sqrt(dx * dx + dy * dy);
         if (dist < CONNECT_DIST) {
-          var alpha = (1 - dist / CONNECT_DIST) * 0.18;
+          var alpha = (1 - dist / CONNECT_DIST) * 0.38;
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(q.x, q.y);
