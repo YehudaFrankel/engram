@@ -277,10 +277,10 @@ section { border-top: 1px solid var(--border); position: relative; overflow: hid
   background: #0d0e12;
 }
 
-/* Skills — dark center so text is readable, hex visible at edges only */
+/* Skills — almost fully dark center, hex visible at outer edges only */
 #skills {
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(13,14,18,.96) 40%, rgba(13,14,18,.7) 65%, transparent 85%),
+    radial-gradient(ellipse at 50% 50%, rgba(13,14,18,.98) 50%, rgba(13,14,18,.85) 70%, rgba(13,14,18,.4) 88%, transparent 100%),
     #0d0e12;
 }
 
@@ -409,14 +409,7 @@ h2 {
   letter-spacing: -.025em; color: var(--text);
   margin-bottom: .85rem;
 }
-.h2-amber {
-  color: var(--amber);
-  animation: h2-pulse 1.6s ease-in-out infinite;
-}
-@keyframes h2-pulse {
-  0%,100% { text-shadow: 0 0 8px rgba(212,137,10,.15); }
-  50%      { text-shadow: 0 0 20px rgba(212,137,10,.55), 0 0 40px rgba(212,137,10,.2); }
-}
+.h2-amber { color: var(--amber); }
 
 .sec-desc {
   font-size: .9rem; color: var(--muted); line-height: 1.8;
@@ -1150,7 +1143,7 @@ footer {
 
 <!-- SKILLS -->
 <section id="skills">
-<canvas id="hexBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.28;"></canvas>
+<canvas id="hexBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.15;"></canvas>
   <div class="wrap-lg">
     <div class="sec-label">agentic toolkit</div>
     <h2>7 skills ship ready.<br><span class="h2-amber">Generate Skills builds the rest.</span></h2>
@@ -2018,13 +2011,19 @@ function copyCmd(btn, text) {
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
-    t += 0.012;
+    t += 0.022;
+    var cx = W / 2, cy = H / 2;
+    var maxDist = Math.sqrt(cx * cx + cy * cy);
     for (var i = 0; i < hexes.length; i++) {
       var h = hexes[i];
-      var pulse = (Math.sin(t * h.speed * 300 + h.phase) + 1) / 2;
+      var dx = h.x - cx, dy = h.y - cy;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      // ripple: wave travels outward from center
+      var wave = Math.sin(t * 2.2 - (dist / maxDist) * Math.PI * 3);
+      var pulse = (wave + 1) / 2;
       hex(h.x, h.y, h.r - 1);
-      ctx.strokeStyle = 'rgba(212,137,10,' + (0.14 + pulse * 0.5) + ')';
-      ctx.lineWidth = 0.8;
+      ctx.strokeStyle = 'rgba(212,137,10,' + (0.08 + pulse * 0.65) + ')';
+      ctx.lineWidth = 0.6 + pulse * 0.6;
       ctx.stroke();
     }
   }
