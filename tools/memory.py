@@ -131,7 +131,23 @@ def cmd_capture_correction():
     except Exception:
         return
 
-    if not prompt or not _is_correction(prompt):
+    if not prompt:
+        return
+
+    # --- remember: prefix → write directly to draft-lessons.md ---
+    if prompt.lower().startswith('remember:'):
+        lesson = prompt[len('remember:'):].strip()
+        if lesson:
+            memory_dir = find_memory_dir()
+            draft = memory_dir / 'tasks' / 'draft-lessons.md'
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M')
+            entry = f'\n- [{timestamp}] {lesson}'
+            draft.parent.mkdir(parents=True, exist_ok=True)
+            with open(draft, 'a', encoding='utf-8') as f:
+                f.write(entry)
+        return
+
+    if not _is_correction(prompt):
         return
 
     memory_dir = find_memory_dir()
