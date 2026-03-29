@@ -125,7 +125,7 @@ def _is_correction(prompt):
 
 def cmd_capture_correction():
     try:
-        raw = sys.stdin.read()
+        raw = sys.stdin.buffer.read().decode('utf-8', errors='replace')
         data = json.loads(raw)
         prompt = data.get('prompt', '').strip()
     except Exception:
