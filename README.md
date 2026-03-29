@@ -80,7 +80,7 @@ python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githu
 **Manual:** Download and run `setup.py` directly from the repo.
 </details>
 
-Setup asks about your stack, configures itself, and builds everything automatically.
+Setup auto-detects your project name and tech stack from the folder — no questions asked.
 
 | | Heavy tools | Clankbrain |
 |---|---|---|
@@ -89,7 +89,7 @@ Setup asks about your stack, configures itself, and builds everything automatica
 | Database | setup required | markdown + git |
 | Data leaves machine | yes | never — local by default |
 | Framework lock-in | yes | any project, any stack |
-| Config needed | varies | project name + tech stack |
+| Config needed | varies | none — auto-detected from folder |
 | GitHub account needed | sometimes | no — sync is optional |
 | Setup time | 30–60 min | ~5 minutes |
 

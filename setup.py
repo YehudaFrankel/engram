@@ -230,6 +230,78 @@ def detect_css_prefix(css_files):
     return top_prefix if top_count >= 3 and top_prefix not in FRAMEWORK_PREFIXES else ""
 
 
+# ─── Tech Stack Detection ─────────────────────────────────────────────────────
+
+def detect_tech_stack():
+    """Auto-detect tech stack from files present in the project root."""
+    layers = []
+
+    def rglob_skip(pattern):
+        return [f for f in ROOT.rglob(pattern)
+                if 'node_modules' not in str(f) and '.git' not in str(f)
+                and '__pycache__' not in str(f)]
+
+    # ── Backend languages ──
+    if rglob_skip('*.java') or (ROOT / 'pom.xml').exists() or (ROOT / 'build.gradle').exists():
+        layers.append('Java')
+
+    if (ROOT / 'go.mod').exists():
+        layers.append('Go')
+
+    if (ROOT / 'Cargo.toml').exists():
+        layers.append('Rust')
+
+    if rglob_skip('*.cs') or rglob_skip('*.csproj'):
+        layers.append('C#')
+
+    if rglob_skip('*.rb') or (ROOT / 'Gemfile').exists():
+        layers.append('Ruby')
+
+    if rglob_skip('*.php'):
+        layers.append('PHP')
+
+    # ── Frontend frameworks (from package.json) ──
+    pkg = ROOT / 'package.json'
+    if pkg.exists():
+        try:
+            import json as _json
+            data = _json.loads(pkg.read_text(encoding='utf-8'))
+            deps = {**data.get('dependencies', {}), **data.get('devDependencies', {})}
+            if 'react' in deps or 'react-dom' in deps:
+                layers.append('React')
+            elif 'next' in deps:
+                layers.append('Next.js')
+            elif 'vue' in deps:
+                layers.append('Vue')
+            elif 'nuxt' in deps:
+                layers.append('Nuxt')
+            elif '@sveltejs/kit' in deps:
+                layers.append('SvelteKit')
+            elif 'svelte' in deps:
+                layers.append('Svelte')
+            elif 'angular' in deps or '@angular/core' in deps:
+                layers.append('Angular')
+            else:
+                layers.append('Node.js')
+        except Exception:
+            layers.append('Node.js')
+    else:
+        js = [f for f in rglob_skip('*.js') if not str(f).endswith('.min.js')]
+        if js:
+            layers.append('Vanilla JS')
+
+    # ── Python (after JS check so Node doesn't shadow it) ──
+    if rglob_skip('*.py') or (ROOT / 'requirements.txt').exists() or (ROOT / 'Pipfile').exists():
+        if 'Python' not in layers:  # avoid dup if already added above
+            layers.append('Python')
+
+    # ── DB / SQL ──
+    if rglob_skip('*.sql'):
+        layers.append('SQL')
+
+    return ' + '.join(layers) if layers else 'unknown'
+
+
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
 def ask(prompt, default=""):
@@ -1005,8 +1077,11 @@ def main():
     version = _get_version()
     print(f"\n=== Claude Code Memory Starter Kit v{version} ===\n")
 
-    name = ask("Project name", ROOT.name)
-    tech = ask("Tech stack (e.g. Java + Vanilla JS + SQL Server)", "")
+    name = ROOT.name
+    tech = detect_tech_stack()
+    print(f"Project:    {name}")
+    print(f"Stack:      {tech}")
+    print()
 
     # ── Project size ──
     print()
