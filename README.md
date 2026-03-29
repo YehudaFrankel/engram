@@ -54,16 +54,17 @@ Skill chaining, self-healing, drift detection, and auto end-session run without 
 **Requires:** [Claude Code](https://claude.ai/claude-code) · Python 3.7+ for Full mode (Lite is zero-Python)
 
 ```bash
-# 1. Clone once
-git clone https://github.com/YehudaFrankel/clankbrain.git
+# 1. Run this from your project root (requires Node 14+)
+npx clankbrain
 
-# 2. Run setup in your project (~2 minutes)
-cd your-project
-python /path/to/clankbrain/setup.py
-
-# 3. Inside Claude Code — every session from here on:
+# 2. Inside Claude Code — every session from here on:
 Start Session    ←  reads memory, applies lessons, picks up where you left off
 End Session      ←  extracts lessons, saves memory locally, done
+```
+
+No Node? Use Python directly:
+```bash
+python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/setup.py').read().decode())"
 ```
 
 Setup asks about your stack, configures itself, and builds everything automatically.

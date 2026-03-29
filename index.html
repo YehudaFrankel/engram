@@ -990,16 +990,19 @@ footer {
     <div class="sec-label">get started</div>
     <h2>Five minutes to a <span class="h2-amber">living environment</span></h2>
     <p class="sec-desc">
-      Python 3.7+ and Claude Code are the only requirements.
-      Setup configures CLAUDE.md, memory files, hooks, and skills — all from inside Claude Code.
+      Claude Code is the only requirement. Run one command from your project root.
     </p>
 
     <div class="install-block reveal">
-      <div class="install-title">// STEP 1 — clone the kit</div>
+      <div class="install-title">// STEP 1 — run from your project root</div>
       <div class="install-cmd">
-        <span><span class="tp">$</span> <span class="cmd-text">git clone https://github.com/YehudaFrankel/clankbrain</span></span>
-        <button class="copy-btn" onclick="copyCmd(this,'git clone https://github.com/YehudaFrankel/clankbrain')">copy</button>
+        <span><span class="tp">$</span> <span class="cmd-text">npx clankbrain</span></span>
+        <button class="copy-btn" onclick="copyCmd(this,'npx clankbrain')">copy</button>
       </div>
+    </div>
+
+    <div style="margin-top:.75rem; font-size:.72rem; color:var(--muted); padding: .6rem 1rem; border-left: 2px solid var(--border2);" class="reveal">
+      No Node? &nbsp;<span style="color:var(--amber); font-family:monospace;">python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/setup.py').read().decode())"</span>
     </div>
 
     <div class="install-steps reveal">

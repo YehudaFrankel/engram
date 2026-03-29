@@ -1,0 +1,19 @@
+{
+  "name": "clankbrain",
+  "version": "1.0.0",
+  "description": "Persistent memory, self-improving skills, and autonomous workflows for Claude Code",
+  "bin": {
+    "clankbrain": "./bin/clankbrain.js"
+  },
+  "keywords": ["claude", "claude-code", "memory", "ai", "developer-tools", "llm"],
+  "author": "Yehuda Frankel",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YehudaFrankel/clankbrain"
+  },
+  "homepage": "https://clankbrain.vercel.app",
+  "engines": {
+    "node": ">=14"
+  }
+}
