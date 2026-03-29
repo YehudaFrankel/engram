@@ -45,6 +45,18 @@
         ]
       }
     ],
+    "InstructionsLoaded": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python tools/memory.py --session-start",
+            "timeout": 15,
+            "statusMessage": "Validating memory state…"
+          }
+        ]
+      }
+    ],
     "PreCompact": [
       {
         "hooks": [
