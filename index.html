@@ -1235,6 +1235,27 @@ footer {
         <div style="font-size:.8rem; line-height:1.8;">
           <span style="color:var(--amber)">--complexity-scan</span> <span style="color:var(--muted)">— detects stack + complexity on first Start Session, recommends skills</span>
         </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--regret-guard</span> <span style="color:var(--muted)">— UserPromptSubmit: keyword-matches prompt vs regret.md + decisions.md, injects warnings</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--decision-guard</span> <span style="color:var(--muted)">— UserPromptSubmit: detects planning language, warns if prompt contradicts decisions.md</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--error-lookup</span> <span style="color:var(--muted)">— UserPromptSubmit: matches debug prompts vs error-lookup.md, surfaces known fix instantly</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--guard-check</span> <span style="color:var(--muted)">— scans codebase against all named guards in guard-patterns.md, reports violations</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--context-score</span> <span style="color:var(--muted)">— scores every CLAUDE.md section by journal usage — finds dead weight in your context</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--velocity-estimate</span> <span style="color:var(--muted)">— keyword-matches task to past velocity entries, reports what similar tasks actually took</span>
+        </div>
+        <div style="font-size:.8rem; line-height:1.8;">
+          <span style="color:var(--amber)">--mine-patterns</span> <span style="color:var(--muted)">— clusters lessons.md by keyword frequency, surfaces recurring mistakes across sessions</span>
+        </div>
       </div>
       <div style="font-size:.75rem; color:var(--dim); margin-top:.9rem; line-height:1.6;">
         setup.py — first-time setup (Full or Lite) &nbsp;·&nbsp; upgrade.py — Lite → Full &nbsp;·&nbsp; update.py — safe kit updater

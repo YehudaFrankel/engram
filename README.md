@@ -214,6 +214,8 @@ One file, `tools/memory.py`, runs all lifecycle behaviors via subcommands:
 | `--context-score` | On demand (`Context Score`) | Scores every `## section` in `CLAUDE.md` by how often it appears in session journals — surfaces dead weight bloating your context |
 | `--velocity-estimate "task"` | On demand (`Estimate: [task]`) | Keyword-matches the task against `velocity.md` history, reports what similar tasks actually took vs what was estimated |
 | `--mine-patterns` | On demand (`Mine Patterns`) | Clusters all `lessons.md` entries by keyword frequency — surfaces recurring mistakes you haven't noticed yet |
+| `--error-lookup` | Before every debug prompt (UserPromptSubmit) | Matches debug-flavored prompts against `error-lookup.md` — injects known cause + fix before you start investigating |
+| `--guard-check` | On demand (`Guard Check`) | Runs all named guards from `guard-patterns.md` against the codebase — extracts and executes each guard's grep strategy, reports violations |
 | `--bootstrap` | On first setup | Scans your entire codebase and generates a quick index — immediate codebase awareness |
 | `--complexity-scan` | First `Start Session` on a new project | Detects stack, DB, tests, API surface — scores complexity Low/Medium/High and recommends which skills to use. Auto-refreshes after 30 days. |
 | `--precompact` | Before `/compact` | Reinjects memory into the compacted context — nothing lost through compaction |
@@ -253,6 +255,9 @@ Run `/learn` before `End Session`. Run `/evolve` every 3–5 sessions. The same 
 | `decisions.md` | Settled architectural choices | Claude never re-debates what's already decided |
 | `skill_scores.md` | Binary pass/fail per skill per session | /evolve uses this to patch failing steps |
 | `regret.md` | Approaches tried and rejected | Never re-proposed — saves re-litigating bad ideas |
+| `error-lookup.md` | Known errors → cause → fix | `--error-lookup` hook surfaces the fix before you start investigating |
+| `critical-notes.md` | Non-obvious gotchas about the codebase | Prevents re-discovering the same landmine session after session |
+| `agreed-flow.md` | User journeys locked by agreement | Scope anchor — stops "let's change how this works" conversations mid-build |
 | `velocity.md` | Estimated vs actual sessions per task | After 20+ entries, estimates reflect real track record |
 | `global-lessons.md` | Lessons that apply across all projects | Loaded at Start Session across every project you use |
 
@@ -496,6 +501,9 @@ your-project/
     │   ├── MEMORY.md                ← Index — auto-loaded every session
     │   ├── lessons.md               ← Lessons from /learn — applied each session
     │   ├── decisions.md             ← Settled decisions — never re-debated
+    │   ├── error-lookup.md          ← Known errors → cause → fix. Never debug the same error twice.
+    │   ├── critical-notes.md        ← Non-obvious gotchas that will cost time if unknown
+    │   ├── agreed-flow.md           ← User journeys locked by explicit agreement
     │   ├── project_status.md        ← What's built, what's in progress
     │   ├── js_functions.md          ← Every JS function with description
     │   ├── html_css_reference.md    ← Every HTML section and CSS class
@@ -506,6 +514,10 @@ your-project/
     │       ├── skill_improvements.md← What /evolve patched and why
     │       ├── regret.md            ← Rejected approaches — never re-proposed
     │       └── velocity.md          ← Estimated vs actual — self-calibrating
+    ├── rules/
+    │   ├── plan-before-edit.md      ← Required plan format before any code change
+    │   ├── guard-patterns.md        ← Named guards with grep strategies — run with Guard Check
+    │   └── update-code-map.md       ← Persistent rule: update memory after every code change
     ├── memory/
     │   └── plans/
     │       └── _template.md         ← Plan template — one file per feature
