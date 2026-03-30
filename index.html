@@ -950,22 +950,22 @@ footer {
   <div>
     <div class="hero-eyebrow"><span class="dot"></span>persistent memory for Claude Code · open source · MIT · built on official Claude Code APIs · data stays on your machine</div>
     <h1>
-      Claude forgets.<br>
-      Your <span class="h1-amber">engineering</span><br>
-      environment shouldn't.
+      Your project knowledge<br>
+      <span class="h1-amber">compounds</span> and learns<br>
+      across sessions.
     </h1>
     <p class="hero-sub">
-      No API keys. No background service. No database. Memory stays on your machine by default — nothing is pushed anywhere unless you choose to. Just markdown files that git already knows how to handle.
+      Claude Code is stateless. Every session starts from zero. Clankbrain gives it a living memory — <em>decisions, lessons, and patterns that grow with your project</em> and apply automatically at every session start.
     </p>
     <div class="hero-btns">
       <a class="btn btn-primary" href="#install">Get started →</a>
       <a class="btn btn-ghost" href="https://github.com/YehudaFrankel/clankbrain" target="_blank">View on GitHub</a>
     </div>
     <div style="display:flex; gap:1.5rem; margin-top:1.25rem; flex-wrap:wrap;">
-      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Data stays local</span>
-      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> No server, no cloud</span>
-      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Sync is opt-in</span>
-      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Self-host compatible</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Sessions compound, not reset</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Skills self-improve from failure</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Mistakes never repeat</span>
+      <span style="font-size:.7rem; color:var(--muted); display:flex; align-items:center; gap:.4rem;"><span style="color:var(--green);">●</span> Two commands: Start / End Session</span>
     </div>
   </div>
 
@@ -993,6 +993,14 @@ footer {
     <p class="sec-desc">
       Claude Code is the only requirement. Run one command from your project root.
     </p>
+
+    <div style="margin-top:1.5rem; margin-bottom:2rem; padding:1rem 1.4rem; border:1px solid var(--border2); background:var(--s2); font-size:.78rem; line-height:1.8;" class="reveal">
+      <div style="color:var(--amber); letter-spacing:.06em; font-size:.68rem; margin-bottom:.6rem;">IS THIS FOR YOU?</div>
+      <div style="color:var(--green); margin-bottom:.3rem;">✓ You use Claude Code daily on a real ongoing project</div>
+      <div style="color:var(--green); margin-bottom:.3rem;">✓ You've felt the pain of re-explaining context every session</div>
+      <div style="color:var(--green); margin-bottom:.8rem;">✓ You want sessions to compound, not reset</div>
+      <div style="color:var(--muted);">Not for: one-off scripts, quick experiments, or people who prefer no structure.</div>
+    </div>
 
     <div class="install-block reveal">
       <div class="install-title">// STEP 1 — run from your project root</div>
@@ -1571,7 +1579,7 @@ footer {
 <canvas id="radarBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
   <div class="wrap-sm" style="position:relative;z-index:1;">
     <div class="sec-label">proof of concept</div>
-    <h2>139 sessions.<br><span class="h2-amber">One living environment.</span></h2>
+    <h2>142 sessions.<br><span class="h2-amber">One living environment.</span></h2>
     <p class="sec-desc">
       Built and validated on a production project — Java backend, vanilla JS, SQL Server.
       These numbers are from the actual engineering environment this kit grew out of.
@@ -2069,7 +2077,7 @@ const outputs = [
   { delay: 1000, html: '<span class="tok">✓ lessons.md — 34 patterns applied</span>' },
   { delay: 1400, html: '<span class="tok">✓ decisions.md — 15 settled decisions</span>' },
   { delay: 1900, html: '<span class="tmut">// last session: skill chaining + autonomous hooks</span>' },
-  { delay: 2500, html: '<span class="twarn">→ 139 sessions · zero re-explanations needed</span>' },
+  { delay: 2500, html: '<span class="twarn">→ 142 sessions · zero re-explanations needed</span>' },
   { delay: 3200, html: '<span class="tgap"></span><span class="tp">yf@clankbrain ~ $</span> <span class="cursor"></span>' },
 ];
 
