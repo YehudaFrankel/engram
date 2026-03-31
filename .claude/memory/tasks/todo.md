@@ -6,9 +6,7 @@ Current tasks in priority order. Update at Start Session and End Session.
 
 | Priority | Task | Status | Notes |
 |----------|------|--------|-------|
-| High | [task description] | In Progress / Blocked / Done | [any relevant context] |
-| Medium | [task description] | Not Started | |
-| Low | [task description] | Not Started | |
+| Medium | ChromaDB backend + MCP server for memory search | Not Started | ChromaDB replaces pkl index (persistent, auto-updates); MCP server exposes search_memory tool so Claude calls it directly instead of via Bash. Both in one phase. |
 
 ---
 
