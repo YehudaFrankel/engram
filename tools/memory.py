@@ -33,6 +33,9 @@ Usage:
   python tools/memory.py --suggest-guards            # PostToolUse hook: fires when error-lookup.md is edited, prompts Generate Guards
   python tools/memory.py --log-edit                  # PostToolUse hook: append edited filename to draft-lessons.md
   python tools/memory.py --check-expiry              # SessionStart hook: warn about memory files past their expires: date
+  python tools/memory.py --build-index               # Build semantic embedding index from all .md files
+  python tools/memory.py --search-semantic "query"   # Semantic search — finds related memories by meaning, not just keywords
+  python tools/memory.py --search-semantic "query" --top 10  # Return top N semantic matches
 """
 
 import json
@@ -1211,6 +1214,145 @@ def cmd_search():
             print()
 
 
+# ─── SEMANTIC SEARCH ──────────────────────────────────────────────────────────
+# Embedding-based search — finds related memories even with different wording.
+# Requires: pip install sentence-transformers
+# Model: all-MiniLM-L6-v2 (~90MB, local, no API key needed)
+# Index: stored as memory_embeddings.pkl in memory directory
+
+def _get_embedder():
+    """Try to load sentence-transformers model. Returns model or None if not installed."""
+    try:
+        from sentence_transformers import SentenceTransformer
+        return SentenceTransformer('all-MiniLM-L6-v2')
+    except Exception:
+        return None
+
+
+def cmd_build_index():
+    """Build semantic embedding index from all .md files in memory directory."""
+    import pickle
+
+    embedder = _get_embedder()
+    if embedder is None:
+        print('sentence-transformers not installed. Run: pip install sentence-transformers')
+        sys.exit(1)
+
+    memory_dir = find_memory_dir()
+    if not memory_dir.exists():
+        print('No memory directory found.')
+        sys.exit(1)
+
+    docs = []
+    paths = []
+    for md_file in sorted(memory_dir.rglob('*.md')):
+        try:
+            text = md_file.read_text(encoding='utf-8', errors='ignore').strip()
+            if text:
+                docs.append(text)
+                paths.append(str(md_file.relative_to(memory_dir)))
+        except Exception:
+            continue
+
+    if not docs:
+        print('No .md files found to index.')
+        sys.exit(1)
+
+    if not SILENT:
+        print(f'Building embeddings for {len(docs)} files...')
+    embeddings = embedder.encode(docs, show_progress_bar=not SILENT)
+
+    index_path = memory_dir / 'memory_embeddings.pkl'
+    with open(index_path, 'wb') as f:
+        pickle.dump({'paths': paths, 'embeddings': embeddings, 'docs': docs}, f)
+
+    print(f'Index saved: {index_path}  ({len(docs)} files indexed)')
+
+
+def cmd_search_semantic():
+    """Semantic search across memory files using embedding cosine similarity."""
+    import pickle
+
+    argv = sys.argv[1:]
+    query = None
+    top_n = 5
+    threshold = 0.25
+    i = 0
+    while i < len(argv):
+        if argv[i] == '--search-semantic' and i + 1 < len(argv):
+            query = argv[i + 1]
+            i += 2
+        elif argv[i] == '--top' and i + 1 < len(argv):
+            try:
+                top_n = int(argv[i + 1])
+            except ValueError:
+                pass
+            i += 2
+        else:
+            i += 1
+
+    if not query:
+        print('Usage: python tools/memory.py --search-semantic "query" [--top N]')
+        sys.exit(1)
+
+    memory_dir = find_memory_dir()
+    index_path = memory_dir / 'memory_embeddings.pkl'
+
+    def _fallback_keyword():
+        sys.argv = [sys.argv[0], '--search', query, '--top', str(top_n)]
+        ARGS.discard('--search-semantic')
+        ARGS.add('--search')
+        cmd_search()
+
+    if not index_path.exists():
+        print('No semantic index found. Run: python tools/memory.py --build-index')
+        print('Falling back to keyword search...\n')
+        _fallback_keyword()
+        return
+
+    embedder = _get_embedder()
+    if embedder is None:
+        print('sentence-transformers not installed. Run: pip install sentence-transformers')
+        print('Falling back to keyword search...\n')
+        _fallback_keyword()
+        return
+
+    with open(index_path, 'rb') as f:
+        index = pickle.load(f)
+
+    paths = index['paths']
+    stored = index['embeddings']
+    docs = index['docs']
+
+    query_vec = embedder.encode([query])[0]
+
+    # Cosine similarity using numpy array methods (numpy bundled with sentence-transformers)
+    scored = []
+    for idx in range(len(paths)):
+        emb = stored[idx]
+        dot = float((query_vec * emb).sum())
+        norm = float(((query_vec * query_vec).sum() ** 0.5) * ((emb * emb).sum() ** 0.5))
+        sim = dot / (norm + 1e-9)
+        if sim >= threshold:
+            scored.append((sim, paths[idx], docs[idx]))
+
+    scored.sort(key=lambda x: -x[0])
+    scored = scored[:top_n]
+
+    if not scored:
+        print(f'No semantic matches for: "{query}" (threshold={threshold})')
+        print(f'Try: python tools/memory.py --search "{query}" for keyword fallback')
+        return
+
+    print(f'Semantic search: "{query}" -- {len(scored)} match(es)\n')
+    for sim, path, doc in scored:
+        print(f'-- {path}  (similarity {sim:.2f})')
+        preview = [ln for ln in doc.splitlines() if ln.strip()][:5]
+        for line in preview:
+            print(f'  {line}')
+        print()
+
+
 # ─── VERIFY EDIT ──────────────────────────────────────────────────────────────
 # Fires after every Edit/Write — reminds Claude to read back the changed lines
 # and confirm they match the plan's After block.
@@ -2136,6 +2278,10 @@ def main():
         cmd_log_edit()
     elif '--check-expiry' in ARGS:
         cmd_check_expiry()
+    elif '--build-index' in ARGS:
+        cmd_build_index()
+    elif '--search-semantic' in ARGS:
+        cmd_search_semantic()
     else:
         print(__doc__)
         sys.exit(1)

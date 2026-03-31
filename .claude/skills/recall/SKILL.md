@@ -25,11 +25,16 @@ effort: fast
 Pull the search term(s) from the user's message. If it's a full question ("why did we move files to mobile/?"), extract the key nouns: "mobile files location".
 
 ### Step 2 — Run the search
+Try semantic search first (finds related memories even with different wording). Falls back to keyword search automatically if the index doesn't exist or sentence-transformers isn't installed.
+
+```
+python tools/memory.py --search-semantic "[query]" --top 8
+```
+
+Run this via Bash. If semantic search returns no matches, also run keyword search:
 ```
 python tools/memory.py --search "[query]" --top 8
 ```
-
-Run this via Bash. It searches all `.md` files in the memory directory, scores by keyword density, returns matching lines with ±2 lines of context.
 
 ### Step 3 — Present results
 
