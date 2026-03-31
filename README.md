@@ -84,9 +84,8 @@ Pulling from GitHub...
 Already up to date.
 Done - memory, settings and skills ready.
 
-Ready. Last change: Session 150 — Admin auth hardening (always show login,
-URL-based encryptedString for session persistence, feed->admin session
-rewrite, Quill toolbar duplication fix).
+Ready. Last change: Session 42 — Dashboard pagination fix (page state lost
+on filter change, debounce added, loading spinner missing on slow queries).
 
 What are we working on?
 ```
@@ -159,25 +158,25 @@ End Session
 
 Extracted 3 lessons:
 
-1. Quill toolbar duplicates when editor variable is nulled before the re-init
-   guard — keep the instance alive, update content only
+1. Rich-text editor duplicates when the instance variable is nulled before the
+   re-init guard — keep the instance alive, update content only
 
-2. Cookie-based globals bypass URL-only auth checks — gate sessionid on URL
-   params, not the cookie-populated global
+2. Debounce must wrap the filter handler, not the fetch call — wrapping fetch
+   leaves rapid keystrokes queued, debounce on the handler cancels them
 
-3. Plain ?SessionID= from navigation must be immediately rewritten to
-   ?encryptedString= — otherwise refresh loses the session
+3. Page state (current page, sort column) must be reset on filter change —
+   otherwise stale offset returns an empty result set silently
 
 Updated:
 - lessons.md         +18 lines
 - tasks/skill_scores.md  +2 lines
-- STATUS.md          session 150 summary added
-- MEMORY.md          session count updated: 149 -> 150
+- STATUS.md          session 42 summary added
+- MEMORY.md          session count updated: 41 -> 42
 
 Pushing to GitHub...
 
   4 files changed, 23 insertions(+), 1 deletion(-)
-  To https://github.com/YehudaFrankel/Claude-memory.git
+  To https://github.com/your-username/your-memory-repo.git
 
 Session complete. Memory pushed to GitHub.
 ```
