@@ -937,10 +937,6 @@ footer {
     <span class="nav-div">·</span>
     <a class="nav-a" href="#skills">skills</a>
     <span class="nav-div">·</span>
-    <a class="nav-a" href="#map">map</a>
-    <span class="nav-div">·</span>
-    <a class="nav-a" href="#commands">commands</a>
-    <span class="nav-div">·</span>
     <a class="nav-a" href="#faq">faq</a>
     <a class="nav-gh" href="https://github.com/YehudaFrankel/clankbrain" target="_blank">
       <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -1292,293 +1288,6 @@ footer {
   </div>
 </section>
 
-<!-- PLAN MODE DEMO -->
-<section id="plan-mode-demo" style="background: radial-gradient(ellipse at 95% 5%, rgba(99,102,241,.18) 0%, rgba(59,130,246,.08) 35%, transparent 60%), #08091a;">
-<canvas id="planScanBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.6;"></canvas>
-  <div class="wrap-lg">
-    <div class="sec-label">plan mode</div>
-    <h2>Planning that structures itself.<br><span class="h2-amber">One word. Full plan.</span></h2>
-
-    <div class="plan-demo-wrap reveal">
-      <div class="plan-demo-desc">
-        <p class="sec-desc" style="margin-top:0;">
-          Say <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">plan [feature]</code> and Claude opens a structured plan file, researches your codebase, drafts options with ratings, and tracks the decision live.
-          The full plan auto-displays after every update — you'll never need to ask "show me the plan" again.
-        </p>
-        <div class="plan-demo-bullets">
-          <span><em>›</em> Options rated: build cost · user friction · payoff</span>
-          <span><em>›</em> Decision logged to decisions.md the moment it's made</span>
-          <span><em>›</em> Full plan displayed after every update — automatically</span>
-          <span><em>›</em> Stop hook surfaces open plans with unresolved questions</span>
-          <span><em>›</em> Chains to search-first when status becomes Ready to Code</span>
-        </div>
-      </div>
-
-      <div class="plan-card" id="plan-anim">
-        <div class="pc-prompt">
-          <span class="pc-gt">›</span>
-          <span class="pc-cmd" id="pc-cmd"></span><span class="pc-caret" id="pc-caret"></span>
-        </div>
-        <div class="pc-file" id="pc-file">
-          <div class="pc-file-hdr">
-            <span class="pc-fname">plans/email-throttle.md</span>
-            <span class="pc-status draft" id="pc-status">Draft</span>
-          </div>
-          <div class="pc-body" id="pc-body"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- MAP CODEBASE -->
-<section id="map" style="background:#0d0e12;">
-  <div class="wrap-lg">
-    <div class="sec-label">built-in skill</div>
-    <h2>Navigate any codebase<br><span class="h2-amber">without grepping.</span></h2>
-
-    <div class="map-demo-wrap reveal">
-      <div class="plan-demo-desc">
-        <p class="sec-desc" style="margin-top:0;">
-          Say <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">map the codebase</code> and Claude scans every file, detects the stack, traces each feature from entry point to DB, and writes a <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">code-map.md</code> that makes any project instantly navigable.
-        </p>
-        <div class="plan-demo-bullets">
-          <span><em>›</em> Entry → handler → service → DB for every feature</span>
-          <span><em>›</em> Line reference table for your largest logic files</span>
-          <span><em>›</em> Never grep for a function name again — just read the map</span>
-          <span><em>›</em> Re-run after major refactors to keep it current</span>
-        </div>
-      </div>
-
-      <div class="map-card" id="map-anim">
-        <div class="mc-prompt">
-          <span class="mc-gt">›</span>
-          <span class="mc-cmd" id="mc-cmd"></span><span class="mc-caret" id="mc-caret"></span>
-        </div>
-        <div class="mc-scan" id="mc-scan"></div>
-        <div class="mc-body" id="mc-body"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- AGENTIC TIER -->
-<section id="tiers">
-<canvas id="matrixBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.35;"></canvas>
-  <div class="wrap">
-    <div class="sec-label">architecture</div>
-    <h2>Three tiers.<br><span class="h2-amber">Most tools ship one.</span></h2>
-    <p class="sec-desc">
-      Most Claude setups are Tier 1 — a CLAUDE.md file and nothing else.
-      <em>clankbrain ships all three tiers out of the box.</em>
-    </p>
-
-    <div class="tier-rows reveal">
-      <div class="tier-row">
-        <div class="tr-label">
-          <div class="tr-tier">TIER 1</div>
-          <div class="tr-name">Memory Persistence</div>
-        </div>
-        <div class="tr-body">
-          <div style="font-size:.78rem; color:var(--muted); margin-bottom:.6rem;">Disk-backed memory survives crashes and machine switches. Auto-loads at every session start.</div>
-          <div class="tr-items">
-            <div class="tr-item active">MEMORY.md</div>
-            <div class="tr-item active">project_status.md</div>
-            <div class="tr-item active">js_functions.md</div>
-            <div class="tr-item active">backend_reference.md</div>
-            <div class="tr-item active">drift detection</div>
-            <div class="tr-item active">disk-backed</div>
-          </div>
-        </div>
-      </div>
-      <div class="tier-row">
-        <div class="tr-label">
-          <div class="tr-tier">TIER 2</div>
-          <div class="tr-name">Self-Improving Skills</div>
-        </div>
-        <div class="tr-body">
-          <div style="font-size:.78rem; color:var(--muted); margin-bottom:.6rem;">Skills are scored after every session. /evolve patches weak steps. Skill chains run without prompting.</div>
-          <div class="tr-items">
-            <div class="tr-item active">skill_scores.md</div>
-            <div class="tr-item active">lessons.md</div>
-            <div class="tr-item active">decisions.md</div>
-            <div class="tr-item active">regret.md</div>
-            <div class="tr-item active">Auto-Chain</div>
-            <div class="tr-item active">/evolve</div>
-          </div>
-          <div class="tr-score" style="margin-top:.75rem; font-size:.72rem;">→ skills improve from failure data</div>
-        </div>
-      </div>
-      <div class="tier-row">
-        <div class="tr-label">
-          <div class="tr-tier">TIER 3</div>
-          <div class="tr-name" style="color:var(--green)">Autonomous Operation</div>
-        </div>
-        <div class="tr-body">
-          <div style="font-size:.78rem; color:var(--muted); margin-bottom:.6rem;">Hooks fire without human prompts. Memory pushes automatically. Health checks run on schedule.</div>
-          <div class="tr-items">
-            <div class="tr-item active" style="color:var(--green);border-color:rgba(109,186,120,.3)">stop hook</div>
-            <div class="tr-item active" style="color:var(--green);border-color:rgba(109,186,120,.3)">PostToolUse hook</div>
-            <div class="tr-item active" style="color:var(--green);border-color:rgba(109,186,120,.3)">auto end-session</div>
-            <div class="tr-item active" style="color:var(--green);border-color:rgba(109,186,120,.3)">self-healing retry</div>
-            <div class="tr-item active" style="color:var(--green);border-color:rgba(109,186,120,.3)">PreCompact hook</div>
-            <div class="tr-item active" style="color:var(--green);border-color:rgba(109,186,120,.3)">SessionStart hook</div>
-          </div>
-          <div class="tr-score" style="margin-top:.75rem; font-size:.72rem;">→ Claude operates without checkpoints</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- LIFECYCLE HOOKS -->
-<section id="hooks">
-  <div class="wrap">
-    <div class="sec-label" style="color:var(--green)">autonomous operation</div>
-    <h2>Runs without<br><span style="color:var(--green)">being asked.</span></h2>
-    <p class="sec-desc">
-      Lifecycle hooks fire on session events — no prompting required.
-      <em>The environment monitors itself, pushes memory, and runs health checks
-      while you work.</em>
-      All hook events below are Anthropic-official — wired via <code style="font-size:.8em;color:var(--amber);background:var(--s2);padding:.1rem .3rem;">settings.json</code>, no unofficial workarounds.
-    </p>
-
-    <div class="hooks-list reveal">
-      <div class="hook-row" style="background:var(--s2);">
-        <div class="hk-event" style="font-size:.65rem; color:var(--dim); font-weight:600;">EVENT</div>
-        <div class="hk-file"  style="font-size:.65rem; color:var(--dim); font-weight:600;">SCRIPT</div>
-        <div class="hk-does"  style="font-size:.65rem; color:var(--dim); font-weight:600;">DOES</div>
-      </div>
-      <div class="hook-row">
-        <div class="hk-event">SessionStart</div>
-        <div class="hk-file">tools/memory.py --session-start</div>
-        <div class="hk-does">Load MEMORY.md, check for stale files, apply lessons</div>
-      </div>
-      <div class="hook-row">
-        <div class="hk-event">PostToolUse</div>
-        <div class="hk-file">tools/memory.py --check-drift</div>
-        <div class="hk-does">After every file edit — check drift, warn if memory is stale</div>
-      </div>
-      <div class="hook-row">
-        <div class="hk-event">Stop</div>
-        <div class="hk-file">tools/memory.py --stop-check</div>
-        <div class="hk-does">Reminds you to save memory; surfaces open plans with unresolved questions</div>
-      </div>
-      <div class="hook-row">
-        <div class="hk-event">PreCompact</div>
-        <div class="hk-file">tools/memory.py --precompact</div>
-        <div class="hk-does">Before context compaction — surface memory checklist so nothing is lost</div>
-      </div>
-      <div class="hook-row">
-        <div class="hk-event">PostCompact</div>
-        <div class="hk-file">tools/memory.py --postcompact</div>
-        <div class="hk-does">After compaction — re-injects MEMORY.md so session resumes warm, not cold</div>
-      </div>
-      <div class="hook-row">
-        <div class="hk-event">StopFailure</div>
-        <div class="hk-file">tools/memory.py --stop-failure</div>
-        <div class="hk-does">On API error — writes interruption state; surfaced automatically next session</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PLAN VERIFICATION -->
-<section id="plan">
-  <div class="wrap-sm">
-    <div class="sec-label">safe edits</div>
-    <h2>Plans that check<br><span class="h2-amber">their own work.</span></h2>
-    <p class="sec-desc">
-      Before showing you a plan, Claude greps the codebase to verify every
-      function exists at the stated line. After every edit, it quotes the
-      actual changed lines back to you — you confirm it matches, not a
-      background process. Say <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">undo</code> — it
-      reverts immediately, no questions.
-    </p>
-
-    <div class="stats-term reveal">
-      <div class="stats-bar">
-        <div class="td td-r"></div>
-        <div class="td td-y"></div>
-        <div class="td td-g"></div>
-        <span style="margin-left:.4rem">yf@clankbrain ~ $</span>
-      </div>
-      <div class="stats-body" style="font-size:.78rem; line-height:1.8;">
-        <span class="tok">plan: add messages field to state object</span><br>
-        <span class="tdim">────────────────────────────────────────────</span><br>
-        <span class="tmut">validating function references...</span><br>
-        <span class="tmut">grep: dash object → DashboardFunctions.js:8 ✓</span><br>
-        <span class="tmut">grep: renderMessages → DashboardFunctions.js:1129 ✓</span><br>
-        <span class="tdim">────────────────────────────────────────────</span><br>
-        <span style="color:var(--amber)">BUG    </span><span class="th">messages: []  </span><span class="tmut">missing from dash state — referenced but never declared</span><br>
-        <span class="tdim">────────────────────────────────────────────</span><br>
-        <span class="tmut">scope: 1 file · 2 lines · refactor · no runtime impact</span><br>
-        <span class="tmut">rollback: git restore DashboardFunctions.js</span><br>
-        <span class="tgap"></span>
-        <span class="tok">bug caught during plan validation — before any edit landed</span>
-      </div>
-    </div>
-
-    <div class="loop-panels" style="margin-top:2rem;">
-      <div class="loop-panel reveal">
-        <div class="lp-label">BEFORE EDIT</div>
-        <div class="lp-title">Validates first</div>
-        <div class="lp-body">Greps every function reference. Wrong line number = reads the wrong code = wrong plan. Fixed before you see it.</div>
-      </div>
-      <div class="loop-panel reveal">
-        <div class="lp-label">AFTER EDIT</div>
-        <div class="lp-title">Shows you the lines</div>
-        <div class="lp-body">Quotes the actual changed lines back to you. You confirm it matches the plan — not a background check. Two sets of eyes on every edit.</div>
-      </div>
-      <div class="loop-panel reveal">
-        <div class="lp-label">IF WRONG</div>
-        <div class="lp-title">One word undo</div>
-        <div class="lp-body">Say <code style="color:var(--amber);background:var(--s2);padding:.1rem .25rem;">undo</code> — Claude runs <code style="color:var(--amber);background:var(--s2);padding:.1rem .25rem;">git restore</code> immediately and confirms the revert.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CHECK-ANTHROPIC -->
-<section id="check-anthropic" style="background:#0b1210; border-top:1px solid rgba(109,186,120,.15);">
-
-  <div class="wrap-sm" style="padding:3.5rem 2rem;">
-    <div class="sec-label" style="color:var(--green)">stays current</div>
-    <h2 style="margin-bottom:.75rem;">Watches for new<br><span style="color:var(--green)">Anthropic features.</span></h2>
-    <p class="sec-desc" style="margin-bottom:2rem;">
-      Anthropic ships new hooks and APIs regularly.
-      <code style="font-size:.85em;color:var(--amber);background:var(--s2);padding:.1rem .35rem;">/check-anthropic</code>
-      fetches the latest releases and docs, cross-references against your current setup,
-      and rates every gap <em>High / Medium / Low</em> — so you decide what's worth adding.
-      Run it every few weeks.
-    </p>
-
-    <div class="stats-term reveal" style="max-width:640px;">
-      <div class="stats-bar">
-        <div class="td td-r"></div>
-        <div class="td td-y"></div>
-        <div class="td td-g"></div>
-        <span style="margin-left:.4rem">yf@clankbrain ~ $</span>
-      </div>
-      <div class="stats-body" style="font-size:.78rem; line-height:1.8;">
-        <span class="tok">/check-anthropic</span><br>
-        <span class="tdim">────────────────────────────────────────────</span><br>
-        <span class="tmut">fetching GitHub releases + docs...</span><br>
-        <span class="tmut">reading local settings.json + 23 skills...</span><br>
-        <span class="tmut">cross-referencing 24-hook official list...</span><br>
-        <span class="tdim">────────────────────────────────────────────</span><br>
-        <span style="color:var(--red)">HIGH   </span><span class="th">PostCompact   </span><span class="tmut">re-inject memory after compaction</span><br>
-        <span style="color:var(--red)">HIGH   </span><span class="th">SessionEnd    </span><span class="tmut">complement to Stop on clean exit</span><br>
-        <span style="color:var(--amber)">MEDIUM </span><span class="th">StopFailure   </span><span class="tmut">capture state when Claude errors</span><br>
-        <span class="tdim">────────────────────────────────────────────</span><br>
-        <span class="tmut">hooks in use: 5 of 24 · 3 gaps worth acting on</span><br>
-        <span class="tgap"></span>
-        <span class="tok">→ run /evolve to build the PostCompact hook</span>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- MID-PAGE CTA -->
 <div style="background:var(--bg); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:2.25rem 1.2rem; text-align:center;">
   <a class="btn btn-primary" href="#install" style="font-size:1rem; padding:.75rem 2rem;">Set it up in 5 minutes →</a>
@@ -1623,111 +1332,6 @@ footer {
   </div>
 </section>
 
-<!-- PROGRESS REPORT -->
-<section id="progress-report" style="background:#0d0e12; border-top:1px solid var(--border);">
-  <div class="wrap-lg">
-    <div class="sec-label">proof layer</div>
-    <h2>See the compounding.<br><span class="h2-amber">After 5 sessions, type this.</span></h2>
-    <p class="sec-desc">
-      Type <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">Progress Report</code> and get a dashboard built entirely from your own session history. Not synthetic. Not estimated. Your actual numbers.
-    </p>
-
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; margin-top:2rem;" class="reveal mob-stack">
-      <div style="background:var(--s2); border:1px solid var(--border2); padding:1.5rem; font-family:var(--mono); font-size:.78rem; line-height:1.9;">
-        <div style="color:var(--dim); margin-bottom:.75rem; font-size:.68rem; letter-spacing:.06em;">// OUTPUT AFTER 8 SESSIONS</div>
-        <div style="color:var(--green);">=== Clankbrain Progress Report ===</div>
-        <br>
-        <div><span style="color:var(--text);">  Sessions logged</span>         <span style="color:var(--amber);">8</span></div>
-        <div><span style="color:var(--text);">  Lessons accumulated</span>     <span style="color:var(--amber);">14</span>  <span style="color:var(--dim);">← run /mine-patterns</span></div>
-        <div><span style="color:var(--text);">  Known errors logged</span>     <span style="color:var(--amber);">6</span>   <span style="color:var(--dim);">← never debug twice</span></div>
-        <div><span style="color:var(--text);">  Rejected approaches</span>     <span style="color:var(--amber);">9</span>   <span style="color:var(--dim);">← regret-guard blocks these</span></div>
-        <div><span style="color:var(--text);">  Skill accuracy</span>          <span style="color:var(--amber);">78%</span> <span style="color:var(--dim);">(18 correct / 5 corrected)</span></div>
-        <div><span style="color:var(--text);">  Velocity data points</span>    <span style="color:var(--amber);">11</span>  <span style="color:var(--dim);">← estimates self-calibrate</span></div>
-        <br>
-        <div style="color:var(--dim);">  Last 3 sessions:</div>
-        <div style="color:var(--muted);">    [2025-05-12]  Email throttle + scheduler fix  (4 saves)</div>
-        <div style="color:var(--muted);">    [2025-05-14]  Dashboard accordion redesign     (7 saves)</div>
-        <div style="color:var(--muted);">    [2025-05-15]  Fixed IDENTITY column error       (2 saves)</div>
-        <br>
-        <div style="color:var(--green);">  → 8 sessions in. Compounding is happening.</div>
-      </div>
-
-      <div style="display:flex; flex-direction:column; gap:1.25rem;">
-        <div style="background:var(--s1); border:1px solid var(--border); padding:1.25rem 1.5rem;">
-          <div style="font-size:.68rem; color:var(--green); letter-spacing:.06em; margin-bottom:.5rem;">LESSONS ACCUMULATED</div>
-          <div style="font-size:.82rem; color:var(--text); margin-bottom:.4rem;">14 patterns extracted from failures</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.6;">Grows with every <code style="color:var(--amber);">/learn</code>. After 5+ lessons, <code style="color:var(--amber);">--mine-patterns</code> clusters them by topic and shows which mistakes keep coming back.</div>
-        </div>
-        <div style="background:var(--s1); border:1px solid var(--border); padding:1.25rem 1.5rem;">
-          <div style="font-size:.68rem; color:var(--amber); letter-spacing:.06em; margin-bottom:.5rem;">KNOWN ERRORS LOGGED</div>
-          <div style="font-size:.82rem; color:var(--text); margin-bottom:.4rem;">6 bugs that will never cost a session again</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.6;">Every <code style="color:var(--amber);">debug-session</code> ends by logging the root cause + fix to <code style="color:var(--amber);">error-lookup.md</code>. The next time that error appears, Claude surfaces the fix before investigating.</div>
-        </div>
-        <div style="background:var(--s1); border:1px solid var(--border); padding:1.25rem 1.5rem;">
-          <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:.5rem;">SKILL ACCURACY</div>
-          <div style="font-size:.82rem; color:var(--text); margin-bottom:.4rem;">78% — and rising</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.6;">Every <code style="color:var(--amber);">/learn</code> scores skills Y/N. <code style="color:var(--amber)">/evolve</code> reads the scores and patches the steps that keep failing. Skills that need correction become skills that don't.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- COMMANDS -->
-<section id="commands">
-<canvas id="scanBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.5;"></canvas>
-  <div class="wrap">
-    <div class="sec-label">every command</div>
-    <h2>Type these in <span class="h2-amber">Claude Code</span></h2>
-
-    <div class="cmds-list reveal">
-      <div class="cmd-row" style="background:var(--s2);">
-        <div class="cr-cmd" style="font-size:.65rem; color:var(--dim);">COMMAND</div>
-        <div class="cr-desc" style="font-size:.65rem; color:var(--dim);">WHAT IT DOES</div>
-      </div>
-      <div class="cmd-row" style="background:var(--s2);"><div class="cr-cmd" style="color:var(--green); font-size:.65rem; letter-spacing:.06em;">CORE — every session</div><div class="cr-desc" style="color:var(--dim); font-size:.72rem;">Two commands. Everything else is automatic.</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Setup Memory</div><div class="cr-desc"><em>First time only</em> — runs Python setup, creates all memory files, configures hooks</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Start Session</div><div class="cr-desc">Pull memory, apply lessons, surface open plans, auto team pull if configured — <em>picks up exactly where you left off</em></div></div>
-      <div class="cmd-row"><div class="cr-cmd">End Session</div><div class="cr-desc">Run /learn, update memory, scan plans, save everything — <em>session complete, no work lost</em></div></div>
-      <div class="cmd-row" style="background:var(--s2);"><div class="cr-cmd" style="color:var(--amber); font-size:.65rem; letter-spacing:.06em;">ON DEMAND — invoke when needed</div><div class="cr-desc" style="color:var(--dim); font-size:.72rem;"></div></div>
-      <div class="cmd-row"><div class="cr-cmd">Plan [feature]</div><div class="cr-desc">Structured planning — options with ratings, decision logged live, <em>full plan auto-displayed after every update</em></div></div>
-      <div class="cmd-row"><div class="cr-cmd">Show Plan</div><div class="cr-desc">Display full current plan — no summary, always the complete document</div></div>
-      <div class="cmd-row"><div class="cr-cmd">/learn</div><div class="cr-desc">Extract lessons + decisions from this session, score skills Y/N, log velocity</div></div>
-      <div class="cmd-row"><div class="cr-cmd">/evolve</div><div class="cr-desc">Every 3-5 sessions — patch weak skills, propose new ones from detected patterns</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Check Drift</div><div class="cr-desc">Find code Claude doesn't know about yet — run anytime, runs automatically on file edits</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Analyze Codebase</div><div class="cr-desc">Scan every file, rebuild all memory indexes in one pass</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Install Memory</div><div class="cr-desc">New machine — scan project, rebuild Claude's knowledge from scratch</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Generate Skills</div><div class="cr-desc">Auto-create skills tailored to your specific stack and file patterns</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Debug Session</div><div class="cr-desc">Reproduce → isolate → hypothesize → fix → verify → <em>log to errors.md</em></div></div>
-      <div class="cmd-row"><div class="cr-cmd">Code Health</div><div class="cr-desc">Scan for debug leftovers, hardcoded values, missing error handling, dead code, large files</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Pre-Ship Check</div><div class="cr-desc">Run guard-check + code health + open plans check before committing — catches what a final review misses</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Guard Check</div><div class="cr-desc">Scan codebase against all named guards in guard-patterns.md — reports every violation with file + line</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Mode [develop|review|safe|deploy]</div><div class="cr-desc">Switch Claude's tool access for the current task — <em>review</em> = read-only, <em>safe</em> = no writes, <em>deploy</em> = shell only, <em>develop</em> = full access</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Mine Patterns</div><div class="cr-desc">Cluster lessons.md by keyword frequency — surfaces the mistakes that keep recurring across sessions</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Context Score</div><div class="cr-desc">Score every section of CLAUDE.md by actual journal usage — find dead weight that's eating context every prompt</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Progress Report</div><div class="cr-desc">Show compounding metrics after N sessions: lessons accumulated, known errors, skill accuracy %, velocity data — see the system working</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Generate Guards</div><div class="cr-desc">Mine your error history + regret log to propose project-specific guards — your past mistakes become automated prevention</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Handoff</div><div class="cr-desc">Generate HANDOFF.md — current state, next tasks, settled decisions, gotchas, how to start</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Estimate: [task]</div><div class="cr-desc">Complexity + files that change + risks — <em>writes plan to todo.md on confirm</em></div></div>
-      <div class="cmd-row"><div class="cr-cmd">Push Memory</div><div class="cr-desc">Manually save memory — useful mid-session before a risky change. Also pushes to git if you have sync configured.</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Update Kit</div><div class="cr-desc">Pull latest from GitHub — shows exactly what will change, <em>asks before applying</em></div></div>
-      <div class="cmd-row"><div class="cr-cmd">Update Kit from [URL]</div><div class="cr-desc">Pull from a fork or branch — <em>your memory files are never touched</em></div></div>
-      <div class="cmd-row"><div class="cr-cmd">/check-anthropic</div><div class="cr-desc">Fetch Claude Code releases + docs, cross-reference against hooks/features in use, report gaps rated High/Medium/Low — run every few weeks</div></div>
-      <div class="cmd-row" style="background:var(--s2);"><div class="cr-cmd" style="color:var(--muted); font-size:.65rem; letter-spacing:.06em;">OPT-IN — configure once</div><div class="cr-desc" style="color:var(--dim); font-size:.72rem;">Memory stays local by default. Add these only when you need them.</div></div>
-      <div class="cmd-row" style="background:var(--s2);"><div class="cr-cmd" style="color:var(--muted); font-size:.65rem; letter-spacing:.06em;">SOLO SYNC</div><div class="cr-desc" style="color:var(--muted)">Memory stays local by default — sync only if you need cross-machine access. Requires git auth: <code>gh auth login</code></div></div>
-      <div class="cmd-row"><div class="cr-cmd">Setup Sync: [repo URL]</div><div class="cr-desc">One-time setup — points memory at your private repo. <em>Your data, your repo, your control.</em></div></div>
-      <div class="cmd-row"><div class="cr-cmd">Sync Memory</div><div class="cr-desc">Push memory to your private repo after a session</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Pull Memory</div><div class="cr-desc">Pull memory on a new machine</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Sync Status</div><div class="cr-desc">Check if anything is unpushed</div></div>
-      <div class="cmd-row" style="background:var(--s2);"><div class="cr-cmd" style="color:var(--muted); font-size:.65rem; letter-spacing:.06em;">TEAM SYNC (OPT-IN)</div><div class="cr-desc" style="color:var(--muted)">Share error-lookup, decisions, regret, guards with your team. Personal memory stays local. Requires git auth: <code>gh auth login</code></div></div>
-      <div class="cmd-row"><div class="cr-cmd">Setup Team: [repo URL]</div><div class="cr-desc">One-time setup — checks git auth first, then initialises shared team memory repo. <em>One person creates the repo, everyone runs this.</em></div></div>
-      <div class="cmd-row"><div class="cr-cmd">Team Pull</div><div class="cr-desc">Get teammates' additions — run at Start Session. Merges append-only, no conflicts.</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Team Push</div><div class="cr-desc">Share what you found this session — run at End Session</div></div>
-      <div class="cmd-row"><div class="cr-cmd">Team Status</div><div class="cr-desc">Last sync times, recent commits, what's shared vs personal</div></div>
-    </div>
-  </div>
-</section>
-
 <!-- SYNC -->
 <section id="sync" style="background:var(--s1); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
   <div class="wrap-sm">
@@ -1758,57 +1362,6 @@ footer {
       </div>
     </div>
 
-    <div style="margin-top:3rem;" class="reveal">
-      <div style="font-size:.65rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1.25rem;">// WHY THIS IS SAFE</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;" class="mob-stack">
-
-        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
-          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Your repo. Your rules.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Memory goes to a private GitHub repo you create and own. Clankbrain never sees it, never touches it, has no access to it. Delete the repo at any time — no lock-in.</div>
-        </div>
-
-        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
-          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Code flows one way only.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Kit updates are pulled from clankbrain to your machine. Nothing ever goes the other direction. <code>Sync Memory</code> pushes to your repo — not clankbrain's.</div>
-        </div>
-
-        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
-          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Fully auditable.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Memory files are plain markdown. Read them, diff them, grep them, restore any version from git history. Nothing is encoded or opaque. If something sensitive lands in a file, you see it immediately.</div>
-        </div>
-
-        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
-          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">What's actually in memory.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Lessons from past sessions. Architectural decisions. Rejected approaches. Function names. Project status. <strong style="color:var(--text);">Never put passwords, API keys, customer PII, or regulated data in memory files.</strong> If something sensitive accidentally gets in, delete the entry and purge from git history: <code>git filter-repo --path .claude/memory/file.md --invert-paths</code></div>
-        </div>
-
-        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
-          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Self-hosted option.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Replace GitHub with GitLab, Bitbucket, or any on-prem git server. <code>sync.py</code> works with any git remote — just swap the URL. Full control, no third-party dependency.</div>
-        </div>
-
-        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
-          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">Access control.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Your private repo, your permissions. Manage collaborators as you would any sensitive codebase. For teams, treat the memory repo like the main repo — same access policies apply.</div>
-        </div>
-
-        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
-          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">GDPR.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Clankbrain processes no personal data. Memory files are local and contain code patterns, not personal data. You own and control every file. For stricter requirements, keep memory local and off git entirely.</div>
-        </div>
-
-        <div style="border-left:2px solid var(--amber); padding-left:1.25rem;">
-          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">SOC 2.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Not applicable — clankbrain is a local developer tool, not a service. There are no clankbrain servers to audit. Your compliance surface is your machine, your repo, and Anthropic (for Claude Code prompts).</div>
-        </div>
-
-        <div style="border-left:2px solid var(--amber); padding-left:1.25rem; grid-column: 1 / -1; background: rgba(212,137,10,.04); padding: 1rem 1.25rem; border-left: 2px solid var(--amber);">
-          <div style="font-size:.8rem; color:var(--text); font-weight:600; margin-bottom:.4rem;">The real data consideration: Claude Code, not clankbrain.</div>
-          <div style="font-size:.75rem; color:var(--muted); line-height:1.7;">Clankbrain's memory files are local. The actual data flow to consider is <strong style="color:var(--text);">Claude Code itself sending your prompts to Anthropic</strong> — that is true of any Claude Code use, regardless of this kit. For HIPAA, finance, or legal workloads, that is what requires an Anthropic enterprise plan with a signed BAA. Clankbrain adds nothing to that surface.</div>
-        </div>
-
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1821,60 +1374,38 @@ footer {
       One private git repo. Six shared files. When a teammate logs a bug fix in <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">error-lookup.md</code>, every developer on the project gets it at their next <code style="color:var(--amber);background:var(--s2);padding:.1rem .35rem;font-family:var(--mono);font-size:.76rem;">Team Pull</code>. The debug session that cost them an hour costs you zero.
     </p>
 
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:2rem;" class="reveal mob-stack">
-      <div>
-        <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// WHAT GETS SHARED</div>
-        <div style="display:flex; flex-direction:column; gap:.6rem;">
-          <div style="display:flex; gap:.75rem; align-items:baseline;">
-            <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">error-lookup.md</span>
-            <span style="font-size:.75rem; color:var(--muted);">One person debugs it once — zero cost for everyone</span>
-          </div>
-          <div style="display:flex; gap:.75rem; align-items:baseline;">
-            <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">decisions.md</span>
-            <span style="font-size:.75rem; color:var(--muted);">Team can't re-debate what the team settled</span>
-          </div>
-          <div style="display:flex; gap:.75rem; align-items:baseline;">
-            <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">regret.md</span>
-            <span style="font-size:.75rem; color:var(--muted);">Rejected approaches are codebase-wide</span>
-          </div>
-          <div style="display:flex; gap:.75rem; align-items:baseline;">
-            <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">guard-patterns.md</span>
-            <span style="font-size:.75rem; color:var(--muted);">Guards protect the whole codebase</span>
-          </div>
-          <div style="display:flex; gap:.75rem; align-items:baseline;">
-            <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">agreed-flow.md</span>
-            <span style="font-size:.75rem; color:var(--muted);">User journeys are team agreements</span>
-          </div>
-          <div style="display:flex; gap:.75rem; align-items:baseline;">
-            <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">critical-notes.md</span>
-            <span style="font-size:.75rem; color:var(--muted);">Gotchas cost time regardless of who hits them</span>
-          </div>
+    <div style="margin-top:2rem;" class="reveal">
+      <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:1rem;">// WHAT GETS SHARED</div>
+      <div style="display:flex; flex-direction:column; gap:.6rem;">
+        <div style="display:flex; gap:.75rem; align-items:baseline;">
+          <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">error-lookup.md</span>
+          <span style="font-size:.75rem; color:var(--muted);">One person debugs it once — zero cost for everyone</span>
         </div>
-        <div style="margin-top:1.25rem; padding:.75rem 1rem; background:var(--s2); border:1px solid var(--border); font-size:.72rem; color:var(--dim); line-height:1.7;">
-          Personal files <em>never</em> leave your machine: velocity.md, skill_scores.md, session_journal.md, user_preferences.md, todo.md
+        <div style="display:flex; gap:.75rem; align-items:baseline;">
+          <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">decisions.md</span>
+          <span style="font-size:.75rem; color:var(--muted);">Team can't re-debate what the team settled</span>
+        </div>
+        <div style="display:flex; gap:.75rem; align-items:baseline;">
+          <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">regret.md</span>
+          <span style="font-size:.75rem; color:var(--muted);">Rejected approaches are codebase-wide</span>
+        </div>
+        <div style="display:flex; gap:.75rem; align-items:baseline;">
+          <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">guard-patterns.md</span>
+          <span style="font-size:.75rem; color:var(--muted);">Guards protect the whole codebase</span>
+        </div>
+        <div style="display:flex; gap:.75rem; align-items:baseline;">
+          <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">agreed-flow.md</span>
+          <span style="font-size:.75rem; color:var(--muted);">User journeys are team agreements</span>
+        </div>
+        <div style="display:flex; gap:.75rem; align-items:baseline;">
+          <span style="color:var(--green); font-family:var(--mono); font-size:.75rem; min-width:160px;">critical-notes.md</span>
+          <span style="font-size:.75rem; color:var(--muted);">Gotchas cost time regardless of who hits them</span>
         </div>
       </div>
-
-      <div style="display:flex; flex-direction:column; gap:1rem;">
-        <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-bottom:.25rem;">// SETUP (one person, once)</div>
-        <div style="background:var(--s2); border:1px solid var(--border2); padding:1.25rem 1.5rem;">
-          <div style="font-size:.72rem; color:var(--dim); margin-bottom:.6rem;">1. Create a private repo at github.com/new</div>
-          <div style="font-size:.72rem; color:var(--dim); margin-bottom:.6rem;">2. Ensure git is authenticated: <span style="color:var(--amber); font-family:var(--mono);">gh auth login</span></div>
-          <div style="font-size:.72rem; color:var(--dim); margin-bottom:.75rem;">3. Each team member runs:</div>
-          <div style="font-family:var(--mono); font-size:.8rem; color:var(--amber);">Setup Team: https://github.com/team/repo</div>
-        </div>
-
-        <div style="font-size:.68rem; color:var(--muted); letter-spacing:.06em; margin-top:.25rem; margin-bottom:.25rem;">// DAILY WORKFLOW</div>
-        <div style="background:var(--s2); border:1px solid var(--border2); padding:1.25rem 1.5rem; font-family:var(--mono); font-size:.78rem; line-height:2;">
-          <div><span style="color:var(--amber);">Team Pull</span>  <span style="color:var(--dim);">← Start Session — get teammates' additions</span></div>
-          <div><span style="color:var(--amber);">Team Push</span>  <span style="color:var(--dim);">← End Session — share what you found</span></div>
-          <div><span style="color:var(--amber);">Team Status</span> <span style="color:var(--dim);">← check sync times + recent commits</span></div>
-        </div>
-
-        <div style="font-size:.72rem; color:var(--dim); line-height:1.7; padding:.75rem 1rem; border-left:2px solid var(--border2);">
-          Merge is append-only, keyed by first column — no git conflicts. The script checks git auth before touching anything and tells you exactly how to fix it if it fails.
-        </div>
+      <div style="margin-top:1.25rem; padding:.75rem 1rem; background:var(--s2); border:1px solid var(--border); font-size:.72rem; color:var(--dim); line-height:1.7;">
+        Personal files <em>never</em> leave your machine: velocity.md, skill_scores.md, session_journal.md, user_preferences.md, todo.md
       </div>
+      <div style="margin-top:1rem; font-family:var(--mono); font-size:.8rem; color:var(--amber);">Setup Team: https://github.com/team/repo</div>
     </div>
   </div>
 </section>
