@@ -44,7 +44,7 @@
 Run this phase every time `/evolve` is called, after Phase 2.
 
 ### Step A — Find failing skills
-Read `.claude/memory/tasks/skill_scores.md`. Find all rows where:
+Read `tasks/skill_scores.md`. Find all rows where:
 - `Correction Needed = Y`
 - `Improvement Applied = -` (not yet fixed)
 
@@ -60,7 +60,7 @@ Read `.claude/memory/tasks/skill_scores.md`. Find all rows where:
 6. Save the updated SKILL.md
 
 ### Step C — Log the improvement
-Append to `.claude/memory/tasks/skill_improvements.md`:
+Append to `tasks/skill_improvements.md`:
 ```
 | [date] | [skill] | Step N | [what failed before] | [what was fixed] | skill_scores row [date] |
 ```

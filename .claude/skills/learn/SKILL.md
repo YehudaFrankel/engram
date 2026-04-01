@@ -33,7 +33,7 @@
 4. **Categorize findings:**
    - Bugs/errors → append to `.claude/memory/lessons.md` (create if missing)
    - Architectural decisions → append to `.claude/memory/decisions.md` (create if missing)
-   - Rejected approaches → append to `.claude/memory/tasks/regret.md` (format: `| Date | Approach | Why Rejected |`)
+   - Rejected approaches → append to `tasks/regret.md` (format: `| Date | Approach | Why Rejected |`)
    - Repeated patterns (3+ times) → flag as skill candidate
 
 5. **Format each entry as:**
@@ -53,11 +53,11 @@
    **Apply when:** [trigger]
    ```
 
-7. **Skill scoring:** Log each skill that fired this session to `.claude/memory/tasks/skill_scores.md`:
+7. **Skill scoring:** Log each skill that fired this session to `tasks/skill_scores.md`:
    `| [date] | [skill] | [used for] | Y/N | [what specifically failed — be precise, /evolve uses this to patch the right step] | - |`
    If Y: the "What Failed" column is critical — describe the exact step that was wrong, not just "it didn't work".
 
-8. **Velocity log:** If this session had an estimated task, append to `.claude/memory/tasks/velocity.md`:
+8. **Velocity log:** If this session had an estimated task, append to `tasks/velocity.md`:
    `| [date] | [task] | [estimated] | [actual] | [complexity 1-5] | [notes] |`
 
 9. **After writing:**
