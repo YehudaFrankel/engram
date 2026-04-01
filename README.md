@@ -55,9 +55,27 @@ Session 1 starts blank. By session 8, Claude knows your patterns, your mistakes,
 npx clankbrain
 ```
 
-Setup auto-detects your project name and tech stack. No API keys. No background service. No database. Python 3.7+ required.
+Setup auto-detects your project name and tech stack. No API keys. No background service. No database.
 
 **Requires:** [Claude Code](https://claude.ai/claude-code)
+
+---
+
+## Lite or Full?
+
+Setup asks which mode fits your project.
+
+| | Lite | Full |
+|---|---|---|
+| Setup | Zero dependencies | Python 3.7+ |
+| Memory | 1 notes file | 5 typed memory files |
+| Drift detection | None | Automated after every edit |
+| Session journal | Not included | Auto-captured on every Stop |
+| Best for | Quick experiments | Long-running codebases |
+
+Not sure? Start with Lite. `Upgrade to Full` adds everything any time.
+
+→ [Full comparison and upgrade steps](docs/architecture.md#full-vs-lite)
 
 ---
 
@@ -199,6 +217,50 @@ Next session, Claude loads these lessons automatically — before you write a si
 
 ---
 
+## What /recall looks like
+
+Six months in, you hit an auth error. Type `/recall auth error`:
+
+```
+/recall auth error
+
+Found 4 related memories:
+
+  lessons.md [score: 0.91]
+  "Admin endpoints return stat=fail when SessionID is missing —
+   IGPlugin injects lowercase sessionid but isAdminSession() reads
+   uppercase SessionID. Always pass it explicitly."
+
+  error-lookup.md [score: 0.87]
+  "stat=fail + 'Request failed' → missing SessionID in appAdmin* call.
+   Fix: add SessionID: sessionStorage.getItem('adminSession') to every
+   admin call."
+
+  decisions.md [score: 0.74]
+  "Settled: always pass SessionID explicitly. IGPlugin auto-injection
+   does not satisfy the admin auth check — confirmed session 12."
+```
+
+The same query finds the root cause, the known fix, and the settled decision — across three files, by meaning not keyword. Powered by a local embedding model (~90MB, no API key, runs fully offline).
+
+→ [Setup and commands](docs/commands.md#memory)
+
+---
+
+## global-lessons.md
+
+One file, loaded at `Start Session` on every project you work on. Good for things that are true everywhere:
+
+```
+- Always check .env before debugging auth issues
+- Read the error message before searching Stack Overflow
+- Never force-push to main — find the root cause instead
+```
+
+Lives at `~/.claude/global-lessons.md`. Clankbrain creates it on first install.
+
+---
+
 ## Agents — multi-skill orchestrators
 
 Skills handle one step. Agents chain several skills into a complete workflow, with explicit human-in-the-loop **BREAKPOINT** markers at every decision point. Three ship out of the box:
@@ -291,6 +353,7 @@ Everything in `.claude/` is yours to modify. Add a skill, an agent, or a path-sc
 - [Cross-machine sync and team sync](docs/sync.md)
 - [Other IDEs and install options](docs/other-ides.md) — Cursor, Windsurf, Warp, GitHub Copilot
 - [FAQ](docs/faq.md)
+- [Example memory files](examples/) — realistic user/feedback/project/reference examples to copy and adapt
 
 ---
 
