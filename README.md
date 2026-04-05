@@ -214,7 +214,7 @@ Next session, Claude loads these lessons automatically — before you write a si
 - **Drift detection** — catches undocumented changes after every file edit
 - **Regret guard** — scans past rejected approaches before every prompt, blocks re-proposing them
 - **Progress reports** — real numbers built from your actual session history
-
+- **Typed decision relationships** — decisions.md tracks whether new decisions supersede, explain, or build on past ones. /evolve flags the connection automatically.
 ---
 
 ## What /recall looks like
