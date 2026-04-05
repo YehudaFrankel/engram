@@ -14,3 +14,5 @@ _Never delete entries — only append._
 **Why:** rationale
 **Apply when:** conditions where this decision holds
 **Relates to:** [supersedes: YYYY-MM-DD title] | [explains: entry title] | [example-of: entry title] | none
+
+-->
