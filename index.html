@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clankbrain — Persistent Memory for Claude Code</title>
-<meta name="description" content="Clankbrain (formerly claude-recall, engram) — persistent memory, self-improving skills, and autonomous workflows for Claude Code.">
+<title>Clankbrain — Compound Learning for Claude Code</title>
+<meta name="description" content="Clankbrain — compound learning for Claude Code. Skills self-improve, rejected approaches stay rejected, decisions stop getting re-debated. Two commands. No external dependencies.">
 <!-- formerly known as claude-recall, engram, and Claude-Code-memory-starter-kit -->
 <style>
 :root {
@@ -952,7 +952,7 @@ footer {
 <canvas id="particleBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.85;"></canvas>
 <div class="hero">
   <div>
-    <div class="hero-eyebrow"><span class="dot"></span>persistent memory for Claude Code · open source · MIT · built on official Claude Code APIs · data stays on your machine</div>
+    <div class="hero-eyebrow"><span class="dot"></span>compound learning for Claude Code · open source · MIT · built on official Claude Code APIs · data stays on your machine</div>
     <h1>
       Your project knowledge<br>
       <span class="h1-amber">compounds</span> and learns<br>
@@ -1052,16 +1052,16 @@ footer {
     <div style="margin-top:2.5rem; display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border2); font-size:.76rem;" class="reveal mob-stack">
       <div style="padding:1rem 1.4rem; background:var(--s2); border-bottom:1px solid var(--border); grid-column:1; color:var(--muted); letter-spacing:.08em;">OTHER TOOLS</div>
       <div style="padding:1rem 1.4rem; background:var(--s1); border-bottom:1px solid var(--border); border-left:1px solid var(--border2); grid-column:2; color:var(--amber); letter-spacing:.08em;">CLANKBRAIN</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s2); color:var(--muted);">API key required</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); color:var(--green);">zero dependencies</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">background service running</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">no service — plain files</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">database setup</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">markdown + git</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">framework lock-in</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">any project, any stack</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">30–60 min setup</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">~5 minutes</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); color:var(--muted);">skills stay static — no feedback loop</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); color:var(--green);">skills score themselves · /evolve patches failures</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">rejected approaches get re-proposed</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">regret guard blocks them permanently</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">single notes dump file</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">typed files: decisions · errors · lessons · regret</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">no team sync</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">shared team memory · personal stays local</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">API key or database required</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">zero dependencies — Python 3.7+</div>
       <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">unofficial / proprietary internals</div>
       <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">official Anthropic hooks + skills APIs</div>
     </div>
@@ -1298,7 +1298,7 @@ footer {
 <canvas id="radarBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
   <div class="wrap-sm" style="position:relative;z-index:1;">
     <div class="sec-label">proof of concept</div>
-    <h2>142 sessions.<br><span class="h2-amber">One living environment.</span></h2>
+    <h2>160 sessions.<br><span class="h2-amber">One living environment.</span></h2>
     <p class="sec-desc">
       Built and validated on a production project — Java backend, vanilla JS, SQL Server.
       These numbers are from the actual engineering environment this kit grew out of.
@@ -1314,9 +1314,9 @@ footer {
       <div class="stats-body" id="stats-term-body">
         <span class="st-cmd">cat</span> <span style="color:var(--text)">stats.md</span><br>
         <span class="tdim">────────────────────────────────────────</span><br>
-        <span class="st-key">sessions logged         </span><span class="st-val">139</span><br>
+        <span class="st-key">sessions logged         </span><span class="st-val">160</span><br>
         <span class="st-key">skills in active use    </span><span class="st-val">23+</span><br>
-        <span class="st-key">sessions, zero data lost</span><span class="st-val">139</span><br>
+        <span class="st-key">sessions, zero data lost</span><span class="st-val">160</span><br>
         <span class="st-key">memory files tracked    </span><span class="st-val">20+</span><br>
         <span class="st-key">decisions preserved     </span><span class="st-val">15+</span><br>
         <span class="st-key">rejected approaches logged</span><span class="st-val">12</span><br>
@@ -1495,8 +1495,8 @@ footer {
       <details>
         <summary>What's the difference between Full and Lite mode?</summary>
         <div class="faq-body">
-          <em>Full:</em> 5 separate memory files (project status, JS functions, HTML/CSS, backend, preferences), drift detection script, auto-rebuild hooks. Best for multi-file projects.<br><br>
-          <em>Lite:</em> 1 notes file, no drift detection, no hooks. Best for solo or small projects. You can upgrade from Lite to Full at any time with a single prompt.
+          <em>Full:</em> 5 typed memory files (lessons, decisions, error-lookup, critical-notes, project_status), drift detection after every edit, session journal auto-captured on every Stop. Best for complex, long-running codebases.<br><br>
+          <em>Lite:</em> 3 typed memory files (notes, lessons, decisions), no drift detection, no hooks — memory updates only when you run End Session manually. Best for any project. Upgrade to Full any time with a single prompt.
         </div>
       </details>
       <details>
@@ -1578,10 +1578,13 @@ footer {
       <details>
         <summary>How is this different from other Claude memory repos?</summary>
         <div class="faq-body">
-          Most repos save a snapshot — a CLAUDE.md file you maintain by hand.
-          clankbrain ships: disk-backed memory that survives crashes,
-          a compound learning loop (/learn → skill_scores → /evolve), autonomous hooks that fire without prompting,
-          and skill chaining. <em>At time of writing, nothing else ships persistent living memory + compound learning together.</em>
+          Most memory tools remember. Clankbrain learns.<br><br>
+          Every other tool — Auto Memory, MCP servers, single-file notes, SQLite stores — captures what happened.
+          Clankbrain also improves how Claude works: skills score themselves on every use,
+          <code>/evolve</code> patches the steps that keep failing, and <code>regret.md</code> permanently blocks
+          approaches you've already rejected.<br><br>
+          On session 5 every tool looks similar. By session 50, Clankbrain's skills have been refined
+          by 50 real feedback loops. <em>Nothing else compounds that way.</em>
         </div>
       </details>
     </div>
@@ -1621,7 +1624,7 @@ const outputs = [
   { delay: 1000, html: '<span class="tok">✓ lessons.md — 34 patterns applied</span>' },
   { delay: 1400, html: '<span class="tok">✓ decisions.md — 15 settled decisions</span>' },
   { delay: 1900, html: '<span class="tmut">// last session: skill chaining + autonomous hooks</span>' },
-  { delay: 2500, html: '<span class="twarn">→ 142 sessions · zero re-explanations needed</span>' },
+  { delay: 2500, html: '<span class="twarn">→ 160 sessions · zero re-explanations needed</span>' },
   { delay: 3200, html: '<span class="tgap"></span><span class="tp">yf@clankbrain ~ $</span> <span class="cursor"></span>' },
 ];
 
@@ -2290,9 +2293,9 @@ function initStatsAnim() {
   if (!body) return;
 
   var LINES = [
-    { key: 'sessions logged         ', val: '139' },
+    { key: 'sessions logged         ', val: '160' },
     { key: 'skills in active use    ', val: '23+' },
-    { key: 'sessions, zero data lost', val: '139' },
+    { key: 'sessions, zero data lost', val: '160' },
     { key: 'memory files tracked    ', val: '20+' },
     { key: 'decisions preserved     ', val: '15+' },
     { key: 'rejected approaches logged', val: '12' },
