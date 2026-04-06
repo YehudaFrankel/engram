@@ -21,7 +21,7 @@ from pathlib import Path
 
 # ── PostHog config ─────────────────────────────────────────────────────────────
 # Replace with your PostHog project API key from posthog.com/settings/project
-_POSTHOG_KEY    = 'phc_REPLACE_WITH_YOUR_POSTHOG_PROJECT_API_KEY'
+_POSTHOG_KEY    = 'phc_kQyQfXxpDn5Z7CvtN4GoqQACiULxACgSFmzrNrGVgZx8'
 _POSTHOG_HOST   = 'https://app.posthog.com'
 _CAPTURE_URL    = f'{_POSTHOG_HOST}/capture/'
 
