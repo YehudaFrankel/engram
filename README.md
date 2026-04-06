@@ -2,7 +2,7 @@
 
 <p align="center"><img src="logo.jpeg" alt="Clankbrain" width="160" /></p>
 
-[![v2.0.0](https://img.shields.io/badge/version-2.0.0-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
+[![v2.6.0](https://img.shields.io/badge/version-2.6.0-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
 
 ![Session demo](demo.gif)
 
@@ -42,9 +42,6 @@ No API keys. No background service. No database. **Requires:** [Claude Code](htt
 
 ```
 Start Session
-
-Pulling from GitHub...
-Already up to date.
 
 Ready. Last change: Session 42 — Dashboard pagination fix (page state lost
 on filter change, debounce added, loading spinner missing on slow queries).
@@ -123,33 +120,30 @@ You describe a bug. Claude presents a plan before touching anything:
 Plan
 
 Problem
-openCoursePage nulls courseDescEditor, defeating the if (!courseDescEditor)
-guard and causing a new Quill instance (+ toolbar) to be appended to the
-DOM on every course open.
+submitForm() calls validateUser() before the session token is set,
+so the auth check always fails on the first submit after page load.
 
 All Related Functions
-- openCoursePage — mobile/js/AdminFunctions.js:1738
+- submitForm    — src/js/auth.js:84
+- validateUser  — src/js/auth.js:112
 
 Before:
-  courseDescEditor  = null;
-  sessionEditors    = {};
+  validateUser(token);
+  token = getSessionToken();
 
 After:
-  sessionEditors    = {};
+  token = getSessionToken();
+  validateUser(token);
 
 Why this will work
-The detailCourseDescEditor DOM element is static HTML — it persists across
-course opens. Keeping the Quill instance alive and just updating
-courseDescEditor.root.innerHTML is correct. sessionEditors / fullContentEditors
-/ reminderEditors still reset because those are tied to dynamically-rendered
-session HTML.
+getSessionToken() reads from localStorage — it must run first or
+validateUser receives undefined and rejects every request.
 
 Scope / Blast Radius
-- Files touched: mobile/js/AdminFunctions.js
-- Lines changed: 1 removed
+- Files touched: src/js/auth.js
+- Lines changed: 2 reordered
 - Type: Bug fix
-- Affected at runtime: Course description editor only — no behavior change,
-  just stops toolbar duplication
+- Affected at runtime: login flow only — no other callers
 
 Proceed?
 ```
@@ -157,11 +151,10 @@ Proceed?
 You type `yes`. Claude applies the edit, reads back the changed lines, and confirms:
 
 ```
-✓ Verified AdminFunctions.js:1736-1743 — courseDescEditor = null removed.
-sessionEditors = {} is now the first reset line. All diagnostics pre-existing.
+✓ Verified auth.js:84-86 — getSessionToken() now runs before validateUser().
+Token is defined before the auth check. All other functions unaffected.
 
-Done. Opening a second or third course will reuse the existing Quill instance
-instead of creating new ones — one toolbar only.
+Done. First submit after page load will now pass validation correctly.
 ```
 
 No code changes happen without your approval. Every edit is verified against what was planned.
@@ -225,21 +218,19 @@ Six months in, you hit an auth error. Type `/recall auth error`:
 ```
 /recall auth error
 
-Found 4 related memories:
+Found 3 related memories:
 
   lessons.md [score: 0.91]
-  "Admin endpoints return stat=fail when SessionID is missing —
-   IGPlugin injects lowercase sessionid but isAdminSession() reads
-   uppercase SessionID. Always pass it explicitly."
+  "JWT token must be set before validateUser() is called — reading from
+   localStorage after the call means the first request always fails."
 
   error-lookup.md [score: 0.87]
-  "stat=fail + 'Request failed' → missing SessionID in appAdmin* call.
-   Fix: add SessionID: sessionStorage.getItem('adminSession') to every
-   admin call."
+  "401 on first request after login → token not yet in localStorage when
+   auth check runs. Fix: await setSessionToken() before any API call."
 
   decisions.md [score: 0.74]
-  "Settled: always pass SessionID explicitly. IGPlugin auto-injection
-   does not satisfy the admin auth check — confirmed session 12."
+  "Settled: always initialise token before route guards fire. Confirmed
+   session 12 — async init was the root cause, not the guard logic."
 ```
 
 Root cause, known fix, and settled decision — across three files, by meaning not keyword.
