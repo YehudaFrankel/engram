@@ -86,6 +86,23 @@ Not sure? Start with Lite. `Upgrade to Full` adds everything any time.
 
 ---
 
+## How automation works (Full mode)
+
+Full setup wires 4 Claude Code lifecycle hooks into `.claude/settings.json`. They fire automatically — nothing to remember, nothing to run manually.
+
+| Hook | Fires when | What it does |
+|------|-----------|-------------|
+| `UserPromptSubmit` | Every prompt you send | Queues corrections; regret guard checks past rejected approaches |
+| `PostToolUse` | After every Edit or Write | Drift detection — flags undocumented JS/CSS changes |
+| `Stop` | Claude ends a response | Writes session journal; reminds you to End Session if memory has changed |
+| `SessionStart` | Session begins | Loads memory, checks for interruptions, pulls team memory if configured |
+
+Lite mode has none of these — memory updates only when you run `End Session` manually.
+
+→ [Full hook reference](docs/hooks.md)
+
+---
+
 ## What a session looks like
 
 You describe a bug. Claude presents a plan before touching anything:
