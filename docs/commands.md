@@ -50,6 +50,16 @@ python tools/memory.py --search-semantic "auth error on admin endpoints" --top 1
 
 Without the index, `/recall` falls back to keyword scoring (the original behavior) — no setup needed to get started.
 
+**What if it fails?**
+
+| Scenario | What happens | How to fix |
+|----------|-------------|------------|
+| `sentence-transformers` not installed | `/recall` falls back to keyword search automatically — no error shown | Run `pip install sentence-transformers` when ready to enable semantic mode |
+| Model download interrupted (network drop mid-download) | `--build-index` fails with an import or file error on next run | Delete `~/.cache/huggingface/hub/models--sentence-transformers--all-MiniLM-L6-v2` and re-run `--build-index` |
+| `memory_embeddings.pkl` corrupted or from a different model version | `--search-semantic` prints a load error and exits; keyword search still works | Delete `.claude/memory/memory_embeddings.pkl` and re-run `--build-index` |
+
+In all three cases, keyword search continues to work. `/recall` will never silently return wrong results.
+
 ---
 
 ## Analysis

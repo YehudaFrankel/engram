@@ -84,42 +84,55 @@ def _kit_health_fails():
 # Injects MEMORY.md + STATUS.md into context before the first message.
 # Hook: SessionStart
 
-def cmd_session_start():
-    memory_dir = find_memory_dir()
-    parts = []
-
+def _load_memory_context(memory_dir):
+    """Return MEMORY.md content block, or ''."""
     memory_md = memory_dir / 'MEMORY.md'
-    if memory_md.exists():
-        parts.append('# Memory Index\n')
-        parts.append(memory_md.read_text(encoding='utf-8', errors='ignore').strip())
+    if not memory_md.exists():
+        return ''
+    return '# Memory Index\n\n' + memory_md.read_text(encoding='utf-8', errors='ignore').strip()
 
+
+def _load_status_context():
+    """Return last 30 lines of STATUS.md as a block, or ''."""
     status_md = ROOT / 'STATUS.md'
-    if status_md.exists():
-        text = status_md.read_text(encoding='utf-8', errors='ignore').strip()
-        lines = text.splitlines()
-        excerpt = '\n'.join(lines[-30:]) if len(lines) > 30 else text
-        parts.append('\n\n# Current Status\n')
-        parts.append(excerpt)
+    if not status_md.exists():
+        return ''
+    text  = status_md.read_text(encoding='utf-8', errors='ignore').strip()
+    lines = text.splitlines()
+    excerpt = '\n'.join(lines[-30:]) if len(lines) > 30 else text
+    return '\n\n# Current Status\n\n' + excerpt
 
-    interrupt_path = memory_dir / 'tasks' / 'interruption_state.md'
-    if interrupt_path.exists():
-        try:
-            interrupt_content = interrupt_path.read_text(encoding='utf-8').strip()
-            if interrupt_content:
-                parts.append(f'\n\n# ⚠ LAST SESSION INTERRUPTED (API ERROR)\n{interrupt_content}')
-            interrupt_path.unlink()
-        except Exception:
-            pass
 
+def _check_interruption(memory_dir):
+    """Return interruption block if last session was cut off, then delete the file. Returns ''."""
+    path = memory_dir / 'tasks' / 'interruption_state.md'
+    if not path.exists():
+        return ''
+    try:
+        content = path.read_text(encoding='utf-8').strip()
+        path.unlink()
+        if content:
+            return f'\n\n# \u26a0 LAST SESSION INTERRUPTED (API ERROR)\n{content}'
+    except Exception:
+        pass
+    return ''
+
+
+def _check_correction_queue(memory_dir):
+    """Return pending corrections block if any are queued, or ''."""
     queue_file = memory_dir / 'tasks' / 'corrections_queue.md'
-    if queue_file.exists():
-        q = queue_file.read_text(encoding='utf-8', errors='ignore')
-        pending = re.findall(r'## \d{4}-\d{2}-\d{2} \d{2}:\d{2}\n\*\*Prompt:\*\* ".+?"', q)
-        if pending:
-            parts.append(f'\n\n# Pending Corrections ({len(pending)} — apply this session, will persist at Stop)\n')
-            parts.append('\n'.join(pending))
+    if not queue_file.exists():
+        return ''
+    q       = queue_file.read_text(encoding='utf-8', errors='ignore')
+    pending = re.findall(r'## \d{4}-\d{2}-\d{2} \d{2}:\d{2}\n\*\*Prompt:\*\* ".+?"', q)
+    if not pending:
+        return ''
+    header = f'\n\n# Pending Corrections ({len(pending)} — apply this session, will persist at Stop)\n'
+    return header + '\n'.join(pending)
 
-    # Reset session edit counter
+
+def _reset_session_counter(memory_dir):
+    """Reset the per-session edit counter to 0. Side-effect only."""
     try:
         counter_file = memory_dir / 'tasks' / 'session_edit_count.txt'
         counter_file.parent.mkdir(parents=True, exist_ok=True)
@@ -127,50 +140,74 @@ def cmd_session_start():
     except Exception:
         pass
 
-    # Auto team pull — if team sync is configured, pull silently and report new entries
+
+def _auto_team_pull():
+    """Run team-pull silently if configured; return a block only when new entries arrive. Returns ''."""
     sync_config_path = ROOT / '.claude' / '.sync-config.json'
-    team_config_path = ROOT / '.claude' / 'team_config.json'  # legacy fallback
+    team_config_path = ROOT / '.claude' / 'team_config.json'   # legacy fallback
     has_team = False
     if sync_config_path.exists():
         try:
-            cfg = json.loads(sync_config_path.read_text(encoding='utf-8'))
+            cfg      = json.loads(sync_config_path.read_text(encoding='utf-8'))
             has_team = bool(cfg.get('team_repo'))
         except Exception:
             pass
     elif team_config_path.exists():
         try:
-            cfg = json.loads(team_config_path.read_text(encoding='utf-8'))
+            cfg      = json.loads(team_config_path.read_text(encoding='utf-8'))
             has_team = bool(cfg.get('repo'))
         except Exception:
             pass
-    if has_team:
-        try:
-            import subprocess as _sp
-            sync_script = ROOT / 'sync.py'
-            if sync_script.exists():
-                r = _sp.run(
-                    [sys.executable, str(sync_script), 'team-pull'],
-                    capture_output=True, text=True, timeout=30
-                )
-                out = (r.stdout or '').strip()
-                # Only surface output if there were actual new entries
-                if out and ('+' in out or 'new entr' in out.lower()):
-                    parts.append(f'\n\n# Team Sync\n{out}')
-        except Exception:
-            pass  # Never block session start on team sync failure
+    if not has_team:
+        return ''
+    try:
+        import subprocess as _sp
+        sync_script = ROOT / 'sync.py'
+        if not sync_script.exists():
+            return ''
+        r   = _sp.run([sys.executable, str(sync_script), 'team-pull'],
+                      capture_output=True, text=True, timeout=30)
+        out = (r.stdout or '').strip()
+        if out and ('+' in out or 'new entr' in out.lower()):
+            return f'\n\n# Team Sync\n{out}'
+    except Exception:
+        pass  # Never block session start on team sync failure
+    return ''
 
-    # Token budget warning — surface at session start so user can compact before hitting the wall
+
+def _check_token_budget():
+    """Return a compaction warning block if context is getting full, or ''."""
     _, pct, _ = _journal_estimate_tokens()
     if pct >= 80:
-        parts.append(f'\n\n# \u26a0 Context at {pct}% — run /compact NOW before starting new work')
-    elif pct >= 60:
-        parts.append(f'\n\n# Context at {pct}% — consider /compact soon')
+        return f'\n\n# \u26a0 Context at {pct}% — run /compact NOW before starting new work'
+    if pct >= 60:
+        return f'\n\n# Context at {pct}% — consider /compact soon'
+    return ''
 
-    # Silent kit health check — only surfaces FAILs, never WARNs
+
+def _check_kit_health():
+    """Return a kit health block if there are FAIL-level issues, or ''."""
     kit_fails = _kit_health_fails()
-    if kit_fails:
-        parts.append('\n\n# \u26a0 Kit Health FAILs\n' + '\n'.join(f'- {f}' for f in kit_fails))
+    if not kit_fails:
+        return ''
+    return '\n\n# \u26a0 Kit Health FAILs\n' + '\n'.join(f'- {f}' for f in kit_fails)
 
+
+def cmd_session_start():
+    memory_dir = find_memory_dir()
+
+    blocks = [
+        _load_memory_context(memory_dir),
+        _load_status_context(),
+        _check_interruption(memory_dir),
+        _check_correction_queue(memory_dir),
+        _auto_team_pull(),
+        _check_token_budget(),
+        _check_kit_health(),
+    ]
+    _reset_session_counter(memory_dir)
+
+    parts = [b for b in blocks if b]
     if not parts:
         return
 

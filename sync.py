@@ -19,6 +19,9 @@ Team sync commands:
   python sync.py team-push        Share what you learned. Run at End Session.
   python sync.py team-pull        Get teammates' latest. Runs automatically at Start Session.
   python sync.py team-status      Check last sync times and recent commits
+
+Diagnostics:
+  python sync.py diagnose         Show last 20 sync operations with status and any error detail
 """
 
 import json
@@ -34,6 +37,8 @@ ROOT        = Path(__file__).resolve().parent
 MEMORY_DIR  = ROOT / '.claude' / 'memory'
 CONFIG_FILE = ROOT / '.claude' / '.sync-config.json'
 TEAM_REPO_DIR = ROOT / '.claude' / 'team_repo'
+SYNC_LOG    = ROOT / '.claude' / '.sync-log.json'
+SYNC_LOG_MAX = 20
 
 # Files shared with the team — flat name in team repo → local path relative to memory dir
 TEAM_FILES = {
@@ -89,6 +94,59 @@ def load_config_raw():
 def save_config(cfg):
     CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
     CONFIG_FILE.write_text(json.dumps(cfg, indent=2), encoding='utf-8')
+
+
+# ─── SYNC LOG ─────────────────────────────────────────────────────────────────
+
+def _log_sync(op, status, detail=''):
+    """Append one entry to .sync-log.json, keep last SYNC_LOG_MAX entries."""
+    try:
+        entries = []
+        if SYNC_LOG.exists():
+            try:
+                entries = json.loads(SYNC_LOG.read_text(encoding='utf-8'))
+            except Exception:
+                entries = []
+        entries.append({
+            'ts':     datetime.now().strftime('%Y-%m-%d %H:%M'),
+            'op':     op,
+            'status': status,
+            'detail': detail,
+        })
+        entries = entries[-SYNC_LOG_MAX:]
+        SYNC_LOG.parent.mkdir(parents=True, exist_ok=True)
+        SYNC_LOG.write_text(json.dumps(entries, indent=2), encoding='utf-8')
+    except Exception:
+        pass  # Never let logging break the actual operation
+
+
+def cmd_diagnose():
+    """Print the last N sync operations with their status and any error detail."""
+    if not SYNC_LOG.exists():
+        print('No sync log found. Run push, pull, team-push, or team-pull first.')
+        return
+
+    try:
+        entries = json.loads(SYNC_LOG.read_text(encoding='utf-8'))
+    except Exception as e:
+        print(f'Could not read sync log: {e}')
+        return
+
+    if not entries:
+        print('Sync log is empty.')
+        return
+
+    ok_count  = sum(1 for e in entries if e.get('status') == 'ok')
+    err_count = len(entries) - ok_count
+
+    print(f'Last {len(entries)} sync operation(s)  —  {ok_count} ok, {err_count} error(s)\n')
+    for e in reversed(entries):
+        status_str = 'ok   ' if e.get('status') == 'ok' else 'ERROR'
+        detail = e.get('detail', '')
+        line = f"  {e.get('ts', '?')}  {status_str}  {e.get('op', '?')}"
+        if detail:
+            line += f'\n           {detail}'
+        print(line)
 
 
 # ─── GIT HELPERS ──────────────────────────────────────────────────────────────
@@ -342,9 +400,12 @@ def cmd_push():
     push_result = run('git push origin main', cwd=MEMORY_DIR, capture=True)
     if push_result.returncode == 0:
         print('Memory pushed to remote.')
+        _log_sync('push', 'ok', 'Memory pushed to remote')
     else:
-        print(f'Push failed: {push_result.stderr.strip()}')
+        detail = push_result.stderr.strip()
+        print(f'Push failed: {detail}')
         print('Check your network connection and GitHub authentication.')
+        _log_sync('push', 'error', detail)
         sys.exit(1)
 
 
@@ -357,16 +418,22 @@ def cmd_pull():
         result = run('git pull origin main', cwd=MEMORY_DIR, capture=True)
         if result.returncode == 0:
             print('Memory pulled from remote.')
+            _log_sync('pull', 'ok', 'Memory pulled from remote')
         else:
-            print(f'Pull failed: {result.stderr.strip()}')
+            detail = result.stderr.strip()
+            print(f'Pull failed: {detail}')
+            _log_sync('pull', 'error', detail)
             sys.exit(1)
     elif repo_url:
         MEMORY_DIR.mkdir(parents=True, exist_ok=True)
         result = run(f'git clone {repo_url} .', cwd=MEMORY_DIR, capture=True)
         if result.returncode == 0:
             print('Memory pulled from remote.')
+            _log_sync('pull', 'ok', 'Cloned memory from remote')
         else:
-            print(f'Clone failed: {result.stderr.strip()}')
+            detail = result.stderr.strip()
+            print(f'Clone failed: {detail}')
+            _log_sync('pull', 'error', detail)
             sys.exit(1)
     else:
         print('No personal sync configured on this machine.')
@@ -620,8 +687,10 @@ def cmd_team_pull():
     if additions:
         print('\n'.join(additions))
         print(f'\n{total} new entries merged from team.')
+        _log_sync('team-pull', 'ok', f'+{total} entries merged from team')
     else:
         print('Already up to date — no new entries from team.')
+        _log_sync('team-pull', 'ok', 'already up to date')
 
 
 def cmd_team_push():
@@ -670,8 +739,10 @@ def cmd_team_push():
 
     if push_ok:
         print(f'Pushed {count} team file(s) to {cfg["team_repo"]}')
+        _log_sync('team-push', 'ok', f'{count} file(s) pushed to {cfg["team_repo"]}')
     else:
         print('Committed locally but push failed. Check git auth and try again.')
+        _log_sync('team-push', 'error', 'committed locally but git push failed — check auth')
 
 
 def cmd_team_status():
@@ -755,6 +826,9 @@ def main():
 
     elif cmd == 'team-status':
         cmd_team_status()
+
+    elif cmd == 'diagnose':
+        cmd_diagnose()
 
     else:
         print(f"Unknown command: {cmd}")
