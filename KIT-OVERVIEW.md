@@ -53,6 +53,7 @@ Quick reference for what ships, what each file does, and how the pieces connect.
 | `plan` | "plan [feature]", "I want to build X" |
 | `learn` | `/learn`, End Session |
 | `evolve` | `/evolve` |
+| `evolve-check` | "evolve check", "skill health" |
 | `verification-loop` | "verify this works", "before I ship" |
 | `search-first` | "add new endpoint/feature/function" |
 | `strategic-compact` | "should I compact?" |
@@ -77,7 +78,7 @@ All live in `.claude/memory/`:
 | `html_css_reference.md` | Every HTML section and CSS class |
 | `backend_reference.md` | Every API endpoint and DB pattern |
 | `user_preferences.md` | How you like Claude to work |
-| `tasks/skill_scores.md` | Skill pass/fail log — /evolve reads this |
+| `tasks/skill_scores.md` | Step-level failure log per skill (Step N / produced X / needed Y / Severity) — /evolve-check surfaces patterns, /evolve patches them |
 | `tasks/regret.md` | Rejected approaches — never re-proposed |
 | `tasks/velocity.md` | Estimated vs actual session count per task |
 | `plans/_template.md` | Plan template — one file per feature |
@@ -99,7 +100,9 @@ Stop                     → memory.py --stop-check
 ## Daily Flow
 
 ```
-Start Session   →  memory health check, lessons loaded, open plans surfaced
+Start Session     →  memory health check, lessons loaded, open plans surfaced
 [work]
-End Session     →  /learn, STATUS.md updated, memory synced, plans scanned
+/evolve-check     →  see which skills need patching (optional, fast)
+End Session       →  /learn, STATUS.md updated, memory synced, plans scanned
+/evolve           →  patch flagged skills (run when /evolve-check shows 🔴 or 🟡)
 ```

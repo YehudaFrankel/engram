@@ -12,8 +12,9 @@ Skills are auto-triggered workflows. Describe what you need in plain English —
 | `verification-loop` | "verify this works", "before I ship" | Compile + smoke test + self-check after every change |
 | `search-first` | "add new endpoint/feature" | Research before coding — finds existing implementations |
 | `strategic-compact` | "should I compact?" | Safe context compaction without losing memory |
-| `learn` | `/learn`, "End Session" | Extracts lessons, scores skills, logs velocity |
-| `evolve` | `/evolve` | Patches failing skills, clusters patterns into new reusable skills |
+| `learn` | `/learn`, "End Session" | Extracts lessons, scores skills with step-level failure data, logs velocity |
+| `evolve` | `/evolve` | Patches failing skills (2+ failures required), clusters patterns into new reusable skills |
+| `evolve-check` | "evolve check", "skill health" | Read-only analysis — surfaces which skills are 🔴 urgent / 🟡 ready / 🟢 stable. No patching. |
 | `code-reviewer` | "review this", "check this code" | Reviews against your project's past lessons and locked decisions — gets smarter every session |
 
 Type `Generate Skills` and Claude creates additional skills tailored to your exact stack and file names.
@@ -39,18 +40,24 @@ When a skill gets something wrong and you correct it, that correction gets logge
 session work
      |
 /learn  ->  lessons.md        (patterns this session)
-        ->  skill_scores.md   (Y = needed correction, N = worked first time)
+        ->  skill_scores.md   (Step N: produced X, needed Y — structured failure data)
         ->  velocity.md       (estimated vs actual)
              |
-      /evolve  ->  finds skills where score = Y
-               ->  reads what failed -> patches the exact step
+      /evolve-check  ->  groups failures by skill
+                     ->  flags 2+ Y entries as ready to patch
+                     ->  flags vague entries as data-missing (cannot patch)
+                     ->  "Run /evolve on flagged skills now? [y/N]"
+             |
+      /evolve  ->  skips skills with only 1 failure (noise)
+               ->  skips skills with vague "What Failed" (insufficient data)
+               ->  reads step number + failure description -> patches exact step
                ->  clusters repeated lessons into new skills
                ->  logs every change to skill_improvements.md
              |
         better skills next session
 ```
 
-Run `/learn` before End Session. Run `/evolve` every 3-5 sessions. The same skill failure is architecturally impossible after `/evolve` runs.
+Run `/learn` before End Session. Run `/evolve-check` to see what needs patching. Run `/evolve` when skills are flagged 🔴 or 🟡. The same skill failure at the same step is architecturally impossible after `/evolve` runs.
 
 ---
 
@@ -60,7 +67,7 @@ Run `/learn` before End Session. Run `/evolve` every 3-5 sessions. The same skil
 |------|---------------|--------|
 | `lessons.md` | Patterns and fixes extracted by /learn | Applied before any code is touched each session |
 | `decisions.md` | Settled architectural choices | Claude never re-debates what's already decided |
-| `skill_scores.md` | Binary pass/fail per skill per session | /evolve uses this to find and patch failing steps |
+| `skill_scores.md` | Step-level failure log per skill: Step N / produced X / needed Y / Severity | /evolve-check surfaces patterns; /evolve patches the specific failing step |
 | `regret.md` | Approaches tried and rejected | Never re-proposed — saves re-litigating bad ideas |
 | `error-lookup.md` | Known errors -> cause -> fix | Surfaced automatically before you start investigating |
 | `velocity.md` | Estimated vs actual sessions per task | Estimates reflect real track record after 20+ entries |

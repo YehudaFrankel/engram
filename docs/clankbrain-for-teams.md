@@ -103,7 +103,9 @@ This only works if every developer runs End Session. One developer skipping it d
 
 The team lead's job in the first two weeks is to make the habit stick. After that, the system runs itself.
 
-Two rules: **Always run End Session. Run `/evolve` every few sessions.** Everything else is automatic.
+Three rules: **Always run End Session. Run `/evolve-check` to see which skills need patching. Run `/evolve` when skills are flagged.** Everything else is automatic.
+
+`/evolve-check` takes 5 seconds and shows exactly which skills are urgent, which are ready to patch, and which need better failure data before they can be improved. It never changes anything — it just surfaces what needs attention.
 
 ---
 

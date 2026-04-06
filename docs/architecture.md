@@ -71,7 +71,7 @@ your-project/
     |   +-- backend_reference.md      <- Every API endpoint and DB pattern
     |   +-- user_preferences.md       <- How you like Claude to work
     |   +-- tasks/
-    |       +-- skill_scores.md       <- Skill report card — /evolve reads this
+    |       +-- skill_scores.md       <- Step-level failure log (Step N / produced X / needed Y / Severity) — /evolve-check + /evolve read this
     |       +-- skill_improvements.md <- What /evolve patched and why
     |       +-- regret.md             <- Rejected approaches — never re-proposed
     |       +-- velocity.md           <- Estimated vs actual — self-calibrating
@@ -90,6 +90,7 @@ your-project/
         +-- plan/
         +-- learn/
         +-- evolve/
+        +-- evolve-check/             <- Read-only skill health analysis — no patching
         +-- verification-loop/
         +-- strategic-compact/
         +-- search-first/

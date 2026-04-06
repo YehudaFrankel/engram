@@ -10,8 +10,9 @@ Type these in Claude Code chat. All commands are plain English.
 |---------|-------------|
 | `Start Session` | Reads memory, applies lessons, surfaces open plans, picks up where you left off |
 | `End Session` | Runs /learn, updates STATUS.md, saves everything to memory locally |
-| `/learn` | Extracts lessons, scores skills (Y/N), logs velocity — auto-runs at End Session |
-| `/evolve` | Patches failing skills, clusters repeated patterns into new reusable skills |
+| `/learn` | Extracts lessons, scores skills with step-level failure data (Step N / produced X / needed Y), logs velocity — auto-runs at End Session |
+| `/evolve-check` | Read-only skill health check — shows 🔴 urgent / 🟡 ready / 🟢 stable / ⚠️ data-missing. Run before /evolve. |
+| `/evolve` | Patches failing skills (requires 2+ Y entries with structured failure data), clusters repeated patterns into new reusable skills |
 | `Quick Learn` | Fast lesson capture — writes a stub immediately, then prompts for 1-3 lessons |
 | `Plan [feature]` | Structured planning — options with ratings, decision logged live |
 | `Show Plan` | Display the full current plan file — always the complete document, never a summary |
