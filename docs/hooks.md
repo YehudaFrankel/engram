@@ -1,6 +1,6 @@
 # Lifecycle Hooks
 
-Eight hooks run automatically — no commands needed, no configuration required after setup. All call a single script: `tools/memory.py`.
+Ten hooks run automatically — no commands needed, no configuration required after setup. All call a single script: `tools/memory.py`.
 
 ---
 
@@ -16,6 +16,8 @@ Eight hooks run automatically — no commands needed, no configuration required 
 | `Stop` (journal) | After every response | Auto-captures session summary — searchable forever, no `/learn` needed |
 | `Stop` (reminder) | After every response | Reminds you to save memory; surfaces open plans with unresolved questions |
 | `StopFailure` | When session ends via error | Writes interruption state; surfaced automatically on next session start |
+| `PermissionRequest` | When Claude requests a permission | Logs denied operations to `tasks/permission_denials.md` for review at End Session |
+| `FileChanged` | When a file changes outside Claude | Alerts when `CLAUDE.md` or memory files are edited externally — catches external drift |
 
 ---
 
@@ -39,6 +41,9 @@ All hooks call `tools/memory.py` with a subcommand. You can also call these manu
 | `--journal` | Stop | Auto-captures what you worked on — timestamped, searchable |
 | `--stop-check` | Stop | Reminds you to save memory; surfaces open plans |
 | `--stop-failure` | StopFailure | Writes interruption state for recovery on next Start Session |
+| `--permission-denied` | PermissionRequest | Logs denied tool name + reason; appends to `tasks/permission_denials.md` |
+| `--file-changed` | FileChanged | Checks if changed file is `CLAUDE.md` or a memory file; emits system alert if so |
+| `--suggest-guards` | PostToolUse (error-lookup.md only) | When `error-lookup.md` is updated, prompts to run Generate Guards |
 
 ### On demand (type in Claude Code)
 
