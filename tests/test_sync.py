@@ -315,3 +315,262 @@ def test_team_pull_copies_complexity_profile_if_missing(kit, team_remote):
 
     assert local_cp.exists()
     assert 'Score: 7' in local_cp.read_text()
+
+
+# ─── MIGRATE SKILL SCORES ─────────────────────────────────────────────────────
+
+# Schema constants used across tests
+_6COL_HEADER = '| Date | Skill | Fired for | Correction needed | What failed | Improvement applied |'
+_6COL_SEP    = '|------|-------|-----------|-------------------|-------------|---------------------|'
+_8COL_HEADER = '| Date | Skill | Step | Used For | Correction Needed | Severity | What Failed | Improvement Applied |'
+_8COL_SEP    = '|------|-------|------|----------|-------------------|----------|-------------|---------------------|'
+_9COL_HEADER = '| Date | Skill | Step | Used For | Correction Needed | Severity | What Failed | Code Fixed | Skill Patched |'
+_9COL_SEP    = '|------|-------|------|----------|-------------------|----------|-------------|------------|---------------|'
+
+
+def _scores(kit_fixture=None):
+    """Return path to skill_scores.md in the patched MEMORY_DIR."""
+    return sync.MEMORY_DIR / 'tasks' / 'skill_scores.md'
+
+
+def test_migrate_scores_missing_file(kit):
+    """Missing file → prints message and returns cleanly (no exception)."""
+    # Do NOT create the file
+    sync.cmd_migrate_skill_scores()  # must not raise
+
+
+def test_migrate_scores_no_header(kit):
+    """File with no pipe-table header → no-op, file unchanged."""
+    f = _scores()
+    content = '# Skill Scores\n\nNo table here.\n'
+    f.write_text(content, encoding='utf-8')
+    sync.cmd_migrate_skill_scores()
+    assert f.read_text(encoding='utf-8') == content
+
+
+def test_migrate_scores_already_9col(kit):
+    """Already-migrated file → no write, file content unchanged."""
+    f = _scores()
+    content = (
+        f'{_9COL_HEADER}\n{_9COL_SEP}\n'
+        '| 2026-01-01 | fix-bug | all | debug session | N | minor | - | - | - |\n'
+    )
+    f.write_text(content, encoding='utf-8')
+    sync.cmd_migrate_skill_scores()
+    assert f.read_text(encoding='utf-8') == content
+
+
+# ─── 6-column migration ───────────────────────────────────────────────────────
+
+def test_migrate_scores_6col_n_row_dash(kit):
+    """6-col N row: Improvement applied=- → Code Fixed=-, Skill Patched=-."""
+    f = _scores()
+    f.write_text(
+        f'{_6COL_HEADER}\n{_6COL_SEP}\n'
+        '| 2026-01-01 | fix-bug | debug session | N | - | - |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert _9COL_HEADER in result
+    assert '| 2026-01-01 | fix-bug | - | debug session | N | - | - | - | - |' in result
+
+
+def test_migrate_scores_6col_y_row_improvement_applied_date(kit):
+    """6-col Y row, Improvement applied=date → Code Fixed=manual, Skill Patched=date."""
+    f = _scores()
+    f.write_text(
+        f'{_6COL_HEADER}\n{_6COL_SEP}\n'
+        '| 2026-01-01 | fix-bug | debug | Y | Wrong order | 2026-02-01 |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert '| 2026-01-01 | fix-bug | - | debug | Y | - | Wrong order | manual | 2026-02-01 |' in result
+
+
+def test_migrate_scores_6col_y_row_improvement_applied_text(kit):
+    """6-col Y row, Improvement applied=text → Code Fixed=manual, Skill Patched=-."""
+    f = _scores()
+    f.write_text(
+        f'{_6COL_HEADER}\n{_6COL_SEP}\n'
+        '| 2026-01-01 | plan | debug | Y | Skipped step | Fixed step 3 manually |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert '| 2026-01-01 | plan | - | debug | Y | - | Skipped step | manual | - |' in result
+
+
+# ─── 8-column migration ───────────────────────────────────────────────────────
+
+def test_migrate_scores_8col_n_row(kit):
+    """8-col N row → Code Fixed=-, Skill Patched=- regardless of Improvement Applied."""
+    f = _scores()
+    f.write_text(
+        f'{_8COL_HEADER}\n{_8COL_SEP}\n'
+        '| 2026-01-01 | fix-bug | all | debug | N | minor | - | - |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert _9COL_HEADER in result
+    assert '| 2026-01-01 | fix-bug | all | debug | N | minor | - | - | - |' in result
+
+
+def test_migrate_scores_8col_y_improvement_dash(kit):
+    """8-col Y row, Improvement Applied=- → Code Fixed=-, Skill Patched=-."""
+    f = _scores()
+    f.write_text(
+        f'{_8COL_HEADER}\n{_8COL_SEP}\n'
+        '| 2026-01-01 | plan | step 2 | planning | Y | major | Missed function | - |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert '| 2026-01-01 | plan | step 2 | planning | Y | major | Missed function | - | - |' in result
+
+
+def test_migrate_scores_8col_y_improvement_date(kit):
+    """8-col Y row, Improvement Applied=date → Code Fixed=manual, Skill Patched=date."""
+    f = _scores()
+    f.write_text(
+        f'{_8COL_HEADER}\n{_8COL_SEP}\n'
+        '| 2026-01-01 | plan | step 2 | planning | Y | major | Missed fn | 2026-03-01 |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert '| 2026-01-01 | plan | step 2 | planning | Y | major | Missed fn | manual | 2026-03-01 |' in result
+
+
+def test_migrate_scores_8col_y_improvement_text(kit):
+    """8-col Y row, Improvement Applied=text → Code Fixed=manual, Skill Patched=-."""
+    f = _scores()
+    f.write_text(
+        f'{_8COL_HEADER}\n{_8COL_SEP}\n'
+        '| 2026-01-01 | plan | step 2 | planning | Y | major | Missed fn | Rewrote step 2 |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert '| 2026-01-01 | plan | step 2 | planning | Y | major | Missed fn | manual | - |' in result
+
+
+def test_migrate_scores_8col_multiple_rows(kit):
+    """Multiple 8-col rows all migrate correctly in one pass."""
+    f = _scores()
+    f.write_text(
+        f'{_8COL_HEADER}\n{_8COL_SEP}\n'
+        '| 2026-01-01 | fix-bug | all | debug | N | minor | - | - |\n'
+        '| 2026-01-02 | plan | step 3 | feature | Y | major | Skipped search | 2026-01-05 |\n'
+        '| 2026-01-03 | plan | step 2 | refactor | Y | minor | Bad order | Applied fix |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert '| 2026-01-01 | fix-bug | all | debug | N | minor | - | - | - |' in result
+    assert '| 2026-01-02 | plan | step 3 | feature | Y | major | Skipped search | manual | 2026-01-05 |' in result
+    assert '| 2026-01-03 | plan | step 2 | refactor | Y | minor | Bad order | manual | - |' in result
+
+
+# ─── Edge cases ───────────────────────────────────────────────────────────────
+
+def test_migrate_scores_preserves_comment_lines(kit):
+    """Comment lines above the table pass through unchanged."""
+    f = _scores()
+    f.write_text(
+        '# Skill Effectiveness Scores\n\n'
+        '<!-- Code Fixed = manual / auto / - -->\n\n'
+        f'{_8COL_HEADER}\n{_8COL_SEP}\n'
+        '| 2026-01-01 | fix-bug | all | debug | N | minor | - | - |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert '# Skill Effectiveness Scores' in result
+    assert '<!-- Code Fixed = manual / auto / - -->' in result
+    assert _9COL_HEADER in result
+
+
+def test_migrate_scores_trailing_newline_preserved(kit):
+    """File ending with \\n keeps the trailing newline after migration."""
+    f = _scores()
+    f.write_text(
+        f'{_6COL_HEADER}\n{_6COL_SEP}\n'
+        '| 2026-01-01 | fix-bug | debug | N | - | - |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    assert f.read_text(encoding='utf-8').endswith('\n')
+
+
+def test_migrate_scores_no_trailing_newline(kit):
+    """File without trailing newline stays without one after migration."""
+    f = _scores()
+    # No final newline
+    f.write_text(
+        f'{_6COL_HEADER}\n{_6COL_SEP}\n'
+        '| 2026-01-01 | fix-bug | debug | N | - | - |',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    assert not f.read_text(encoding='utf-8').endswith('\n')
+
+
+def test_migrate_scores_short_row_no_crash(kit):
+    """Row with fewer cells than the schema expects uses '-' for missing cells."""
+    f = _scores()
+    f.write_text(
+        f'{_6COL_HEADER}\n{_6COL_SEP}\n'
+        '| 2026-01-01 | fix-bug |\n',  # only 2 cells — 4 missing
+        encoding='utf-8'
+    )
+    # Must not raise
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert _9COL_HEADER in result
+    assert '2026-01-01' in result  # date preserved
+
+
+def test_migrate_scores_unknown_col_count_passthrough(kit):
+    """Unknown column count (not 6 or 8) → data rows passed through unchanged."""
+    f = _scores()
+    # 5-column table — neither 6 nor 8, triggers the pass-through branch
+    five_col_header = '| Date | Skill | Used For | Correction Needed | What Failed |'
+    f.write_text(
+        f'{five_col_header}\n'
+        '|------|-------|----------|-------------------|-------------|\n'
+        '| 2026-01-01 | fix-bug | debug | N | - |\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    # Data row is passed through unchanged (schema not recognised)
+    assert '| 2026-01-01 | fix-bug | debug | N | - |' in result
+
+
+def test_migrate_scores_dry_run_does_not_write(kit, monkeypatch):
+    """--dry-run: prints a preview but does NOT modify the file."""
+    f = _scores()
+    content = (
+        f'{_6COL_HEADER}\n{_6COL_SEP}\n'
+        '| 2026-01-01 | fix-bug | debug | N | - | - |\n'
+    )
+    f.write_text(content, encoding='utf-8')
+    monkeypatch.setattr(sys, 'argv', ['sync.py', 'migrate-scores', '--dry-run'])
+    sync.cmd_migrate_skill_scores()
+    assert f.read_text(encoding='utf-8') == content  # unchanged
+
+
+def test_migrate_scores_6col_empty_table(kit):
+    """Header + separator but no data rows → header is updated, no crash."""
+    f = _scores()
+    f.write_text(
+        f'{_6COL_HEADER}\n{_6COL_SEP}\n',
+        encoding='utf-8'
+    )
+    sync.cmd_migrate_skill_scores()
+    result = f.read_text(encoding='utf-8')
+    assert _9COL_HEADER in result
+    assert _9COL_SEP in result
