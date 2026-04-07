@@ -1,5 +1,39 @@
 # Changelog
 
+## v2.6 (2026-04-06)
+
+### Changed
+- `tasks/skill_scores.md` schema updated to 9 columns — `Improvement Applied` split into two unambiguous columns:
+  - `Code Fixed` — how the code was corrected at the time of the session (manual / auto / -)
+  - `Skill Patched` — date when `/evolve` updated the SKILL.md, or `-` if not yet patched
+  - The split eliminates a silent gate bypass: entries with `Code Fixed=manual` still have `Skill Patched=-`, so `/evolve` correctly finds them as unpatched
+- `/evolve-check` now classifies skills with all Y entries patched as 🔵 PATCHED (awaiting confirmation) rather than collapsing them into 🟢 STABLE
+- `/evolve-check` only counts `Skill Patched = -` rows toward URGENT/WATCH thresholds — patched rows are resolved
+- `tasks/lessons.md` template pre-populated with 3 universal starter lessons so `Start Session` shows loaded lessons from day 1
+
+### Added
+- `sync.py migrate-scores` — auto-migrates existing `skill_scores.md` from 6-column or 8-column schema to 9-column in place. Supports `--dry-run` to preview before writing.
+- `sync.py migrate` now includes v2.6 schema migration in its checklist
+
+### Migration from v2.4/v2.5
+If you have an existing `skill_scores.md`, run the auto-migration:
+
+```
+python sync.py migrate-scores --dry-run   # preview
+python sync.py migrate-scores             # apply
+```
+
+The migration handles both old schemas:
+- **8-column** (had `Improvement Applied`): splits into `Code Fixed` + `Skill Patched`
+- **6-column** (old `Fired for / Correction needed`): maps columns and adds `Step=-`, `Severity=-`
+
+Column mapping for 8-col → 9-col:
+- `Improvement Applied` = `-`        → `Code Fixed=-`, `Skill Patched=-`
+- `Improvement Applied` = `YYYY-MM-DD` → `Code Fixed=manual`, `Skill Patched=[date]`
+- `Improvement Applied` = text description → `Code Fixed=manual`, `Skill Patched=-`
+
+---
+
 ## v2.4 (2026-04-05)
 
 ### Added

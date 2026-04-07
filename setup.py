@@ -146,9 +146,14 @@ def create_task_files():
 
 <!-- Claude logs every correction here so the same mistake never happens twice. -->
 <!-- Read at every session start. -->
+<!-- Add new lessons at the bottom. Claude reads top-to-bottom, so older lessons load first. -->
+<!-- Starter lessons below apply universally — /learn will add project-specific ones. -->
 
 | Date | What went wrong | Rule to prevent it |
 |------|----------------|-------------------|
+| (starter) | Jumped to a fix before reading the full error message | Read the complete error text first — the cause is usually in the last line, not the first |
+| (starter) | Made several changes at once — couldn't tell which one broke it | Change one thing at a time; verify it works before making the next change |
+| (starter) | Proposed a refactor without checking if a simpler fix existed first | Search for existing code that solves the problem before writing new code |
 """)
 
     write("tasks/decisions.md", """\
@@ -191,11 +196,17 @@ def create_task_files():
     write("tasks/skill_scores.md", """\
 # Skill Effectiveness Scores
 
-<!-- Binary log: did the skill output need correction? Y = needed fix, N = worked first time. -->
-<!-- /evolve reads this to prune weak skills and strengthen strong ones. -->
+<!-- Binary log: did the skill output need correction? -->
+<!-- Y = needed fix (log what failed + how code was fixed). N = worked first time. -->
+<!-- /evolve-check reads this to surface patterns. /evolve patches failing steps. -->
+<!-- Columns: -->
+<!--   Code Fixed    = how the code was corrected at the time (manual / auto / -)     -->
+<!--   Skill Patched = date /evolve updated the SKILL.md, or - if not yet patched     -->
+<!-- A row can have Code Fixed=manual and Skill Patched=- at the same time.           -->
+<!-- That means the code was fixed in session but the skill still needs /evolve.       -->
 
-| Date | Skill | Fired for | Correction needed | What failed | Improvement applied |
-|------|-------|-----------|-------------------|-------------|---------------------|
+| Date | Skill | Step | Used For | Correction Needed | Severity | What Failed | Code Fixed | Skill Patched |
+|------|-------|------|----------|-------------------|----------|-------------|------------|---------------|
 """)
 
     write("tasks/velocity.md", """\

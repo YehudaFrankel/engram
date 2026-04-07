@@ -23,6 +23,8 @@ Team sync commands:
 Diagnostics:
   python sync.py diagnose         Show last 20 sync operations with status and any error detail
   python sync.py migrate          Check which version migrations are needed and print instructions
+  python sync.py migrate-scores   Auto-migrate skill_scores.md from 6- or 8-column to 9-column schema
+  python sync.py migrate-scores --dry-run   Preview changes without writing
 """
 
 import json
@@ -881,6 +883,17 @@ _MIGRATIONS = [
             '  python tools/memory.py --memory-diff'
         ),
     },
+    {
+        'version': 'v2.6',
+        'description': 'skill_scores.md schema: 8-column → 9-column (split Improvement Applied into Code Fixed + Skill Patched)',
+        'check': lambda: _migrate_check_skill_scores_schema(),
+        'fix': (
+            'Run the auto-migration — rewrites header and all data rows in place:\n'
+            '  python sync.py migrate-scores\n'
+            'Dry-run first to preview changes:\n'
+            '  python sync.py migrate-scores --dry-run'
+        ),
+    },
 ]
 
 
@@ -891,6 +904,194 @@ def _migrate_check_missing_memory_diff():
         return False
     text = claude_md.read_text(encoding='utf-8', errors='ignore')
     return 'End Session' in text and '--memory-diff' not in text
+
+
+def _migrate_check_skill_scores_schema():
+    """Return True if skill_scores.md exists and uses an old column schema."""
+    scores = MEMORY_DIR / 'tasks' / 'skill_scores.md'
+    if not scores.exists():
+        return False
+    for line in scores.read_text(encoding='utf-8', errors='ignore').splitlines():
+        if line.strip().startswith('|') and 'Date' in line:
+            # Old 6-col: "| Date | Skill | Fired for | Correction needed | What failed | Improvement applied |"
+            # Old 8-col: "| Date | Skill | Step | Used For | Correction Needed | Severity | What Failed | Improvement Applied |"
+            # New 9-col: "... | Code Fixed | Skill Patched |"
+            return 'Skill Patched' not in line
+    return False
+
+
+def _parse_table_row(line):
+    """Split a pipe-delimited markdown row into stripped cell strings."""
+    parts = line.strip().split('|')
+    # Strip leading/trailing empty parts from outer pipes
+    if parts and parts[0].strip() == '':
+        parts = parts[1:]
+    if parts and parts[-1].strip() == '':
+        parts = parts[:-1]
+    return [p.strip() for p in parts]
+
+
+def _is_separator_row(cells):
+    """Return True if row is a markdown table separator (all dashes)."""
+    return all(re.match(r'^-+$', c.replace(' ', '')) for c in cells if c)
+
+
+def cmd_migrate_skill_scores():
+    """Migrate skill_scores.md from 6-col or 8-col schema to 9-col schema."""
+    dry_run = '--dry-run' in sys.argv
+
+    scores = MEMORY_DIR / 'tasks' / 'skill_scores.md'
+    if not scores.exists():
+        print('skill_scores.md not found — nothing to migrate.')
+        return
+
+    text = scores.read_text(encoding='utf-8', errors='ignore')
+    lines = text.splitlines()
+
+    # Detect schema version by inspecting the header row
+    header_line = None
+    header_idx = None
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith('|') and 'Date' in stripped:
+            header_line = stripped
+            header_idx = i
+            break
+
+    if header_line is None:
+        print('No table header found in skill_scores.md — nothing to migrate.')
+        return
+
+    if 'Skill Patched' in header_line:
+        print('skill_scores.md is already on the 9-column schema — nothing to do.')
+        return
+
+    cols = _parse_table_row(header_line)
+    num_cols = len(cols)
+
+    NEW_HEADER = '| Date | Skill | Step | Used For | Correction Needed | Severity | What Failed | Code Fixed | Skill Patched |'
+    NEW_SEP    = '|------|-------|------|----------|-------------------|----------|-------------|------------|---------------|'
+
+    output_lines = []
+    changed_rows = 0
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+
+        # Pass through non-table lines unchanged
+        if not stripped.startswith('|'):
+            output_lines.append(line)
+            continue
+
+        cells = _parse_table_row(stripped)
+
+        # Header row — replace entirely
+        if i == header_idx:
+            output_lines.append(NEW_HEADER)
+            continue
+
+        # Separator row — replace entirely
+        if _is_separator_row(cells):
+            output_lines.append(NEW_SEP)
+            continue
+
+        # Data rows — migrate based on detected column count
+        if num_cols == 6:
+            # Old 6-col: Date, Skill, Fired for, Correction needed, What failed, Improvement applied
+            # New 9-col: Date, Skill, Step,      Used For,          Corr Needed, Severity, What Failed, Code Fixed, Skill Patched
+            date     = cells[0] if len(cells) > 0 else '-'
+            skill    = cells[1] if len(cells) > 1 else '-'
+            used_for = cells[2] if len(cells) > 2 else '-'   # "Fired for" maps to "Used For"
+            corr     = cells[3] if len(cells) > 3 else '-'
+            failed   = cells[4] if len(cells) > 4 else '-'
+            old_imp  = cells[5] if len(cells) > 5 else '-'
+
+            # Determine Code Fixed / Skill Patched from old "Improvement applied"
+            if not old_imp or old_imp == '-':
+                code_fixed = '-'
+                skill_patched = '-'
+            elif re.match(r'^\d{4}-\d{2}-\d{2}$', old_imp):
+                # Value was a date — means skill was patched on that date
+                code_fixed = 'manual'
+                skill_patched = old_imp
+            else:
+                # Text description — code was fixed manually, skill not yet patched
+                code_fixed = 'manual'
+                skill_patched = '-'
+
+            new_row = f'| {date} | {skill} | - | {used_for} | {corr} | - | {failed} | {code_fixed} | {skill_patched} |'
+
+        elif num_cols == 8:
+            # Old 8-col: Date, Skill, Step, Used For, Correction Needed, Severity, What Failed, Improvement Applied
+            date     = cells[0] if len(cells) > 0 else '-'
+            skill    = cells[1] if len(cells) > 1 else '-'
+            step     = cells[2] if len(cells) > 2 else '-'
+            used_for = cells[3] if len(cells) > 3 else '-'
+            corr     = cells[4] if len(cells) > 4 else '-'
+            severity = cells[5] if len(cells) > 5 else '-'
+            failed   = cells[6] if len(cells) > 6 else '-'
+            old_imp  = cells[7] if len(cells) > 7 else '-'
+
+            # Determine Code Fixed / Skill Patched from old "Improvement Applied"
+            if not old_imp or old_imp == '-':
+                code_fixed = '-'
+                skill_patched = '-'
+            elif re.match(r'^\d{4}-\d{2}-\d{2}$', old_imp):
+                # Value was a date — the skill was already patched on that date
+                code_fixed = 'manual'
+                skill_patched = old_imp
+            elif corr.upper() == 'Y':
+                # Y row with text description — code was fixed manually, skill not yet patched by /evolve
+                code_fixed = 'manual'
+                skill_patched = '-'
+            else:
+                code_fixed = '-'
+                skill_patched = '-'
+
+            new_row = f'| {date} | {skill} | {step} | {used_for} | {corr} | {severity} | {failed} | {code_fixed} | {skill_patched} |'
+
+        else:
+            # Unknown column count — pass through unchanged
+            output_lines.append(line)
+            continue
+
+        output_lines.append(new_row)
+        changed_rows += 1
+
+    new_text = '\n'.join(output_lines) + ('\n' if text.endswith('\n') else '')
+
+    if dry_run:
+        print(f'=== migrate-scores --dry-run ===\n')
+        print(f'Detected schema: {num_cols}-column')
+        print(f'Data rows to migrate: {changed_rows}')
+        print(f'\nNew header:\n  {NEW_HEADER}')
+        print(f'\nFirst 5 migrated rows would be:')
+        count = 0
+        for line in output_lines:
+            if line.startswith('|') and 'Date' not in line and not _is_separator_row(_parse_table_row(line)):
+                print(f'  {line}')
+                count += 1
+                if count >= 5:
+                    break
+        print(f'\nNothing written. Run without --dry-run to apply.')
+        return
+
+    # Write migrated file
+    scores.write_text(new_text, encoding='utf-8')
+    print(f'skill_scores.md migrated: {num_cols}-column → 9-column')
+    print(f'  Header updated')
+    print(f'  {changed_rows} data row(s) updated')
+    print(f'\nColumn mapping applied:')
+    if num_cols == 6:
+        print(f'  "Fired for"           → "Used For"')
+        print(f'  "Improvement applied" → "Code Fixed" + "Skill Patched"')
+        print(f'  Added: Step=-, Severity=-')
+    else:
+        print(f'  "Improvement Applied" → "Code Fixed" + "Skill Patched"')
+        print(f'  Y rows with text value → Code Fixed=manual, Skill Patched=-')
+        print(f'  Y rows with date value → Code Fixed=manual, Skill Patched=[date]')
+        print(f'  N rows                 → Code Fixed=-, Skill Patched=-')
+    print(f'\nReview the migrated file: .claude/memory/tasks/skill_scores.md')
 
 
 def cmd_migrate():
@@ -965,6 +1166,9 @@ def main():
 
     elif cmd == 'migrate':
         cmd_migrate()
+
+    elif cmd == 'migrate-scores':
+        cmd_migrate_skill_scores()
 
     else:
         print(f"Unknown command: {cmd}")
