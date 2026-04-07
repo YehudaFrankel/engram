@@ -461,7 +461,7 @@ def write(path, content):
 
 def session_start_block(js_files, automated):
     if automated:
-        drift_step = "2. Run drift check: `python tools/memory.py --check-drift` — fix any drift found (update memory files + sync to bundle). **If Bash is blocked by permissions, skip this step and continue.**"
+        drift_step = f"2. Run drift check: `{PYTHON_BIN} tools/memory.py --check-drift` — fix any drift found (update memory files + sync to bundle). **If Bash is blocked by permissions, skip this step and continue.**"
     else:
         js_list = "\n".join(f"   - `{f}`" for f in js_files) if js_files else "   - *(add JS files here)*"
         drift_step = f"""\
@@ -491,7 +491,7 @@ When the user types **"Start Session"**, do the following:
 
 ### `Check Drift`
 When the user types **"Check Drift"**, do the following:
-1. Run `python tools/memory.py --check-drift` (or `python3`) — if the script doesn't exist, manually scan JS files and compare against `js_functions.md`
+1. Run `{PYTHON_BIN} tools/memory.py --check-drift` — if the script doesn't exist, manually scan JS files and compare against `js_functions.md`
 2. Report what's MISSING (in code, not in memory), what's STALE (in memory, not in code), or "OK — no drift detected"
 3. Fix any drift found — update memory files, sync to bundle
 
@@ -605,7 +605,7 @@ When the user types **"End Session"**, do the following:
    - New rules or gotchas → update `user_preferences.md`
    - Update `currentDate` in `.claude/memory/MEMORY.md` to today's date
 4. Run drift check to confirm everything is clean
-5. Run `python tools/memory.py --memory-diff` and include the output in your report
+5. Run `{PYTHON_BIN} tools/memory.py --memory-diff` and include the output in your report
 6. Report: "Session N complete. Updated: [list]. [memory-diff output]"
 
 > **Memory stays local by default.** Nothing is pushed anywhere. To sync across machines, see the Advanced section in CLAUDE.md.
@@ -1276,7 +1276,7 @@ _IDE_MEMORY_BODY = """\
 
 **remember: [anything]** — Save this instantly to `tasks/draft-lessons.md` with today's date. Never wait for End Session.
 
-**Check Drift** — Run `python tools/memory.py --check-drift` and report any undocumented functions or stale entries.
+**Check Drift** — Run `{PYTHON_BIN} tools/memory.py --check-drift` and report any undocumented functions or stale entries.
 
 ## Rules
 

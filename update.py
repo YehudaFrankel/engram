@@ -249,7 +249,7 @@ def main():
     kit_memory   = get_content(source, "tools/memory.py",       github_base)
     kit_version  = get_content(source, "VERSION",               github_base)
 
-    if not all([kit_claude, kit_setup, kit_check]):
+    if not all([kit_claude, kit_setup, kit_check, kit_memory]):
         print("\nAborted — could not load all kit files.")
         sys.exit(1)
 
