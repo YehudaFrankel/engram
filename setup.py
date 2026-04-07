@@ -762,6 +762,32 @@ After **any code change**, immediately update `.claude/memory/notes.md` with wha
 - Session 1: Initial project setup
 """)
 
+    # ── HELP.md — in-project self-heal instructions ──
+    write("HELP.md", f"""\
+# Clankbrain — Help
+
+## Blank conversation? (Start Session shows nothing)
+
+A hook is failing before Claude can respond. Fix it by running this directly
+in your terminal from this project folder — no Claude needed:
+
+**Mac/Linux:**
+```
+python3 -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/update.py').read().decode())"
+```
+
+**Windows:**
+```
+python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/update.py').read().decode())"
+```
+
+After it completes, open a fresh Claude Code conversation and type `Start Session`.
+
+## Still stuck?
+
+Open an issue: https://github.com/YehudaFrankel/clankbrain/issues
+""")
+
     # ── @rules/ files (static conventions — load via @rules/ imports) ──
     write("rules/stack.md", f"""# {name} — Stack
 
@@ -1502,6 +1528,32 @@ Best used for: generating scaffolding, large refactors where the goal is clear, 
 
     # ─── Task Files ───────────────────────────────────────────────────────────
     create_task_files()
+
+    # ── HELP.md — in-project self-heal instructions ──
+    write("HELP.md", f"""\
+# Clankbrain — Help
+
+## Blank conversation? (Start Session shows nothing)
+
+A hook is failing before Claude can respond. Fix it by running this directly
+in your terminal from this project folder — no Claude needed:
+
+**Mac/Linux:**
+```
+python3 -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/update.py').read().decode())"
+```
+
+**Windows:**
+```
+python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/YehudaFrankel/clankbrain/main/update.py').read().decode())"
+```
+
+After it completes, open a fresh Claude Code conversation and type `Start Session`.
+
+## Still stuck?
+
+Open an issue: https://github.com/YehudaFrankel/clankbrain/issues
+""")
 
     # ── .gitignore ──
     _write_gitignore()

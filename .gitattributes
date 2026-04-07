@@ -1,0 +1,19 @@
+# Normalize all text files to LF on commit — prevents CRLF warnings on Windows
+* text=auto eol=lf
+
+# Explicitly enforce LF for code and config
+*.py   text eol=lf
+*.md   text eol=lf
+*.json text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.txt  text eol=lf
+*.sh   text eol=lf
+
+# Binaries — no line ending conversion
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.zip  binary
