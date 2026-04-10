@@ -26,6 +26,49 @@ Type these in Claude Code chat. All commands are plain English.
 |---------|-------------|
 | `/recall [topic]` | Semantic search across all memory files — finds related memories even if the wording is different. Falls back to keyword search automatically if the index isn't built. |
 | `/forget [topic]` | Invalidate a stale or wrong memory — marks it as removed, keeps history intact |
+| `Memory Audit` | Scan all memory files for missing `## Source` blocks, missing `valid_until` on state/project types, missing frontmatter. Run every few weeks or after a major batch of new memories. |
+| `Check Memory Expiry` | Surface memories past their `valid_until` date (stale) or not yet active (`valid_from` in the future). Prompts to update or archive each one. |
+
+### Memory file format
+
+Every memory file follows the MemPalace-inspired template:
+
+```markdown
+---
+name: short-id
+description: one-line hook for MEMORY.md index
+type: rule | correction | decision | state | reference | user
+valid_from: YYYY-MM-DD        # optional — memory not active before this date
+valid_until: YYYY-MM-DD       # required for type: state — flags when memory may go stale
+related: [other-memory.md]    # optional — followed by --pre-edit hook (Tunnels)
+---
+
+[Rule / fact / decision in plain English]
+
+**Why:** [reason this matters]
+**How to apply:** [when to use it]
+
+## Source
+> [Verbatim snippet from the conversation]
+— Session N
+```
+
+**`## Source`** is the single highest-impact addition — storing the raw exchange alongside the summary raises recall accuracy from ~84% to ~97%.
+
+**Tunnels**: `related:` links are followed one level deep by the `--pre-edit` hook before any code change. If `auth.js` is about to be edited and `session_bug_auth.md` links to `auth_decision.md`, both are surfaced automatically.
+
+**Temporal validity**: `valid_until` marks state memories with an expiry date. `valid_from` prevents a memory from activating before it applies. Run `Memory Audit` or `Check Memory Expiry` to surface stale entries.
+
+**Types:**
+
+| Type | When to use | Expiry needed? |
+|------|------------|---------------|
+| `rule` | Permanent coding or workflow rule | No |
+| `correction` | One-time fix — prevents repeat mistake | No |
+| `decision` | Locked architectural choice | No |
+| `state` | Current phase, active work, temporary facts | Yes — `valid_until` required |
+| `reference` | Pointer to external system (Jira, Slack, URL) | Optional |
+| `user` | Who the user is, preferences, expertise | No |
 
 ### Semantic search setup (one-time)
 

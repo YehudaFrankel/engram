@@ -2,7 +2,7 @@
 
 <p align="center"><img src="logo.jpeg" alt="Clankbrain" width="160" /></p>
 
-[![v2.6.4](https://img.shields.io/badge/version-2.6.4-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
+[![v2.7.0](https://img.shields.io/badge/version-2.7.0-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
 
 ![Session demo](demo.gif)
 
@@ -161,6 +161,7 @@ The value compounds with consistency. The more sessions you log, the smarter Cla
 - **Skills that self-improve** — each skill scores itself on every use; `/evolve` reads the scores and patches the steps that keep failing. After 50 sessions, every skill has been refined by 50 real feedback loops. Nothing else does this.
 - **Regret guard** — every prompt is silently scanned against past rejected approaches before Claude responds. Approaches you discarded stay discarded — permanently, across every future session.
 - **Typed memory files** — decisions, errors, lessons, and rejected approaches each live in a dedicated file. Not a single dump file — purpose-built stores that load selectively and stay readable.
+- **MemPalace-inspired memory format** — every memory file stores a verbatim `## Source` block alongside its summary (shown to raise recall accuracy from ~84% to ~97%). Files carry temporal frontmatter (`valid_from:`, `valid_until:`) so expired or not-yet-active memories surface automatically. `related:` links connect memories across files (Tunnels); the `--pre-edit` hook follows them one level deep before any code change. Six precise types (`rule`, `correction`, `decision`, `state`, `reference`, `user`) replace a flat note dump.
 - **Semantic memory search** — `/recall` finds related memories by meaning, not keywords. Local model (~90MB, no API key, fully offline).
 - **Team sync** — share what you learn with your whole team. Manager runs `Setup Team` once, teammates run `Join Team` once, every Start Session pulls the latest silently. Personal memory stays local.
 - **Drift detection** — catches undocumented changes after every file edit (Full mode).
@@ -213,11 +214,12 @@ Full setup wires Claude Code lifecycle hooks into `.claude/settings.json`. They 
 
 | Hook | Fires when | What it does |
 |------|-----------|-------------|
-| `UserPromptSubmit` | Every prompt you send | Queues corrections; regret guard checks past rejected approaches |
+| `UserPromptSubmit` | Every prompt you send | Queues corrections; regret guard checks past rejected approaches; refreshes session title bar every 60 s (session N \| open plans \| open todos) |
 | `PostToolUse` | After every Edit or Write | Drift detection, plan verification, edit logging; suggest-guards scoped to error-lookup.md edits only |
 | `Stop` | Claude ends a response | Writes session journal; reminds you to End Session if memory has changed |
 | `SessionStart` | Session begins | Loads memory, checks for interruptions, pulls team memory if configured |
-| `PermissionRequest` | Claude requests a permission | Logs denied operations to `tasks/permission_denials.md` for review |
+| `PermissionRequest` | Claude requests a permission | Pre-flight check before permission is granted or denied |
+| `PermissionDenied` | A tool use is denied | Logs the tool name and reason to `tasks/permission_denials.md` for review |
 | `FileChanged` | A file changes outside Claude | Alerts when `CLAUDE.md` or memory files are edited externally |
 
 Lite mode has none of these — memory updates only when you run `End Session` manually.
@@ -225,6 +227,42 @@ Lite mode has none of these — memory updates only when you run `End Session` m
 > **`disableSkillShellExecution`** — Claude Code v2.1.91 setting that prevents skills from running inline shell commands. Add `"disableSkillShellExecution": true` to your `.claude/settings.json` if you want to restrict this.
 
 → [Full hook reference](docs/hooks.md)
+
+---
+
+## Memory file format
+
+Every memory file uses a common template:
+
+```markdown
+---
+name: short-id
+description: one-line hook for MEMORY.md index
+type: rule | correction | decision | state | reference | user
+valid_from: YYYY-MM-DD        # optional — memory inactive before this date
+valid_until: YYYY-MM-DD       # required for type: state/project — flags when stale
+related: [other-memory.md]    # optional — links followed by --pre-edit hook (Tunnels)
+---
+
+[Summary — the rule, fact, or decision in plain English]
+
+**Why:** [reason this matters]
+**How to apply:** [when to use it]
+
+## Source
+> [Verbatim snippet from the conversation where this was established]
+— Session N
+```
+
+**Why `## Source`?** Storing the raw exchange alongside the summary is the single highest-impact change. MemPalace research shows recall accuracy rises from ~84% to ~97% when the verbatim source is present — the model can reason from the original context rather than a summary of it.
+
+**Types:** `rule` (permanent coding rule), `correction` (one-time fix to prevent recurrence), `decision` (locked architectural choice), `state` (current phase — always set `valid_until`), `reference` (external URL/Jira/Slack pointer), `user` (who the user is and how to work with them).
+
+**Temporal validity:** `valid_until` marks state/project memories with an expiry date. `valid_from` prevents a memory from activating too early. Run `Check Memory Expiry` to surface stale entries.
+
+**Tunnels:** `related:` lists files that share context with this memory. The `--pre-edit` hook follows them one level deep before any code change — so editing `auth.js` automatically surfaces `session_bug_auth.md` *and* the `decisions.md` entry it links to.
+
+Run `Memory Audit` to find files missing `## Source` blocks, missing `valid_until` on state types, or missing frontmatter entirely.
 
 ---
 
@@ -304,6 +342,7 @@ Open a fresh conversation and type `Update Kit`. This re-downloads and repairs a
 
 | Version | What changed |
 |---------|-------------|
+| v2.7.0 | MemPalace-inspired memory format: `## Source` verbatim blocks (~84%→~97% recall), temporal validity (`valid_from`/`valid_until`), Tunnels (`related:` frontmatter + `--pre-edit` hook follows links one level deep), 6 precise memory types; session title bar via `UserPromptSubmit` with `refreshInterval: 60`; `PermissionDenied` hook logs denials to `tasks/permission_denials.md`; `--mempalace-audit` command; `keep-coding-instructions: true` on learn/evolve skills |
 | v2.6.4 | Fix blank conversation on Mac/Linux (python vs python3) + Windows (missing tools/memory.py); 22 new tests for update.py |
 | v2.6.1 | skill_scores.md 9-column schema; `sync.py migrate-scores` auto-migration; starter lessons in session 1 |
 | v2.6 | Content-aware memory diff; guided first-run; 69 automated tests; telemetry (opt-out: `CLANKBRAIN_NO_TELEMETRY=1`) |
