@@ -175,17 +175,20 @@ Claude ships built-in Auto Memory since v2.1.59, and dozens of community tools e
 
 Every one of them remembers. None of them learn.
 
-| | Other tools | Clankbrain |
-|---|---|---|
-| Remembers context across sessions | ✓ | ✓ |
-| Skills that self-improve from feedback | ✗ | ✓ |
-| Permanently blocks rejected approaches | ✗ | ✓ |
-| Semantic memory search (offline, no API) | ✗ | ✓ |
-| Team sync with personal memory kept local | ✗ | ✓ |
-| Verbatim source storage (~97% recall accuracy) | ✗ | ✓ |
-| Temporal memory validity (auto-surfaces stale memories) | ✗ | ✓ |
-| Cross-linked memories followed before every edit (Tunnels) | ✗ | ✓ |
-| Works without API keys or cloud | varies | ✓ |
+| | Auto Memory | MemPalace | Clankbrain |
+|---|---|---|---|
+| Remembers context across sessions | ✓ | ✓ | ✓ |
+| Verbatim source storage (~97% recall accuracy) | ✗ | ✓ | ✓ |
+| Temporal memory validity (auto-surfaces stale memories) | ✗ | ✓ | ✓ |
+| Cross-linked memories followed before every edit (Tunnels) | ✗ | ✓ | ✓ |
+| Skills that self-improve from feedback | ✗ | ✗ | ✓ |
+| Permanently blocks rejected approaches | ✗ | ✗ | ✓ |
+| Semantic memory search (offline, no API) | ✗ | ✓ | ✓ |
+| Team sync with personal memory kept local | ✗ | ✗ | ✓ |
+| Pure markdown — no database or vector store required | ✓ | ✗ | ✓ |
+| Works without API keys or cloud | ✓ | ✓ | ✓ |
+
+MemPalace ([github.com/milla-jovovich/mempalace](https://github.com/milla-jovovich/mempalace)) achieves 96.6% recall on LongMemEval using ChromaDB + SQLite. Clankbrain borrows its three best ideas — verbatim source blocks, temporal validity, and Tunnels — and implements them in pure markdown with no new dependencies. The things MemPalace doesn't have (skill self-improvement, regret guard, team sync) are Clankbrain's original contributions.
 
 The gap is small at session 5. By session 50 it's measurable.
 
