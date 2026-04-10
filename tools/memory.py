@@ -40,6 +40,7 @@ Usage:
   python tools/memory.py --permission-denied         # PermissionRequest hook: log denied tool operations
   python tools/memory.py --file-changed              # FileChanged hook: alert when CLAUDE.md or memory files change externally
   python tools/memory.py --pre-edit                  # PreToolUse hook: surface relevant lessons/regret/decisions before editing a file
+  python tools/memory.py --post-read                 # PostToolUse hook (Read|Grep): log when Claude consults a memory file mid-session
   python tools/memory.py --mempalace-audit           # Audit memory files for missing Source blocks and valid_until dates
   python tools/memory.py --init                      # Interactive setup wizard — run once in a new project
 """
@@ -2891,6 +2892,26 @@ def cmd_pre_edit():
     seen_files = set(matched_files)
     _follow_related(memory_dir, matched_files, seen_files, matches, seen)
 
+    # Content-based regret match — mechanical log if proposed edit matches a rejected approach
+    try:
+        proposed = tool_input.get('new_string', '') + tool_input.get('content', '')
+        if proposed and len(proposed) > 20:
+            regret_path = memory_dir / 'tasks' / 'regret.md'
+            if regret_path.exists():
+                regret_text = regret_path.read_text(encoding='utf-8', errors='ignore')
+                proposed_kw = _extract_keywords(proposed)
+                content_matches = []
+                for cells in _parse_md_table_rows(regret_text):
+                    if not cells or cells[0].lower() in ('approach', 'rule', 'what'):
+                        continue
+                    entry_kw = _extract_keywords(' '.join(cells))
+                    if len(proposed_kw & entry_kw) >= 2:
+                        content_matches.append(cells[0][:80])
+                if content_matches:
+                    _log_guard_fire(memory_dir, 'PRE-EDIT REGRET MATCH', content_matches)
+    except Exception:
+        pass
+
     if not matches:
         return
 
@@ -2900,6 +2921,47 @@ def cmd_pre_edit():
         + '\n'.join(f'  - {m}' for m in matches[:8])
     )
     print(json.dumps({'systemMessage': f'[kit] {msg}'}))
+
+
+# ─── POST READ — MEMORY FILE CONSULTATION LOGGER ─────────────────────────────
+# Fires PostToolUse on Read|Grep. If Claude read a memory file, log it.
+# Hook: PostToolUse (Read|Grep)
+
+def cmd_post_read():
+    """Log when Claude actively consults a memory file mid-session."""
+    try:
+        raw = sys.stdin.buffer.read().decode('utf-8', errors='replace')
+        data = json.loads(raw)
+        tool_input = data.get('tool_input', {})
+        file_path = tool_input.get('file_path', tool_input.get('path', ''))
+        pattern   = tool_input.get('pattern', '')   # Grep
+    except Exception:
+        return
+
+    memory_dir = find_memory_dir()
+    if not memory_dir:
+        return
+
+    _MEMORY_FILES = {
+        'lessons.md', 'decisions.md', 'regret.md',
+        'session_journal.md', 'complexity_profile.md',
+    }
+
+    target = file_path or pattern
+    if not target:
+        return
+
+    name = Path(target).name if file_path else ''
+    # Match if it's a known memory file or lives inside memory_dir
+    is_memory = (
+        name in _MEMORY_FILES
+        or (file_path and str(memory_dir) in file_path.replace('\\', '/'))
+    )
+    if not is_memory:
+        return
+
+    label = f'MEMORY READ ({name or "grep"} consulted mid-session)'
+    _log_guard_fire(memory_dir, label, [target])
 
 
 # ─── MEMPALACE AUDIT ──────────────────────────────────────────────────────────
@@ -3020,11 +3082,16 @@ def cmd_init():
                 'PreToolUse': [{'matcher': 'Edit|Write', 'hooks': [
                     {'type': 'command', 'command': f'{hook_prefix} --pre-edit', 'timeout': 5},
                 ]}],
-                'PostToolUse': [{'matcher': 'Edit|Write', 'hooks': [
-                    {'type': 'command', 'command': f'{hook_prefix} --log-edit',      'timeout': 5, 'async': True},
-                    {'type': 'command', 'command': f'{hook_prefix} --check-drift --silent', 'timeout': 15, 'async': True},
-                    {'type': 'command', 'command': f'{hook_prefix} --verify-edit',   'timeout': 5},
-                ]}],
+                'PostToolUse': [
+                    {'matcher': 'Edit|Write', 'hooks': [
+                        {'type': 'command', 'command': f'{hook_prefix} --log-edit',      'timeout': 5, 'async': True},
+                        {'type': 'command', 'command': f'{hook_prefix} --check-drift --silent', 'timeout': 15, 'async': True},
+                        {'type': 'command', 'command': f'{hook_prefix} --verify-edit',   'timeout': 5},
+                    ]},
+                    {'matcher': 'Read|Grep', 'hooks': [
+                        {'type': 'command', 'command': f'{hook_prefix} --post-read', 'timeout': 3, 'async': True},
+                    ]},
+                ],
                 'PreCompact':   [{'hooks': [{'type': 'command', 'command': f'{hook_prefix} --precompact',  'timeout': 15, 'statusMessage': 'Preserving memory...'}]}],
                 'PostCompact':  [{'hooks': [{'type': 'command', 'command': f'{hook_prefix} --postcompact', 'timeout': 15, 'statusMessage': 'Restoring memory...'}]}],
                 'StopFailure':  [{'hooks': [{'type': 'command', 'command': f'{hook_prefix} --stop-failure','timeout': 10}]}],
@@ -3292,6 +3359,8 @@ def main():
         cmd_file_changed()
     elif '--pre-edit' in ARGS:
         cmd_pre_edit()
+    elif '--post-read' in ARGS:
+        cmd_post_read()
     elif '--mempalace-audit' in ARGS:
         cmd_mempalace_audit()
     elif '--init' in ARGS:
