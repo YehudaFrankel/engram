@@ -6,11 +6,8 @@ Run from your project root: python setup.py
 Creates:
   CLAUDE.md, STATUS.md
   .claude/memory/  (MEMORY.md + 5 memory files)
-  tools/check_memory.py   (drift detection — PostToolUse hook)
-  tools/session_start.py  (memory injection — SessionStart hook)
-  tools/precompact.py     (memory preservation — PreCompact hook)
-  tools/stop_check.py     (unsaved changes check — Stop hook)
-  All 4 scripts are optional — only created when automated drift is chosen.
+  tools/memory.py         (all lifecycle behaviors: drift, journal, stop-check, session-start, precompact)
+  All hooks are optional — only created when automated drift/journaling is chosen.
 """
 
 import re

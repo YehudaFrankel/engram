@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-memory.py - Claude Recall memory system.
+memory.py - Clankbrain memory system.
 Single entry point for all memory operations.
 
 Usage:

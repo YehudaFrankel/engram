@@ -1,4 +1,4 @@
-# Claude Recall — Kit Overview
+# Clankbrain — Kit Overview
 
 Quick reference for what ships, what each file does, and how the pieces connect.
 

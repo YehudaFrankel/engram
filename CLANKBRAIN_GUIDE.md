@@ -134,18 +134,19 @@ Think of it like hiring a contractor vs a full-time employee. A contractor needs
 
 **What they are:** Two Python scripts that run behind the scenes, called automatically by the hooks.
 
-**`memory.py`** — The main kit tool. Handles pulling/pushing memory to GitHub, bootstrapping a new project, writing session journals, and scanning code complexity.
-
-**`check_memory.py`** — The project-specific tool. Handles:
+**`tools/memory.py`** — The single kit tool. All lifecycle behaviors in one script:
 
 | Feature | What it does |
 |---------|-------------|
 | Drift detection | Checks if your documentation matches your actual code — catches stale line numbers, missing functions |
-| Pre-edit context | Finds relevant memory before an edit and surfaces it to Claude |
-| Content-match guard | Compares proposed edits against the regret log — if the new code looks like a past mistake, logs a warning |
-| Post-read logging | Tracks when Claude reads its own memory files, which signals the memory system is working |
+| Session journal | Auto-captures a summary at the end of every session |
+| Stop check | Reminds you to save memory; surfaces open plans; warns when context is getting long |
+| Session start | Memory health check at the beginning of each session |
+| Bootstrap | Scans codebase, generates quick_index.md for new projects |
+| Complexity scan | Detects stack, scores complexity, recommends skills |
+| Pre-compact | Reinjects memory into context before /compact |
 
-**Why it matters:** These run automatically. You never call them directly — they fire through hooks and keep everything in sync without any manual steps.
+**Why it matters:** These run automatically through hooks. You never call them directly — they fire and keep everything in sync without any manual steps.
 
 ---
 

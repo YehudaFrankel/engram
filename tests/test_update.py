@@ -37,8 +37,8 @@ Do start stuff.
 ### `End Session`
 Do end stuff.
 
-## If Your Session Crashes
-Restart and type Start Session.
+## Auto-Save Rule
+Save memory at the end of every session.
 
 ---"""
 
@@ -49,8 +49,8 @@ _PROJECT_CLAUDE = """\
 ### `Start Session`
 OLD start stuff.
 
-## If Your Session Crashes
-OLD crash stuff.
+## Auto-Save Rule
+OLD auto-save stuff.
 
 ---
 
@@ -67,7 +67,7 @@ def test_extract_kit_block_returns_block():
     block, err = update.extract_kit_block(_KIT_BLOCK)
     assert err is None
     assert "## Session Commands" in block
-    assert "## If Your Session Crashes" in block
+    assert "## Auto-Save Rule" in block
 
 
 def test_extract_kit_block_missing_start():
