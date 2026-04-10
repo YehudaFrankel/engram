@@ -47,14 +47,40 @@ Run `python tools/memory.py --check-drift`
 
 ---
 
-## Step 5 — Evolve (every 3–5 sessions)
-Check `memory/tasks/skill_scores.md` — if 3+ sessions have passed since last `/evolve`, run it now.
-- `/evolve` patches failing skills and clusters repeated patterns
-- Skip if already run recently
+## Step 5 — Evolve Check
+Run `/evolve-check` — scan `memory/tasks/skill_scores.md` and report each skill:
+- 🔴 URGENT — multiple unpatched failures
+- 🟡 WATCH — 1–2 unpatched failures
+- 🟢 STABLE — no failures
+- ⚠️ DATA MISSING — fewer than 3 data points
+
+Run `/evolve` only if 🔴 or 🟡 with structured failure data.
 
 ---
 
 ## Step 6 — Sync (if configured)
 If cross-machine or team sync is set up, run `Sync Memory` / `Team Push` now.
 
-**Done.** Report: "Session [N] closed. [N] lessons saved. Memory clean. STATUS.md updated."
+---
+
+## Step 7 — Final Report (always show this)
+
+End every session with this exact format:
+
+```
+Session complete. [commit hash if applicable]
+
+**Lessons extracted:** N
+- [one line per lesson]
+
+**Decisions:** N
+- [one line per decision]
+
+**Evolve Check:**
+- 🔴 URGENT: [skill] — [reason]   (or "none")
+- 🟡 WATCH: [skill] — [reason]    (or "none")
+- 🟢 STABLE: [comma-separated list]
+- ⚠️ DATA MISSING: [skill] — [reason]   (or "none")
+```
+
+Never skip this report.
