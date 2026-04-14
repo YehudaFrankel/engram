@@ -1062,25 +1062,74 @@ footer {
       <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">no team sync</div>
       <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">shared team memory · personal stays local</div>
       <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">API key or database required</div>
-      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">stdlib Python only — no pip install*</div>
+      <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">zero dependencies — stdlib Python only</div>
       <div style="padding:.75rem 1.4rem; background:var(--s2); border-top:1px solid var(--border); color:var(--muted);">unofficial / proprietary internals</div>
       <div style="padding:.75rem 1.4rem; background:var(--s1); border-left:1px solid var(--border2); border-top:1px solid var(--border); color:var(--green);">official Anthropic hooks + skills APIs</div>
     </div>
   </div>
 </section>
 
-<!-- PRODUCT RISK — compact banner -->
-<div style="background:var(--s1); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:2rem 1.2rem;">
-  <div class="wrap-sm reveal" style="text-align:center;">
-    <div style="font-size:.68rem; color:var(--amber); letter-spacing:.08em; margin-bottom:.6rem;">PRODUCT STUDIO</div>
-    <div style="font-size:1.1rem; color:var(--text); font-weight:600; line-height:1.5; margin-bottom:1.25rem;">Don't build the wrong thing. <code style="color:var(--amber); background:var(--s2); padding:.15rem .45rem; font-family:var(--mono); font-size:.8rem; border-radius:3px;">/product-risk</code> validates ideas through the Four Big Risks before a line of code is written.</div>
-    <div style="display:inline-flex; gap:.6rem; flex-wrap:wrap; justify-content:center;">
-      <span style="background:var(--s2); border:1px solid var(--border2); padding:.45rem .9rem; border-radius:20px; font-size:.75rem; color:var(--muted);"><span style="color:var(--amber); font-weight:600;">Evaluate</span> score existing products</span>
-      <span style="background:var(--s2); border:1px solid var(--border2); padding:.45rem .9rem; border-radius:20px; font-size:.75rem; color:var(--muted);"><span style="color:var(--amber); font-weight:600;">Create</span> validate + prototype + scaffold</span>
-      <span style="background:rgba(224,82,82,.1); border:1px solid rgba(224,82,82,.25); padding:.45rem .9rem; border-radius:20px; font-size:.75rem; color:#e05252; font-weight:600;">Kill gate: 2+ red = no build</span>
+<!-- PRODUCT STUDIO -->
+<section id="product-risk">
+  <div class="wrap-sm">
+    <div class="sec-label">product studio</div>
+    <h2>Don't build the wrong thing.<br><span class="h2-amber">Validate first.</span></h2>
+    <p class="sec-desc">
+      <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">/product-risk</code> runs the Four Big Risks — Value, Usability, Feasibility, Viability — before you write a line of code.
+    </p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:2.5rem;" class="reveal">
+      <div class="living-cell" style="animation:cell-glow 7s ease-in-out infinite 0s;">
+        <div class="lc-num">EVALUATE ─────</div>
+        <div class="lc-head">Score what exists</div>
+        <div class="lc-body">
+          Point it at any product — yours or someone else's.
+          <em>Targeted questions for each risk. Red/Yellow/Green scorecard.
+          Biggest risk identified. One concrete next action.</em>
+        </div>
+      </div>
+      <div class="living-cell" style="animation:cell-glow 7s ease-in-out infinite 2.3s;">
+        <div class="lc-num">CREATE ─────</div>
+        <div class="lc-head">Validate + build</div>
+        <div class="lc-body">
+          Describe your idea. Pass the four-risk gate.
+          <em>Generates working HTML/CSS/JS prototypes with real data,
+          real interactions, responsive layouts — plus a full plan file,
+          decisions logged, and project scaffolding.</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:1px;">
+      <div class="living-cell" style="text-align:center; border-top:none; animation:none;">
+        <div style="display:inline-flex; align-items:center; gap:.75rem; flex-wrap:wrap; justify-content:center;">
+          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#e05252; box-shadow:0 0 8px rgba(224,82,82,.4);"></span>
+          <span style="font-size:.9rem; color:var(--text); font-weight:600;">Kill gate</span>
+          <span style="font-size:.82rem; color:var(--muted);">If 2+ risks score red, the skill refuses to build. Tells you what to validate first. The job is to prevent building things nobody wants.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); margin-top:2rem;">
+      <div style="background:var(--s1); padding:1rem; text-align:center;">
+        <div style="font-size:1.3rem; color:var(--amber); font-weight:700;">4</div>
+        <div style="font-size:.7rem; color:var(--muted); margin-top:.25rem;">risk dimensions</div>
+      </div>
+      <div style="background:var(--s1); padding:1rem; text-align:center;">
+        <div style="font-size:1.3rem; color:var(--green); font-weight:700;">6</div>
+        <div style="font-size:.7rem; color:var(--muted); margin-top:.25rem;">phases in create mode</div>
+      </div>
+      <div style="background:var(--s1); padding:1rem; text-align:center;">
+        <div style="font-size:1.3rem; color:var(--text); font-weight:700;">~30m</div>
+        <div style="font-size:.7rem; color:var(--muted); margin-top:.25rem;">idea to working prototype</div>
+      </div>
+      <div style="background:var(--s1); padding:1rem; text-align:center;">
+        <div style="font-size:1.3rem; color:#e05252; font-weight:700;">0</div>
+        <div style="font-size:.7rem; color:var(--muted); margin-top:.25rem;">bad ideas get built</div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- LIVING SYSTEM -->
 <section id="living">
