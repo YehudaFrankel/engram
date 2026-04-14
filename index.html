@@ -1069,6 +1069,21 @@ footer {
   </div>
 </section>
 
+<!-- PRODUCT RISK — compact banner -->
+<div style="background:var(--s1); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:1.5rem 1.2rem;">
+  <div class="wrap-md" style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+    <div style="flex:1; min-width:220px;">
+      <div style="font-size:.68rem; color:var(--amber); letter-spacing:.06em; margin-bottom:.35rem;">PRODUCT STUDIO</div>
+      <div style="font-size:1.05rem; color:var(--text); font-weight:600; line-height:1.4;">Don't build the wrong thing. <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">/product-risk</code> validates ideas through the Four Big Risks before you write a line of code.</div>
+    </div>
+    <div style="display:flex; gap:.75rem; flex-wrap:wrap;">
+      <div style="background:var(--s2); border:1px solid var(--border2); padding:.6rem 1rem; border-radius:4px; font-size:.78rem; color:var(--muted); line-height:1.5;"><span style="color:var(--amber); font-weight:600;">Evaluate</span> — score existing products Red/Yellow/Green</div>
+      <div style="background:var(--s2); border:1px solid var(--border2); padding:.6rem 1rem; border-radius:4px; font-size:.78rem; color:var(--muted); line-height:1.5;"><span style="color:var(--amber); font-weight:600;">Create</span> — validate, prototype, scaffold a new product</div>
+      <div style="background:var(--s2); border:1px solid var(--border2); padding:.6rem 1rem; border-radius:4px; font-size:.78rem; color:#e05252; line-height:1.5; font-weight:600;">Kill gate — 2+ red risks = no prototype</div>
+    </div>
+  </div>
+</div>
+
 <!-- LIVING SYSTEM -->
 <section id="living">
 <canvas id="neuralBg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.7;"></canvas>
@@ -1284,40 +1299,6 @@ footer {
       </div>
       <div style="font-size:.75rem; color:var(--dim); margin-top:.9rem; line-height:1.6;">
         setup.py — first-time setup (Full or Lite) &nbsp;·&nbsp; upgrade.py — Lite → Full &nbsp;·&nbsp; update.py — safe kit updater
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRODUCT RISK -->
-<section id="product-risk" style="background:var(--s1); border-top:1px solid var(--border);">
-  <div class="wrap-md">
-    <div class="sec-label">product studio</div>
-    <h2>Don't build the wrong thing.<br><span class="h2-amber">Validate first.</span></h2>
-    <p class="sec-desc">
-      <code style="color:var(--amber); background:var(--s2); padding:.1rem .35rem; font-family:var(--mono); font-size:.76rem;">/product-risk</code> runs the Four Big Risks framework before you write a line of code. Two modes:
-    </p>
-
-    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:2rem;" class="reveal">
-      <div style="background:var(--s2); border:1px solid var(--border2); padding:1.5rem; border-radius:6px;">
-        <div style="font-size:.68rem; color:var(--amber); letter-spacing:.06em; margin-bottom:.5rem;">EVALUATE MODE</div>
-        <div style="font-size:.95rem; color:var(--text); font-weight:600; margin-bottom:.75rem;">Score an existing product</div>
-        <div style="font-size:.82rem; color:var(--muted); line-height:1.7;">
-          Walk through Value, Usability, Feasibility, and Viability with targeted questions. Get a Red/Yellow/Green scorecard with the biggest risk identified and one concrete next action.
-        </div>
-      </div>
-      <div style="background:var(--s2); border:1px solid var(--border2); padding:1.5rem; border-radius:6px;">
-        <div style="font-size:.68rem; color:var(--amber); letter-spacing:.06em; margin-bottom:.5rem;">CREATE MODE</div>
-        <div style="font-size:.95rem; color:var(--text); font-weight:600; margin-bottom:.75rem;">Validate + prototype + scaffold</div>
-        <div style="font-size:.82rem; color:var(--muted); line-height:1.7;">
-          Chat through your idea. Pass the four-risk gate. Generate working HTML/CSS/JS prototypes with real interactions, realistic data, and responsive layouts. Get a full plan file, decisions logged, and project scaffolding ready for the next session.
-        </div>
-      </div>
-    </div>
-
-    <div style="background:var(--bg); border:1px solid var(--border2); padding:1.25rem 1.5rem; margin-top:1.5rem; border-radius:6px;" class="reveal">
-      <div style="font-size:.82rem; color:var(--text); line-height:1.7;">
-        <span style="color:#e05252; font-weight:600;">Kill gate:</span> If 2+ risks score red, the skill refuses to generate prototypes and tells you exactly what to validate first. The skill's job is to prevent building things nobody wants.
       </div>
     </div>
   </div>
