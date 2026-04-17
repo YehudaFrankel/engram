@@ -42,13 +42,29 @@ python tools/memory.py --init
 
 Five questions. Creates your memory directory, hooks config, and starter files. Done in 30 seconds.
 
+If anything goes wrong, the installer tells you exactly what's broken and how to fix it (no Python tracebacks).
+
 No API keys. No background service. No database. Zero pip dependencies — stdlib Python only. **Requires:** [Claude Code](https://claude.ai/claude-code) + Python 3.7+
 
 > Semantic search (`/recall`) optionally uses `sentence-transformers` for meaning-based matching. Without it, `/recall` falls back to keyword grep — still works, just less fuzzy.
 
 > Used by 600+ developers in its first two weeks. If it helps, [star it ★](https://github.com/YehudaFrankel/clankbrain)
 
-→ **New?** [Your first 3 sessions →](QUICKSTART.md)
+---
+
+## First 10 minutes
+
+Right after install, type these in order:
+
+```
+kit-health     → confirms install worked (green checks for memory, skills, hooks)
+tour           → 5-minute interactive walkthrough — see the magic by doing it
+Start Session  → begin real work
+```
+
+The whole kit fits on one page: **[CHEATSHEET.md](CHEATSHEET.md)** — print it, screenshot it, keep it open. 5 commands, that's the whole interface.
+
+Want depth? **[QUICKSTART.md](QUICKSTART.md)** walks through your first 3 sessions in detail.
 
 ---
 
@@ -360,7 +376,8 @@ Open a fresh conversation and type `Update Kit`. This re-downloads and repairs a
 
 | Version | What changed |
 |---------|-------------|
-| v2.7.0 | MemPalace-inspired memory format: `## Source` verbatim blocks (~84%→~97% recall), temporal validity (`valid_from`/`valid_until`), Tunnels (`related:` frontmatter + `--pre-edit` hook follows links one level deep), 6 precise memory types; session title bar via `UserPromptSubmit` with `refreshInterval: 60`; `PermissionDenied` hook logs denials to `tasks/permission_denials.md`; `--mempalace-audit` command; `keep-coding-instructions: true` on learn/evolve skills |
+| v2.8.0 | Onboarding pass: `kit-health` skill (post-install verification), `tour` skill (5-min interactive walkthrough), `CHEATSHEET.md` (one-page reference), `setup.py` preflight checks + actionable error messages |
+| v2.7.0 | Build to Learn vs Build to Earn: `rules/build-mode.md` (declare discovery vs delivery at session start), `prototype-hypothesis` skill (4-question gate before any prototype iteration), `parallel-prototypes` skill (run 2-3 variants instead of sequential), velocity tracker split into discovery + delivery units. MemPalace-inspired memory format: `## Source` verbatim blocks (~84%→~97% recall), temporal validity (`valid_from`/`valid_until`), Tunnels (`related:` frontmatter + `--pre-edit` hook follows links), 6 precise memory types |
 | v2.6.4 | Fix blank conversation on Mac/Linux (python vs python3) + Windows (missing tools/memory.py); 22 new tests for update.py |
 | v2.6.1 | skill_scores.md 9-column schema; `sync.py migrate-scores` auto-migration; starter lessons in session 1 |
 | v2.6 | Content-aware memory diff; guided first-run; 69 automated tests; telemetry (opt-out: `CLANKBRAIN_NO_TELEMETRY=1`) |
