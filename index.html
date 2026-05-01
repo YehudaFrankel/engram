@@ -1531,7 +1531,7 @@ footer {
         <div class="faq-body">
           No — and the research backs this up. Large monolithic CLAUDE.md files increase token use by ~20% with only a 5% improvement in output quality, and sometimes a <em>negative</em> effect when the content is AI-generated.<br><br>
           clankbrain is built the opposite way: <code>CLAUDE.md</code> stays lean — commands and project-specific gotchas only. Project knowledge lives in separate <code>.claude/memory/</code> files that load selectively based on what's relevant to the current task. That's what the research actually recommends.<br><br>
-          The template that ships with the kit enforces this. The project-specific section is designed to stay under 50 lines. High-level principles ("plan first", "simplicity first") are omitted entirely — Claude already knows them.
+          The template that ships with the kit enforces this. The project-specific section is designed to stay under 50 lines. When you do want universal behavioral guardrails, ship them as a dedicated rule file — like the included <code>karpathy-principles.md</code>, which encodes Andrej Karpathy's 4 LLM coding principles (think before coding, simplicity first, surgical changes, goal-driven execution) as an always-load rule.
         </div>
       </details>
       <details>

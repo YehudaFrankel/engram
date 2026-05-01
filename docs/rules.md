@@ -62,6 +62,7 @@ Claude Code auto-discovers these when you open a matching file. They do not cons
 | `plan-before-edit` | always-load | Applies to every file type — must include WAIT for approval |
 | `work-rules` | always-load | Behavioral — not file-specific |
 | `token-rules` | always-load | Context management — not file-specific |
+| `karpathy-principles` | always-load | 4 universal coding principles: think first, simplicity, surgical changes, goal-driven |
 | `coding-conventions` | path-scoped (`*.java`, `*.js`) | Only relevant when writing code |
 | `database` | path-scoped (`*.java`, `*.sql`) | Only relevant near DB code |
 | `design-system` | path-scoped (`*.html`, `*.css`, `*.js`) | Only relevant in frontend files |
