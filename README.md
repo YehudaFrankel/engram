@@ -24,7 +24,7 @@ Start Session   ->  reads memory, applies past lessons, picks up where you left 
 End Session     ->  extracts lessons, saves everything to memory
 ```
 
-> Built and battle-tested across 220+ real sessions on a production Java/SQL Server codebase — not a demo project.
+> Built and battle-tested across 220+ real sessions on a production codebase (Java/SQL Server) — not a demo project.
 
 ---
 
@@ -125,12 +125,11 @@ Next session, Claude loads these lessons automatically — before you write a si
   Lessons accumulated     14
   Known errors logged     6    <- never debugged twice
   Rejected approaches     9    <- never re-proposed
-  Skill accuracy          78%
 
   -> 8 sessions in. Compounding is happening.
 ```
 
-From a real project — 220 sessions on a production Java/SQL Server codebase, not a demo.
+From a real project — 220 sessions on a production codebase (Java/SQL Server), not a demo.
 
 ---
 
@@ -188,7 +187,9 @@ Want depth? **[QUICKSTART.md](docs/QUICKSTART.md)** walks through your first 3 s
 - **Skills that self-improve** — each skill scores itself on every use; `/evolve` reads the scores and patches the steps that keep failing. After 50 sessions, every skill has been refined by 50 real feedback loops. Nothing else does this.
 - **Regret guard** — every prompt is silently scanned against past rejected approaches before Claude responds. Approaches you discarded stay discarded — permanently, across every future session.
 - **Typed memory files** — decisions, errors, lessons, and rejected approaches each live in a dedicated file. Not a single dump file — purpose-built stores that load selectively and stay readable.
-- **MemPalace-inspired memory format** — verbatim `## Source` blocks alongside summaries raise recall accuracy from ~84% to ~97%. Temporal frontmatter (`valid_from:`, `valid_until:`) auto-surfaces stale memories. `related:` links connect memories across files (Tunnels); the `--pre-edit` hook follows them before any code change.
+- **Verbatim source storage** — every memory stores the raw conversation snippet alongside its summary, raising recall accuracy from ~84% to ~97%.
+- **Temporal validity** — `valid_from`/`valid_until` frontmatter auto-surfaces stale memories and prevents inactive ones from loading.
+- **Tunnels** — `related:` links connect memories across files; the `--pre-edit` hook follows them one level deep before any code change.
 - **Semantic memory search** — `/recall` finds related memories by meaning, not keywords. Local model (~90MB, no API key, fully offline).
 - **Team sync** — share what you learn with your whole team. Manager runs `Setup Team` once, teammates run `Join Team` once, every Start Session pulls the latest silently. Personal memory stays local.
 - **Drift detection** — catches undocumented changes after every file edit (Full mode).
@@ -230,7 +231,7 @@ Every one of them remembers. None of them learn.
 | Pure markdown — no database or vector store required | ✓ | ✗ | ✓ |
 | Works without API keys or cloud | ✓ | ✓ | ✓ |
 
-The gap is small at session 5. By session 50 it's measurable.
+By session 50, Claude knows your codebase better than a new hire who's spent a month onboarding.
 
 → [Does this work with Auto Memory? How does it compare to other kits?](docs/faq.md)
 
