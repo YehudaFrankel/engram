@@ -2,7 +2,7 @@
 
 <p align="center"><img src="logo.jpeg" alt="Clankbrain" width="160" /></p>
 
-[![v2.9.0](https://img.shields.io/badge/version-2.9.0-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code + Codex](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
+[![v2.11.0](https://img.shields.io/badge/version-2.11.0-blue?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/releases) [![MIT License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Claude Code + Codex](https://img.shields.io/badge/Claude-Code-orange?style=flat-square)](https://claude.ai/claude-code) [![Discussions](https://img.shields.io/badge/community-discussions-purple?style=flat-square)](https://github.com/YehudaFrankel/clankbrain/discussions)
 
 ![Session demo](demo.gif)
 
@@ -392,6 +392,7 @@ Open a fresh conversation and type `Update Kit`. This re-downloads and repairs a
 
 | Version | What changed |
 |---------|-------------|
+| v2.11.0 | `rules/regret.md` added — 7 rejected approaches ship with the kit and load on every session (`alwaysApply: true`). `NESTED_ASYNC_CALLBACKS` guard added to `guard-patterns.md`. HTML builder pattern added to `work-rules.md`. Three rules distilled from 225 real sessions on a production codebase. |
 | v2.10.0 | Karpathy principles rule added (`rules/karpathy-principles.md`) — 4 behavioral guidelines from Andrej Karpathy's LLM coding insights: think before coding, simplicity first, surgical changes, goal-driven execution. Ships as an always-load rule. |
 | v2.9.0 | Workflow layer: 13 generic skills added (fix-bug, guard, code-review, 07-refactoring, 03-security, 04-environments, 06-testing, frontend-design, refactoring-ui, ux-heuristics, shadow-code, skill-creator, smart-resume) + protected-files rule. New positioning: memory foundation + workflow superstructure. README and site updated to reflect expanded scope. |
 | v2.8.0 | Onboarding pass: `kit-health` skill (post-install verification), `tour` skill (5-min interactive walkthrough), `CHEATSHEET.md` (one-page reference), `setup.py` preflight checks + actionable error messages |
